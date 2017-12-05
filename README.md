@@ -1,0 +1,2 @@
+# seo
+SEO plugin SilverStripe
