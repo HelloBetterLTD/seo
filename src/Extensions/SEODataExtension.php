@@ -41,4 +41,19 @@ class SEODataExtension extends DataExtension
 		$fields->addFieldToTab('Root.Main', SEOEditor::create('SEOFields')->setRecord($this->owner), 'Content');
 	}
 
+	public function SEOData()
+	{
+		return [
+			'MetaTitle'				=> $this->owner->MetaTitle,
+			'MetaDescription'		=> $this->owner->MetaDescription,
+			'FacebookTitle'			=> $this->owner->FacebookTitle,
+			'FacebookDescription'	=> $this->owner->FacebookDescription,
+			'TwitterTitle'			=> $this->owner->TwitterTitle,
+			'TwitterDescription'	=> $this->owner->TwitterDescription,
+			'MetaRobotsFollow'		=> $this->owner->MetaRobotsFollow,
+			'MetaRobots'			=> $this->owner->MetaRobots,
+			'CanonicalURL'			=> $this->owner->CanonicalURL
+		];
+	}
+
 }

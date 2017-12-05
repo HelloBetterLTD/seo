@@ -10,6 +10,7 @@
 namespace SilverStripers\seo\Fields;
 
 
+use SilverStripe\Core\Convert;
 use SilverStripe\Forms\FormField;
 
 class SEOEditor extends FormField
@@ -17,10 +18,13 @@ class SEOEditor extends FormField
 
 	private $record = null;
 
-	public function __construct($name, $title, $value)
+	public function __construct($name, $title, $value, $record = null)
 	{
 		parent::__construct($name, $title, $value);
 		$this->addExtraClass('stacked');
+		if($record){
+			$this->setRecord($record);
+		}
 	}
 
 	public function setRecord($record)
@@ -34,6 +38,15 @@ class SEOEditor extends FormField
 		return $this->record;
 	}
 
+	public function getSEOJSON()
+	{
+		return Convert::array2json($this->record->SEOData);
+	}
+
+	public function getSEOJSONAttr()
+	{
+		return Convert::raw2htmlatt($this->getSEOJSON());
+	}
 
 
 }

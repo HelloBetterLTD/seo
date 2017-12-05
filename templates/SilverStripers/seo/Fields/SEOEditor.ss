@@ -1,1 +1,1 @@
-<div class="js-seo-editor" data-name="{$Name}"></div>
+<div class="js-seo-editor" data-name="{$Name}" data-seo="{$SEOJSONAttr}"></div>
