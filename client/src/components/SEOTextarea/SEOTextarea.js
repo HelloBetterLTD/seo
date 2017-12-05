@@ -1,13 +1,28 @@
 'use strict';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import SEOInput from './SEOInput';
+import SEOInputProgressbar from './SEOInputProgressbar';
 
 var ss = typeof window.ss !== 'undefined' ? window.ss : {};
 
 
-class SEOTextarea extends React.Component {
-    
+class SEOTextarea extends SEOInput {
+
+
+    render() {
+        return(
+            <div className='seo-input field'>
+                <label>{this.props.label}</label>
+                <textarea
+                    className='text'
+                    name={this.props.name}
+                    onChange={this.props.onChange} >{this.props.value}</textarea>
+                <SEOInputProgressbar></SEOInputProgressbar>
+            </div>
+        );
+    }
+
 }
 
-export default { SEOTextarea };
+export default SEOTextarea;

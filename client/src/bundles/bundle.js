@@ -1,5 +1,7 @@
 import jQuery from 'jquery';
-require('../components/SEOEditorHolder/SEOEditorHolder');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import SEOEditorHolder from '../components/SEOEditorHolder/SEOEditorHolder';
 
 
 jQuery.entwine('ss', ($) => {
@@ -14,14 +16,16 @@ jQuery.entwine('ss', ($) => {
             this.refresh();
         },
         refresh() {
-        //     let textArea = $(this).parent().find('textarea')[0];
-        //     let data = JSON.parse(textArea.dataset.config);
-        //     let toolbar = ss.markdownConfigs.readToolbarConfigs(data.toolbar);
-        //
-        //     ReactDOM.render(
-        //     <MarkdownEditorField textarea={textArea} toolbar={toolbar} identifier={data.identifier}></MarkdownEditorField>,
-        //         this[0]
-        // );
+            const name = this.data('name');
+            const seoData = this.data('seo');
+            const link = this.data('recordlink');
+            
+            ReactDOM.render(
+                <SEOEditorHolder 
+                    link={link}
+                    name={name} 
+                    seodata={seoData}></SEOEditorHolder>
+                ,this[0]);
         }
     });
 

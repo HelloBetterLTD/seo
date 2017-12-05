@@ -1,1 +1,1 @@
-<div class="js-seo-editor" data-name="{$Name}" data-seo="{$SEOJSONAttr}"></div>
+<div class="js-seo-editor" data-name="{$Name}" data-seo="{$SEOJSONAttr.RAW}" data-recordlink="{$RecordLink}"></div>
