@@ -12,6 +12,7 @@ namespace SilverStripers\seo\Fields;
 
 use SilverStripe\Core\Convert;
 use SilverStripe\Forms\FormField;
+use SilverStripe\View\Requirements;
 
 class SEOEditor extends FormField
 {
@@ -46,6 +47,13 @@ class SEOEditor extends FormField
 	public function getSEOJSONAttr()
 	{
 		return Convert::raw2htmlatt($this->getSEOJSON());
+	}
+
+	public function Field($properties = array())
+	{
+		Requirements::javascript('silverstripers/seo:client/dist/bundle.min.js');
+		Requirements::css('silverstripers/seo:client/dist/bundle.min.css');
+		return parent::Field($properties);
 	}
 
 
