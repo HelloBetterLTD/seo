@@ -8,7 +8,7 @@ $border-color: #aaa;
 	nav {
 
 		width: 40px;
-		padding-top: 40px;
+		padding-top: 10px;
 
 		ul {
 			list-style: none;
@@ -18,7 +18,7 @@ $border-color: #aaa;
 		}
 
 		li {
-			margin-bottom: 5px;
+			margin-bottom: 4px;
 		}
 
 		a {
@@ -30,7 +30,7 @@ $border-color: #aaa;
 			background: white;
 			border: 1px solid $border-color;
 			border-right: 0;
-			border-radius: 5px 0 0 5px;
+			border-radius: 4px 0 0 4px;
 		}
 	}
 
@@ -38,7 +38,7 @@ $border-color: #aaa;
 		flex-grow: 1;
 		border: 1px solid $border-color;
 		background: white;
-		border-radius: 5px;
+		border-radius: 4px;
 		padding: 20px;
 
 	}
@@ -88,6 +88,74 @@ $border-color: #aaa;
 		.preview-description {
 			font-size: 14px;
 			line-height: 20px;
+		}
+
+		.preview-card.facebook {
+			max-width: 476px;
+			width: 100%;
+			box-shadow: 0 0 0 1px rgba(0, 0, 0, .15) inset, 0 1px 4px rgba(0, 0, 0, .1);
+			position: relative;
+			font-family: SF Optimized, system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+			font-size: 12px;
+			line-height: 16px;
+
+			h3 {
+				font-family: Georgia, serif;
+				font-size: 18px;
+				font-weight: 500;
+				line-height: 22px;
+				margin-bottom: 4px;
+				max-height: 110px;
+				overflow: hidden;
+				word-wrap: break-word;
+				color: black;
+			}
+
+			.preview-link {
+				border: 0;
+				font-size: 11px;
+				line-height: 11px;
+				text-transform: uppercase;
+				color: #90949c;
+				margin: 0;
+				padding: 0;
+			}
+
+		}
+
+		.preview-card.twitter {
+			max-width: 506px;
+			width: 100%;
+			border-radius: .42857em;
+			border-width: 1px;
+			border-style: solid;
+			border-color: #E1E8ED;
+			box-sizing: border-box;
+			color: inherit!important;
+			overflow: hidden;
+
+			.preview-contents {
+				padding: 10px;
+				font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+				line-height: 1.3em;
+			}
+
+			h3 {
+				font-size: 14px;
+				color: black;
+				font-weight: bold;
+			}
+
+			.preview-description {
+				margin: 0;
+			}
+
+			.preview-link {
+				margin: 0;
+				padding: 0;
+				color: #8899A6;
+				border: 0;
+			}
 		}
 
 	}

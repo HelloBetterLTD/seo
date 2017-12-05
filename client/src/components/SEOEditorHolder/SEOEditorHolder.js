@@ -18,7 +18,10 @@ class SEOEditorHolder extends React.Component {
             MetaTitle           : props.seodata.MetaTitle,
             MetaDescription     : props.seodata.MetaDescription,
             FacebookTitle       : props.seodata.FacebookTitle,
-            FacebookDescription : props.seodata.FacebookDescription
+            FacebookDescription : props.seodata.FacebookDescription,
+            TwitterTitle       : props.seodata.TwitterTitle,
+            TwitterDescription : props.seodata.TwitterDescription,
+            CurrentTab           : 'seo'
         };
     }
 
@@ -32,22 +35,24 @@ class SEOEditorHolder extends React.Component {
         this.setState(val);
     }
 
-    openTab(event){
-        console.log(this, event);
+    openTab(tab){
+        this.setState({
+            CurrentTab: tab
+        });
     }
 
     render() {
         return(<div className="seo-editor">
             <nav>
                 <ul>
-                    <li><a data-href='#seo' onClick={this.openTab.bind(this)}><i className="icon font-icon-rocket"></i></a></li>
-                    <li><a data-href='#social' onClick={this.openTab.bind(this)}><i className="icon font-icon-globe-1"></i></a></li>
-                    <li><a data-href='#settings' onClick={this.openTab.bind(this)}><i className="icon font-icon-cog"></i></a></li>
+                    <li><a data-href='#seo' onClick={(e) => {this.openTab('seo')}}><i className="icon font-icon-rocket"></i></a></li>
+                    <li><a data-href='#social' onClick={(e) => {this.openTab('social')}}><i className="icon font-icon-globe-1"></i></a></li>
+                    <li><a data-href='#settings' onClick={(e) => {this.openTab('settings')}}><i className="icon font-icon-cog"></i></a></li>
                 </ul>
             </nav>
             <div className="seo-tab-container">
-                <div className="seo-tab active" data-tab='seo'>
-                    <h4>SEO Data</h4>
+                <div className={'seo-tab ' + (this.state.CurrentTab == 'seo' ? 'active' : '')} data-tab='seo'>
+                    <h3>SEO Data</h3>
 
                     <SEOInput
                     label='Meta Title'
@@ -74,9 +79,9 @@ class SEOEditorHolder extends React.Component {
                     </div>
 
                 </div>
-                <div className="seo-tab" data-tab='social'>
-                    <h4>Social Data</h4>
-
+                <div className={'seo-tab ' + (this.state.CurrentTab == 'social' ? 'active' : '')} data-tab='social'>
+                    <h3>Social Data</h3>
+                    <h4>Facebook</h4>
                     <SEOInput
                         label='Facebook Title'
                         value={this.state.FacebookTitle}
@@ -92,9 +97,45 @@ class SEOEditorHolder extends React.Component {
                         onChange={(e)=>{this.handleInputChange(e, 'FacebookDescription')}}
                     ></SEOTextarea>
 
-                </div>
-                <div className="seo-tab"  data-tab='settings'>
-                    <h4>Settings</h4>
+                    <div className='preview-holder'>
+                        <div className='preview-card facebook'>
+                            <h3>{this.state.FacebookTitle}</h3>
+                            <p className='preview-description'>{this.state.FacebookDescription}</p>
+                            <p className='preview-link'>{this.state.Link}</p>
+                        </div>
+                    </div>
+
+
+                    <h4>Twitter</h4>
+                    <SEOInput
+                        label='Twitter Title'
+                        value={this.state.TwitterTitle}
+                        name={this.getFieldName('TwitterTitle')}
+                        onChange={(e)=>{this.handleInputChange(e, 'TwitterTitle')}}
+                    ></SEOInput>
+
+                    <SEOTextarea
+                        label='Twitter Description'
+                        value={this.state.TwitterDescription}
+                        name={this.getFieldName('TwitterDescription')}
+                        onChange={(e)=>{this.handleInputChange(e, 'TwitterDescription')}}
+                    ></SEOTextarea>
+
+
+                    <div className='preview-holder'>
+                        <div className='preview-card twitter'>
+                            <div className='preview-contents'>
+                                <h3>{this.state.TwitterTitle}</h3>
+                                <p className='preview-description'>{this.state.TwitterDescription}</p>
+                                <p className='preview-link'>{this.state.Link}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+        </div>
+                <div className={'seo-tab ' + (this.state.CurrentTab == 'settings' ? 'active' : '')}  data-tab='settings'>
+                    <h3>Settings</h3>
                 </div>
             </div>
         </div>);
