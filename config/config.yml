@@ -1,0 +1,6 @@
+---
+Name: markdown
+---
+SilverStripe\CMS\Model\SiteTree:
+  extensions:
+    - SilverStripers\src\Extensions\SEODataExtension
