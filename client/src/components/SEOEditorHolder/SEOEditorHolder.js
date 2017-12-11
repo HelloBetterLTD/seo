@@ -160,6 +160,17 @@ class SEOEditorHolder extends React.Component {
                 </div>
                 <div className={'seo-tab ' + (this.state.CurrentTab == 'settings' ? 'active' : '')}  data-tab='settings'>
                     <h3>Settings</h3>
+
+
+                    <SEOInput
+                        label='Canonical URL'
+                        value={this.state.CanonicalURL}
+                        name={this.getFieldName('CanonicalURL')}
+                        onChange={(e)=>{this.handleInputChange(e, 'CanonicalURL')}}
+                        ></SEOInput>
+                    <p>The canonical URL that this page should point to, leave empty to default to permalink.
+                        <a href="https://webmasters.googleblog.com/2009/12/handling-legitimate-cross-domain.html" target="_blank">
+                        Cross domain canonical</a> supported too.</p>
                 </div>
             </div>
         </div>);
