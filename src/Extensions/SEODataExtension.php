@@ -11,8 +11,15 @@ namespace SilverStripers\seo\Extensions;
 
 
 use SilverStripe\Assets\Image;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\ContentNegotiator;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\Security\Permission;
+use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\View\HTML;
 use SilverStripers\seo\Fields\SEOEditor;
 
 class SEODataExtension extends DataExtension
@@ -58,6 +65,147 @@ class SEODataExtension extends DataExtension
 			'TwitterImageID'		=> $this->owner->TwitterImageID,
 			'TwitterImageURL'		=> $this->owner->TwitterImageID ? $this->owner->TwitterImage()->Link() : null,
 		];
+	}
+
+	public function GenerateMetaTags()
+	{
+		$tags = [];
+		$owner = $this->owner;
+		if($owner->MetaTitle) {
+			$tags[] = HTML::createTag('title', [], $owner->obj('MetaTitle')->forTemplate());
+		}
+		else {
+			$tags[] = HTML::createTag('title', [], $owner->obj('Title')->forTemplate());
+		}
+
+		$generator = trim(Config::inst()->get(SiteTree::class, 'meta_generator'));
+		if (!empty($generator)) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'generator',
+				'content' => $generator,
+			]);
+		}
+
+		$charset = ContentNegotiator::config()->uninherited('encoding');
+		$tags[] = HTML::createTag('meta', [
+			'http-equiv' => 'Content-Type',
+			'content' => 'text/html; charset=' . $charset,
+		]);
+
+		if($owner->MetaDescription) {
+			$tags[] = HTML::createTag('description', [], $owner->MetaDescription);
+		}
+
+		if (Permission::check('CMS_ACCESS_CMSMain')
+			&& $owner->ID > 0
+		) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'x-page-id',
+				'content' => $owner->obj('ID')->forTemplate(),
+			]);
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'x-cms-edit-link',
+				'content' => $owner->obj('CMSEditLink')->forTemplate(),
+			]);
+		}
+
+		if($owner->CanonicalURL) {
+			$tags[] = HTML::createTag('link', [
+				'name' => 'canonical',
+				'content' => $owner->CanonicalURL,
+			]);
+		}
+
+		$tags[] = HTML::createTag('meta', [
+			'name' => 'og:locale',
+			'content' => i18n::get_locale()
+		]);
+
+		$tags[] = HTML::createTag('meta', [
+			'name' => 'og:type',
+			'content' => $this->getOGPostType()
+		]);
+
+		if($owner->FacebookTitle) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'og:title',
+				'content' => $owner->FacebookTitle
+			]);
+		}
+
+		if($owner->FacebookDescription) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'og:description',
+				'content' => $owner->FacebookDescription
+			]);
+		}
+
+		$tags[] = HTML::createTag('meta', [
+			'name' => 'og:url',
+			'content' => $owner->AbsoluteLink()
+		]);
+
+
+		$tags[] = HTML::createTag('meta', [
+			'name' => 'og:site_name',
+			'content' => SiteConfig::current_site_config()->Title
+		]);
+
+		if($owner->FacebookImage()->exists()) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'og:image',
+				'content' => $owner->FacebookImage()->AbsoluteLink()
+			]);
+		}
+
+
+		$tags[] = HTML::createTag('meta', [
+			'name' => 'twitter:card',
+			'content' => 'summary_large_image'
+		]);
+
+		if($owner->TwitterTitle) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'twitter:title',
+				'content' => $owner->TwitterTitle
+			]);
+		}
+
+		if($owner->TwitterDescription) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'twitter:description',
+				'content' => $owner->TwitterDescription
+			]);
+		}
+
+		if($owner->TwitterImage()->exists()) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'twitter:image',
+				'content' => $owner->TwitterImage()->AbsoluteLink()
+			]);
+		}
+
+		$tags = implode("\n", $tags);
+
+		if ($owner->ExtraMeta) {
+			$tags .= $owner->obj('ExtraMeta')->forTemplate();
+		}
+
+		return $tags;
+
+	}
+
+	public function MetaTags(&$tags)
+	{
+		$tags = $this->GenerateMetaTags();
+	}
+
+	public function getOGPostType()
+	{
+		if(method_exists($this->owner, 'getOGPostType')) {
+			return $this->owner->getOGPostType();
+		}
+		return 'article';
 	}
 
 }

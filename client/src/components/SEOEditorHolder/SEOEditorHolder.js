@@ -1,5 +1,6 @@
 'use strict';
 
+import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SEOInput from '../SEOTextarea/SEOInput';
@@ -7,6 +8,24 @@ import SEOTextarea from '../SEOTextarea/SEOTextarea';
 
 var ss = typeof window.ss !== 'undefined' ? window.ss : {};
 
+jQuery.entwine('ss', ($) => {
+
+    ss.seo = {
+        openImageEditor: function(type, element) {
+            let dialog = $('#insert-seo-media-react__dialog-wrapper');
+            if (!dialog.length) {
+                dialog = $('<div id="insert-seo-media-react__dialog-wrapper" />');
+                $('body').append(dialog);
+            }
+            dialog.setElement({
+                'Type'      : type,
+                'Element'   : element
+            });
+            dialog.open();
+        }
+    }
+
+});
 
 class SEOEditorHolder extends React.Component {
 
@@ -45,6 +64,26 @@ class SEOEditorHolder extends React.Component {
         });
     }
 
+    setImageForType(type, data) {
+        if(type == 'FacebookImage') {
+            this.setState({
+                FacebookImageID     : data.ID,
+                FacebookImageURL    : data.url
+            });
+        }
+        else {
+            this.setState({
+                TwitterImageID      : data.ID,
+                TwitterImageURL     : data.url
+            });
+        }
+        console.log('facebook image', data, this.state);
+    }
+
+    openImageEditor(type) {
+        ss.seo.openImageEditor(type, this);
+    }
+
     render() {
         return(<div className="seo-editor">
             <nav>
@@ -56,8 +95,8 @@ class SEOEditorHolder extends React.Component {
             </nav>
             <div className="seo-tab-container">
                 <div className={'seo-tab ' + (this.state.CurrentTab == 'seo' ? 'active' : '')} data-tab='seo'>
+                    <h3>SEO Data</h3>
                     <div className='seo-section'>
-                        <h3>SEO Data</h3>
                         <div className='fields'>
                             <SEOInput
                             label='Meta Title'
@@ -99,12 +138,14 @@ class SEOEditorHolder extends React.Component {
                                 name={this.getFieldName('FacebookDescription')}
                                 onChange={(e)=>{this.handleInputChange(e, 'FacebookDescription')}}
                             ></SEOTextarea>
-                            <input type='hidden' name={this.getFieldName('FacebookImageID')}/>
+                            <input type='hidden' value={this.state.FacebookImageID} name={this.getFieldName('FacebookImageID')}/>
                         </div>
                         <div className='preview-holder'>
                             <div className='preview-card facebook'>
-                                <div className='preview-cart--image'>
-                                    <a><i className="fa fa-edit"></i></a>
+                                <div className='preview-card--image'>
+                                    <a className='js-og-image-selector' onClick={(e) => {this.openImageEditor('FacebookImage')}}>
+                                        <i className="icon font-icon-edit"></i>
+                                    </a>
                                     {this.state.FacebookImageURL &&
                                         <div>
                                             <img src={this.state.FacebookImageURL} />
@@ -133,15 +174,17 @@ class SEOEditorHolder extends React.Component {
                                 name={this.getFieldName('TwitterDescription')}
                                 onChange={(e)=>{this.handleInputChange(e, 'TwitterDescription')}}
                             ></SEOTextarea>
-                            <input type='hidden' name={this.getFieldName('TwitterImageID')}/>
+                            <input type='hidden' value={this.state.TwitterImageID} name={this.getFieldName('TwitterImageID')}/>
                         </div>
 
 
                         <div className='preview-holder'>
                             <div className='preview-card twitter'>
                                 <div className='preview-contents'>
-                                    <div className='preview-cart--image'>
-                                        <a><i className="fa fa-edit"></i></a>
+                                    <div className='preview-card--image'>
+                                        <a className='js-og-image-selector' onClick={(e) => {this.openImageEditor('TwitterImage')}}>
+                                            <i className="icon font-icon-edit"></i>
+                                        </a>
                                         {this.state.TwitterImageURL &&
                                             <div>
                                                 <img src={this.state.TwitterImageURL} />
@@ -160,8 +203,6 @@ class SEOEditorHolder extends React.Component {
                 </div>
                 <div className={'seo-tab ' + (this.state.CurrentTab == 'settings' ? 'active' : '')}  data-tab='settings'>
                     <h3>Settings</h3>
-
-
                     <SEOInput
                         label='Canonical URL'
                         value={this.state.CanonicalURL}
@@ -177,13 +218,5 @@ class SEOEditorHolder extends React.Component {
     }
 
 }
-
-// <div class='seo-input field'>
-//     <label>Meta title</label>
-//     <input type='text' className='text'
-//         name={this.getFieldName('MetaTitle')}
-//         value={this.state.MetaTitle}
-//         onChange={(e)=>{this.handleInputChange(e, 'MetaTitle')}} />
-// </div>
 
 export default SEOEditorHolder;

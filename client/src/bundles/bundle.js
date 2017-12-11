@@ -2,7 +2,7 @@ import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SEOEditorHolder from '../components/SEOEditorHolder/SEOEditorHolder';
-
+require('../entwine/images-selector');
 
 jQuery.entwine('ss', ($) => {
 
