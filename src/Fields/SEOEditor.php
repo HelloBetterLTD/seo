@@ -53,8 +53,8 @@ class SEOEditor extends FormField
 
 	public function Field($properties = array())
 	{
-		Requirements::javascript('silverstripers/seo:client/dist/bundle.min.js');
-		Requirements::css('silverstripers/seo:client/dist/bundle.min.css');
+		Requirements::javascript('silverstripers/seo:client/dist/js/bundle.min.js');
+		Requirements::css('silverstripers/seo:client/dist/styles/bundle.min.css');
 		return parent::Field($properties);
 	}
 
@@ -77,6 +77,9 @@ class SEOEditor extends FormField
 		$this->record->setCastedField('MetaRobotsFollow', !empty($this->value['MetaRobotsFollow']) ? $this->value['MetaRobotsFollow'] : null);
 		$this->record->setCastedField('MetaRobots', !empty($this->value['MetaRobots']) ? $this->value['MetaRobots'] : null);
 		$this->record->setCastedField('CanonicalURL', !empty($this->value['CanonicalURL']) ? $this->value['CanonicalURL'] : null);
+
+		$this->record->setCastedField('FacebookImageID', !empty($this->value['FacebookImageID']) ? $this->value['FacebookImageID'] : 0);
+		$this->record->setCastedField('TwitterImageID', !empty($this->value['TwitterImageID']) ? $this->value['TwitterImageID'] : 0);
 	}
 
 

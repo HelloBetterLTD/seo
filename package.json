@@ -3,15 +3,12 @@
   "version": "1.0.1",
   "description": "The SilverStripers SEO Editor",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "webpack": "webpack --progress --colors --config webpack.config.babel.js",
-    "webpack:w": "npm run webpack -- --watch",
-    "scss": "gulp scss",
-    "scss:w": "gulp scss:w",
-    "js": "npm run webpack",
-    "js:w": "npm run webpack:w",
-    "build": "gulp",
-    "build:w": "gulp watch"
+    "build": "yarn && NODE_ENV=production webpack -p --bail --progress",
+    "dev": "NODE_ENV=development webpack --progress",
+    "watch": "NODE_ENV=development webpack --watch --progress",
+    "css": "WEBPACK_CHILD=css npm run build",
+    "lint": "eslint client/src && sass-lint -v",
+    "js-fix": "eslint client/src --fix"
   },
   "repository": {
     "type": "git",
@@ -19,9 +16,14 @@
   },
   "author": "SilverStripers",
   "license": "BSD-3-Clause",
+  "keywords": [
+    "silverstripe",
+    "module"
+  ],
+  "author": "Uncle Cheese",
   "babel": {
     "presets": [
-      "es2015",
+      "env",
       "react"
     ],
     "plugins": [
@@ -29,44 +31,30 @@
     ]
   },
   "dependencies": {
+    "apollo-client": "^0.5.5",
+    "babel-polyfill": "^6.26.0",
+    "chosen-js": "^1.5.1",
+    "classnames": "^2.2.5",
+    "deep-equal": "^1.0.1",
+    "deep-freeze-strict": "^1.1.1",
+    "detect-browser": "^1.12.0",
+    "es6-promise": "^3.1.2",
+    "merge": "^1.2.0",
+    "modernizr": "^3.5.0",
+    "moment": "^2.18.1",
+    "page.js": "^4.13.3",
+    "qs": "^6.1.0",
+    "tether": "^1.3.2",
+    "toposort": "^1.0.3",
+    "url": "^0.11.0",
+    "validator": "^6.1.0",
+
     "jquery": "^3.1.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "bootstrap": "4.0.0-beta",
     "util": "0.10.3"
   },
   "devDependencies": {
-    "@silverstripe/webpack-config": "0.3.0",
-    "node-sass": "^4.5.3",
-    "babel-loader": "^6.2.4",
-    "babel-plugin-transform-object-rest-spread": "^6.20.2",
-    "babel-polyfill": "^6.9.1",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-react": "^6.16.0",
-    "babel-register": "^6.9.0",
-    "concurrently": "2.2.0",
-    "css-loader": "^0.28.1",
-    "dateformat": "^2.0.0",
-    "flexslider": "^2.6.3",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-minify-css": "^1.2.4",
-    "gulp-rename": "^1.2.2",
-    "gulp-replace": "^0.5.4",
-    "gulp-sass": "^2.3.2",
-    "gulp-sass-unicode": "^1.0.1",
-    "gulp-uglify": "^2.1.2",
-    "gulp-sourcemaps": "^2.6.1",
-    "react-redux": "^5.0.2",
-    "react-router": "^3.0.2",
-    "react-router-redux": "^4.0.7",
-    "react-select": "^1.0.0-rc.3",
-    "redux": "^3.6.0",
-    "style-loader": "^0.17.0",
-    "ts-loader": "^0.8.2",
-    "typescript": "^1.8.10",
-    "webpack": "^1.13.1",
-    "webpack-stream": "^3.2.0"
+    "@silverstripe/webpack-config": "0.3.0"
   }
 }

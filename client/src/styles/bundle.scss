@@ -1,4 +1,4 @@
-$border-color: #aaa;
+$border-color: #aaaaaa;
 
 .seo-editor {
 	display: flex;
@@ -53,6 +53,18 @@ $border-color: #aaa;
 
 	.seo-input {
 		margin-bottom: 20px;
+	}
+
+	.seo-section {
+
+		.fields {
+			max-width: 500px;
+		}
+
+		@media (min-width: 1200px) {
+			display: flex;
+			justify-content: flex-start;
+		}
 	}
 
 	.preview-holder {

@@ -21,7 +21,8 @@
     },
     "extra": {
         "expose": [
-            "client/dist"
+            "client/dist/js",
+            "client/dist/styles"
         ],
         "installer-name": "seo"
     }

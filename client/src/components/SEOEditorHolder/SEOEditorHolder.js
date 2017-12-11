@@ -19,9 +19,13 @@ class SEOEditorHolder extends React.Component {
             MetaDescription     : props.seodata.MetaDescription,
             FacebookTitle       : props.seodata.FacebookTitle,
             FacebookDescription : props.seodata.FacebookDescription,
-            TwitterTitle       : props.seodata.TwitterTitle,
-            TwitterDescription : props.seodata.TwitterDescription,
-            CurrentTab           : 'seo'
+            TwitterTitle        : props.seodata.TwitterTitle,
+            TwitterDescription  : props.seodata.TwitterDescription,
+            CurrentTab          : 'seo',
+            FacebookImageURL    : props.seodata.FacebookImageURL,
+            FacebookImageID     : props.seodata.FacebookImageID,
+            TwitterImageURL     : props.seodata.TwitterImageURL,
+            TwitterImageID      : props.seodata.TwitterImageID
         };
     }
 
@@ -52,88 +56,108 @@ class SEOEditorHolder extends React.Component {
             </nav>
             <div className="seo-tab-container">
                 <div className={'seo-tab ' + (this.state.CurrentTab == 'seo' ? 'active' : '')} data-tab='seo'>
-                    <h3>SEO Data</h3>
-
-                    <SEOInput
-                    label='Meta Title'
-                    value={this.state.MetaTitle}
-                    name={this.getFieldName('MetaTitle')}
-                    onChange={(e)=>{this.handleInputChange(e, 'MetaTitle')}}
-                    ></SEOInput>
-
-                    <SEOTextarea
-                        label='Meta Description'
-                        value={this.state.MetaDescription}
-                        name={this.getFieldName('MetaDescription')}
-                        onChange={(e)=>{this.handleInputChange(e, 'MetaDescription')}}
-                    ></SEOTextarea>
-
-
-
-                    <div className='preview-holder'>
-                        <div className='preview-card'>
-                            <h3>{this.state.MetaTitle}</h3>
-                            <p className='preview-link'>{this.state.Link}</p>
-                            <p className='preview-description'>{this.state.MetaDescription}</p>
+                    <div className='seo-section'>
+                        <h3>SEO Data</h3>
+                        <div className='fields'>
+                            <SEOInput
+                            label='Meta Title'
+                            value={this.state.MetaTitle}
+                            name={this.getFieldName('MetaTitle')}
+                            onChange={(e)=>{this.handleInputChange(e, 'MetaTitle')}}
+                            ></SEOInput>
+                            <SEOTextarea
+                                label='Meta Description'
+                                value={this.state.MetaDescription}
+                                name={this.getFieldName('MetaDescription')}
+                                onChange={(e)=>{this.handleInputChange(e, 'MetaDescription')}}
+                            ></SEOTextarea>
+                        </div>
+                        <div className='preview-holder'>
+                            <div className='preview-card'>
+                                <h3>{this.state.MetaTitle}</h3>
+                                <p className='preview-link'>{this.state.Link}</p>
+                                <p className='preview-description'>{this.state.MetaDescription}</p>
+                            </div>
                         </div>
                     </div>
 
                 </div>
                 <div className={'seo-tab ' + (this.state.CurrentTab == 'social' ? 'active' : '')} data-tab='social'>
                     <h3>Social Data</h3>
-                    <h4>Facebook</h4>
-                    <SEOInput
-                        label='Facebook Title'
-                        value={this.state.FacebookTitle}
-                        name={this.getFieldName('FacebookTitle')}
-                        onChange={(e)=>{this.handleInputChange(e, 'FacebookTitle')}}
-                    ></SEOInput>
-
-
-                    <SEOTextarea
-                        label='Facebook Description'
-                        value={this.state.FacebookDescription}
-                        name={this.getFieldName('FacebookDescription')}
-                        onChange={(e)=>{this.handleInputChange(e, 'FacebookDescription')}}
-                    ></SEOTextarea>
-
-                    <div className='preview-holder'>
-                        <div className='preview-card facebook'>
-                            <h3>{this.state.FacebookTitle}</h3>
-                            <p className='preview-description'>{this.state.FacebookDescription}</p>
-                            <p className='preview-link'>{this.state.Link}</p>
+                    <div className='seo-section'>
+                        <div className='fields'>
+                            <h4>Facebook</h4>
+                            <SEOInput
+                                label='Facebook Title'
+                                value={this.state.FacebookTitle}
+                                name={this.getFieldName('FacebookTitle')}
+                                onChange={(e)=>{this.handleInputChange(e, 'FacebookTitle')}}
+                            ></SEOInput>
+                            <SEOTextarea
+                                label='Facebook Description'
+                                value={this.state.FacebookDescription}
+                                name={this.getFieldName('FacebookDescription')}
+                                onChange={(e)=>{this.handleInputChange(e, 'FacebookDescription')}}
+                            ></SEOTextarea>
+                            <input type='hidden' name={this.getFieldName('FacebookImageID')}/>
                         </div>
-                    </div>
-
-
-                    <h4>Twitter</h4>
-                    <SEOInput
-                        label='Twitter Title'
-                        value={this.state.TwitterTitle}
-                        name={this.getFieldName('TwitterTitle')}
-                        onChange={(e)=>{this.handleInputChange(e, 'TwitterTitle')}}
-                    ></SEOInput>
-
-                    <SEOTextarea
-                        label='Twitter Description'
-                        value={this.state.TwitterDescription}
-                        name={this.getFieldName('TwitterDescription')}
-                        onChange={(e)=>{this.handleInputChange(e, 'TwitterDescription')}}
-                    ></SEOTextarea>
-
-
-                    <div className='preview-holder'>
-                        <div className='preview-card twitter'>
-                            <div className='preview-contents'>
-                                <h3>{this.state.TwitterTitle}</h3>
-                                <p className='preview-description'>{this.state.TwitterDescription}</p>
+                        <div className='preview-holder'>
+                            <div className='preview-card facebook'>
+                                <div className='preview-cart--image'>
+                                    <a><i className="fa fa-edit"></i></a>
+                                    {this.state.FacebookImageURL &&
+                                        <div>
+                                            <img src={this.state.FacebookImageURL} />
+                                        </div>
+                                    }
+                                </div>
+                                <h3>{this.state.FacebookTitle}</h3>
+                                <p className='preview-description'>{this.state.FacebookDescription}</p>
                                 <p className='preview-link'>{this.state.Link}</p>
                             </div>
                         </div>
                     </div>
 
+                    <div className='seo-section'>
+                        <div className='fields'>
+                            <h4>Twitter</h4>
+                            <SEOInput
+                                label='Twitter Title'
+                                value={this.state.TwitterTitle}
+                                name={this.getFieldName('TwitterTitle')}
+                                onChange={(e)=>{this.handleInputChange(e, 'TwitterTitle')}}
+                            ></SEOInput>
+                            <SEOTextarea
+                                label='Twitter Description'
+                                value={this.state.TwitterDescription}
+                                name={this.getFieldName('TwitterDescription')}
+                                onChange={(e)=>{this.handleInputChange(e, 'TwitterDescription')}}
+                            ></SEOTextarea>
+                            <input type='hidden' name={this.getFieldName('TwitterImageID')}/>
+                        </div>
 
-        </div>
+
+                        <div className='preview-holder'>
+                            <div className='preview-card twitter'>
+                                <div className='preview-contents'>
+                                    <div className='preview-cart--image'>
+                                        <a><i className="fa fa-edit"></i></a>
+                                        {this.state.TwitterImageURL &&
+                                            <div>
+                                                <img src={this.state.TwitterImageURL} />
+                                            </div>
+                                        }
+                                    </div>
+                                    <h3>{this.state.TwitterTitle}</h3>
+                                    <p className='preview-description'>{this.state.TwitterDescription}</p>
+                                    <p className='preview-link'>{this.state.Link}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
                 <div className={'seo-tab ' + (this.state.CurrentTab == 'settings' ? 'active' : '')}  data-tab='settings'>
                     <h3>Settings</h3>
                 </div>

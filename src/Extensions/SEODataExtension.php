@@ -52,7 +52,11 @@ class SEODataExtension extends DataExtension
 			'TwitterDescription'	=> $this->owner->TwitterDescription,
 			'MetaRobotsFollow'		=> $this->owner->MetaRobotsFollow,
 			'MetaRobots'			=> $this->owner->MetaRobots,
-			'CanonicalURL'			=> $this->owner->CanonicalURL
+			'CanonicalURL'			=> $this->owner->CanonicalURL,
+			'FacebookImageID'		=> $this->owner->FacebookImageID,
+			'FacebookImageURL'		=> $this->owner->FacebookImageID ? $this->owner->FacebookImage()->Link() : null,
+			'TwitterImageID'		=> $this->owner->TwitterImageID,
+			'TwitterImageURL'		=> $this->owner->TwitterImageID ? $this->owner->TwitterImage()->Link() : null,
 		];
 	}
 
