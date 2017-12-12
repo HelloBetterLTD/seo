@@ -9,10 +9,9 @@
 	url("../fonts/fonts/seo.svg#seo") format("svg");
 	font-weight: normal;
 	font-style: normal;
-
 }
 
-[data-icon]:before {
+[data-seo]:before {
 	font-family: "seo" !important;
 	content: attr(data-icon);
 	font-style: normal !important;
@@ -25,8 +24,8 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-[class^="icon-seo-"]:before,
-[class*=" icon-seo-"]:before {
+[class^="seo-"]:before,
+[class*=" seo-"]:before {
 	font-family: "seo" !important;
 	font-style: normal !important;
 	font-weight: normal !important;
@@ -38,18 +37,18 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-seo-rocket:before {
+.seo-rocket:before {
 	content: "\61";
 }
-.icon-seo-facebook-square:before {
+.seo-facebook-square:before {
 	content: "\62";
 }
-.icon-seo-twitter-square:before {
+.seo-twitter-square:before {
 	content: "\63";
 }
-.icon-seo-cog:before {
+.seo-cog:before {
 	content: "\64";
 }
-.icon-seo-pencil-square-o:before {
+.seo-pencil-square-o:before {
 	content: "\65";
 }

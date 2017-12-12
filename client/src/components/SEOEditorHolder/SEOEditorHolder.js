@@ -1,5 +1,3 @@
-
-
 import jQuery from 'jquery';
 import React from 'react';
 import SEOInput from '../SEOTextarea/SEOInput';
@@ -82,15 +80,34 @@ class SEOEditorHolder extends React.Component {
         return (<div className="seo-editor">
           <nav>
             <ul>
-              <li><a data-href="#seo" onClick={() => { this.openTab('seo'); }}><i className="icon icon-seo-rocket" /></a></li>
-              <li><a data-href="#facebook" onClick={() => { this.openTab('facebook'); }}><i className="icon icon-seo-facebook-square" /></a></li>
-              <li><a data-href="#twitter" onClick={() => { this.openTab('twitter'); }}><i className="icon icon-seo-twitter-square" /></a></li>
-              <li><a data-href="#settings" onClick={() => { this.openTab('settings'); }}><i className="icon icon-seo-cog" /></a></li>
+              <li>
+                <a className={`${this.state.CurrentTab === 'seo' ? 'active' : ''}`}
+                    data-href="#seo" onClick={() => { this.openTab('seo'); }}>
+                    <i className="seo-rocket" /></a>
+              </li>
+              <li>
+                <a className={`${this.state.CurrentTab === 'facebook' ? 'active' : ''}`}
+                    data-href="#facebook" onClick={() => { this.openTab('facebook'); }}>
+                    <i className="seo-facebook-square" />
+                </a>
+              </li>
+              <li>
+                <a className={`${this.state.CurrentTab === 'twitter' ? 'active' : ''}`}
+                    data-href="#twitter" onClick={() => { this.openTab('twitter'); }}>
+                    <i className="seo-twitter-square" />
+                </a>
+              </li>
+              <li>
+                <a className={`${this.state.CurrentTab === 'settings' ? 'active' : ''}`}
+                    data-href="#settings" onClick={() => { this.openTab('settings'); }}>
+                    <i className="seo-cog" />
+                </a>
+              </li>
             </ul>
           </nav>
           <div className="seo-tab-container">
             <div className={`seo-tab ${this.state.CurrentTab === 'seo' ? 'active' : ''}`} data-tab="seo">
-              <h3>SEO Data</h3>
+              <h3 className="seo-tab__title">SEO Data</h3>
               <div className="seo-section">
                 <div className="fields">
                   <SEOInput
@@ -116,11 +133,11 @@ class SEOEditorHolder extends React.Component {
               </div>
 
             </div>
+
             <div className={`seo-tab ${this.state.CurrentTab === 'facebook' ? 'active' : ''}`} data-tab="facebook">
-              <h3>Social Data</h3>
+              <h3 className="seo-tab__title">Facebook</h3>
               <div className="seo-section">
                 <div className="fields">
-                  <h4>Facebook</h4>
                   <SEOInput
                     label="Facebook Title"
                     value={this.state.FacebookTitle}
@@ -139,7 +156,7 @@ class SEOEditorHolder extends React.Component {
                   <div className="preview-card facebook">
                     <div className="preview-card--image">
                       <a className="js-og-image-selector" onClick={() => { this.openImageEditor('FacebookImage'); }}>
-                        <i className="icon font-icon-edit" />
+                        <i className="seo-pencil-square-o" />
                       </a>
                       {this.state.FacebookImageURL &&
                         <div>
@@ -158,8 +175,8 @@ class SEOEditorHolder extends React.Component {
             <div className={`seo-tab ${this.state.CurrentTab === 'twitter' ? 'active' : ''}`} data-tab="twitter">
 
               <div className="seo-section">
+                <h3 className="seo-tab__title">Twitter</h3>
                 <div className="fields">
-                  <h4>Twitter</h4>
                   <SEOInput
                     label="Twitter Title"
                     value={this.state.TwitterTitle}
@@ -181,7 +198,7 @@ class SEOEditorHolder extends React.Component {
                     <div className="preview-contents">
                       <div className="preview-card--image">
                         <a className="js-og-image-selector" onClick={() => { this.openImageEditor('TwitterImage'); }}>
-                          <i className="icon font-icon-edit" />
+                          <i className="seo-pencil-square-o" />
                         </a>
                         {this.state.TwitterImageURL &&
                         <div>
@@ -196,11 +213,9 @@ class SEOEditorHolder extends React.Component {
                   </div>
                 </div>
               </div>
-
-
             </div>
             <div className={`seo-tab ${this.state.CurrentTab === 'settings' ? 'active' : ''}`} data-tab="settings">
-              <h3>Settings</h3>
+              <h3 className="seo-tab__title">Settings</h3>
               <SEOInput
                 label="Canonical URL"
                 value={this.state.CanonicalURL}
