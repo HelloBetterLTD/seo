@@ -2,10 +2,10 @@ import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SEOEditorHolder from '../components/SEOEditorHolder/SEOEditorHolder';
+
 require('../entwine/images-selector');
 
 jQuery.entwine('ss', ($) => {
-
     $('.js-seo-editor:visible').entwine({
         onunmatch() {
             this._super();
@@ -19,14 +19,14 @@ jQuery.entwine('ss', ($) => {
             const name = this.data('name');
             const seoData = this.data('seo');
             const link = this.data('recordlink');
-            
+
             ReactDOM.render(
-                <SEOEditorHolder 
-                    link={link}
-                    name={name} 
-                    seodata={seoData}></SEOEditorHolder>
-                ,this[0]);
+              <SEOEditorHolder
+                link={link}
+                name={name}
+                seodata={seoData}
+              />
+                , this[0]);
         }
     });
-
 });

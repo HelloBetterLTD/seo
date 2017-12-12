@@ -1,0 +1,174 @@
+
+
+.seo-editor {
+
+	.seo-input {
+		margin-bottom: 20px;
+	}
+
+	.seo-section {
+
+		.fields {
+			max-width: 500px;
+			flex-grow: 1;
+			margin-right: 20px;
+		}
+
+		@media (min-width: 1200px) {
+			display: flex;
+			justify-content: flex-start;
+		}
+	}
+
+	.preview-holder {
+		padding: 20px 0;
+		font-family: Arial,Helvetica,sans-serif;
+		font-style: normal;
+
+		.preview-card {
+			padding: 10px;
+			border-bottom: 1px hidden #ffffff;
+			border-radius: 2px;
+			box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		}
+
+		.preview-card--image {
+			display: block;
+			width: 100%;
+			padding-top: (279/426)*100%;
+			position: relative;
+			background: #f1f1f1;
+			margin-bottom: 20px;
+			font-size: 0;
+			line-height: 0;
+
+			a {
+				font-size: 18px;
+				position: absolute;
+				top: 20px;
+				right: 20px;
+				z-index: 999;
+				cursor: pointer;
+
+				&:hover {
+					color: #000000;
+				}
+			}
+
+			div {
+				display: block;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 10;
+				overflow: hidden;
+
+				img {
+					position: absolute;
+					min-width: 100%;
+					top: 50%;
+					left: 50%;
+					-webkit-transform: translate(-50%, -50%);
+					-moz-transform: translate(-50%, -50%);
+					-ms-transform: translate(-50%, -50%);
+					-o-transform: translate(-50%, -50%);
+					transform: translate(-50%, -50%);
+				}
+			}
+		}
+
+		h3 {
+			color: #1e0fbe;
+			font-size: 16px;
+			line-height: 20px;
+			margin: 0;
+			font-weight: 400;
+		}
+
+		.preview-link {
+			color: #006621;
+			font-style: normal;
+			margin: 0 0 9px;
+			font-size: 14px;
+			line-height: 20px;
+			border-bottom: 1px solid #ebebeb;
+			padding-bottom: 9px;
+		}
+
+		.preview-description {
+			font-size: 14px;
+			line-height: 20px;
+		}
+
+		.preview-card.facebook {
+			width: 476px;
+			box-shadow: 0 0 0 1px rgba(0, 0, 0, .15) inset, 0 1px 4px rgba(0, 0, 0, .1);
+			position: relative;
+			font-family: SF Optimized, system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+			font-size: 12px;
+			line-height: 16px;
+
+			h3 {
+				font-family: Georgia, serif;
+				font-size: 18px;
+				font-weight: 500;
+				line-height: 22px;
+				margin-bottom: 4px;
+				max-height: 110px;
+				overflow: hidden;
+				word-wrap: break-word;
+				color: black;
+			}
+
+			.preview-link {
+				border: 0;
+				font-size: 11px;
+				line-height: 11px;
+				text-transform: uppercase;
+				color: #90949c;
+				margin: 0;
+				padding: 0;
+			}
+
+		}
+
+		.preview-card.twitter {
+			max-width: 506px;
+			width: 100%;
+			border-radius: .42857em;
+			border-width: 1px;
+			border-style: solid;
+			border-color: #E1E8ED;
+			box-sizing: border-box;
+			color: inherit!important;
+			overflow: hidden;
+
+			.preview-contents {
+				padding: 10px;
+				font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+				line-height: 1.3em;
+			}
+
+			h3 {
+				font-size: 14px;
+				color: black;
+				font-weight: bold;
+			}
+
+			.preview-description {
+				margin: 0;
+			}
+
+			.preview-link {
+				margin: 0;
+				padding: 0;
+				color: #8899A6;
+				border: 0;
+			}
+		}
+
+	}
+
+}

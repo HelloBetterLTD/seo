@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom';
 
 import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
+
 const InjectableInsertMediaModal = provideInjector(window.InsertMediaModal.default);
 
 jQuery.entwine('ss', ($) => {
-
     $('#insert-seo-media-react__dialog-wrapper').entwine({
 
         Element: null,
@@ -48,19 +48,19 @@ jQuery.entwine('ss', ($) => {
 
             // create/update the react component
             ReactDOM.render(
-            <ApolloProvider store={store} client={client}>
+              <ApolloProvider store={store} client={client}>
                 <InjectableInsertMediaModal
-                    title={false}
-                    type="insert-media"
-                    show={show}
-                    onInsert={handleInsert}
-                    onHide={handleHide}
-                    bodyClassName="modal__dialog"
-                    className="insert-media-react__dialog-wrapper"
-                    requireLinkText={false}
-                    fileAttributes={attrs}
+                  title={false}
+                  type="insert-media"
+                  show={show}
+                  onInsert={handleInsert}
+                  onHide={handleHide}
+                  bodyClassName="modal__dialog"
+                  className="insert-media-react__dialog-wrapper"
+                  requireLinkText={false}
+                  fileAttributes={attrs}
                 />
-                </ApolloProvider>,
+              </ApolloProvider>,
                 this[0]
         );
         },
@@ -85,13 +85,11 @@ jQuery.entwine('ss', ($) => {
                     category = 'image';
                 }
 
-                if(category == 'image') {
+                if (category === 'image') {
                     result = this.insertImage();
-                }
-                else {
+                } else {
                     throw 'Wrong file type';
                 }
-
             } catch (e) {
                 this.statusMessage(e, 'bad');
             }
@@ -102,7 +100,7 @@ jQuery.entwine('ss', ($) => {
             return Promise.resolve();
         },
 
-        
+
         /**
          * Handler for inserting an image
          *
@@ -113,7 +111,7 @@ jQuery.entwine('ss', ($) => {
             if (!$field) {
                 return false;
             }
-            
+
             const data = this.getData();
             $field.Element.setImageForType($field.Type, data);
             return true;
@@ -136,5 +134,4 @@ jQuery.entwine('ss', ($) => {
         }
 
     });
-
 });

@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "seo";
+  src:url("fonts/seo.eot");
+  src:url("fonts/seo.eot?#iefix") format("embedded-opentype"),
+    url("fonts/seo.woff") format("woff"),
+    url("fonts/seo.ttf") format("truetype"),
+    url("fonts/seo.svg#seo") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "seo" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "seo" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-rocket:before {
+  content: "\61";
+}
+.icon-facebook-square:before {
+  content: "\62";
+}
+.icon-twitter-square:before {
+  content: "\63";
+}
+.icon-cog:before {
+  content: "\64";
+}
+.icon-pencil-square-o:before {
+  content: "\65";
+}
