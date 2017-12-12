@@ -13,6 +13,7 @@ namespace SilverStripers\seo\Extensions;
 use SilverStripe\Assets\Image;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\ContentNegotiator;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\i18n\i18n;
@@ -51,6 +52,7 @@ class SEODataExtension extends DataExtension
 	public function SEOData()
 	{
 		return [
+			'HostName'				=> Director::host(),
 			'MetaTitle'				=> $this->owner->MetaTitle,
 			'MetaDescription'		=> $this->owner->MetaDescription,
 			'FacebookTitle'			=> $this->owner->FacebookTitle,

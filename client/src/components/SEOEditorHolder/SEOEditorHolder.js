@@ -38,7 +38,8 @@ class SEOEditorHolder extends React.Component {
             FacebookImageURL: props.seodata.FacebookImageURL,
             FacebookImageID: props.seodata.FacebookImageID,
             TwitterImageURL: props.seodata.TwitterImageURL,
-            TwitterImageID: props.seodata.TwitterImageID
+            TwitterImageID: props.seodata.TwitterImageID,
+            HostName: props.seodata.HostName
         };
     }
 
@@ -166,16 +167,15 @@ class SEOEditorHolder extends React.Component {
                     </div>
                     <h3>{this.state.FacebookTitle}</h3>
                     <p className="preview-description">{this.state.FacebookDescription}</p>
-                    <p className="preview-link">{this.state.Link}</p>
+                    <p className="preview-link">{this.state.HostName}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className={`seo-tab ${this.state.CurrentTab === 'twitter' ? 'active' : ''}`} data-tab="twitter">
-
+              <h3 className="seo-tab__title">Twitter</h3>
               <div className="seo-section">
-                <h3 className="seo-tab__title">Twitter</h3>
                 <div className="fields">
                   <SEOInput
                     label="Twitter Title"
@@ -208,7 +208,7 @@ class SEOEditorHolder extends React.Component {
                       </div>
                       <h3>{this.state.TwitterTitle}</h3>
                       <p className="preview-description">{this.state.TwitterDescription}</p>
-                      <p className="preview-link">{this.state.Link}</p>
+                      <p className="preview-link">{this.state.HostName}</p>
                     </div>
                   </div>
                 </div>

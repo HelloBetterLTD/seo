@@ -135,8 +135,7 @@
 		}
 
 		.preview-card.twitter {
-			max-width: 506px;
-			width: 100%;
+			width: 456px;
 			border-radius: .42857em;
 			border-width: 1px;
 			border-style: solid;
@@ -144,26 +143,34 @@
 			box-sizing: border-box;
 			color: inherit!important;
 			overflow: hidden;
+			padding: 0;
+
+			.preview-card--image {
+				padding-top: (230/458)*100%;
+				margin-bottom: 10px;
+			}
 
 			.preview-contents {
-				padding: 10px;
 				font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 				line-height: 1.3em;
+				padding: 0;
 			}
 
 			h3 {
 				font-size: 14px;
 				color: black;
 				font-weight: bold;
+				padding: 0 14px;
 			}
 
 			.preview-description {
 				margin: 0;
+				padding: 0 14px;
 			}
 
 			.preview-link {
 				margin: 0;
-				padding: 0;
+				padding: 0 14px;
 				color: #8899A6;
 				border: 0;
 			}
