@@ -6,6 +6,21 @@
 		margin-bottom: 20px;
 	}
 
+	.seo-input.radio {
+
+		.radio-options {
+			display: flex;
+
+			label {
+				margin-right: 20px;
+			}
+
+			input {
+				margin-right: 10px;
+			}
+		}
+	}
+
 	.seo-section {
 
 		.fields {

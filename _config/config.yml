@@ -4,3 +4,6 @@ Name: seo
 SilverStripe\CMS\Model\SiteTree:
   extensions:
     - SilverStripers\seo\Extensions\SEODataExtension
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    - SilverStripers\seo\Extensions\SiteConfigExtension

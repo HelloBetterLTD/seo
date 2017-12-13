@@ -80,6 +80,8 @@ class SEOEditor extends FormField
 
 		$this->record->setCastedField('FacebookImageID', !empty($this->value['FacebookImageID']) ? $this->value['FacebookImageID'] : 0);
 		$this->record->setCastedField('TwitterImageID', !empty($this->value['TwitterImageID']) ? $this->value['TwitterImageID'] : 0);
+		$this->record->setCastedField('MetaRobotsFollow', !empty($this->value['MetaRobotsFollow']) ? $this->value['MetaRobotsFollow'] : '');
+		$this->record->setCastedField('MetaRobotsIndex', !empty($this->value['MetaRobotsIndex']) ? $this->value['MetaRobotsIndex'] : '');
 	}
 
 

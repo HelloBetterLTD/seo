@@ -1,7 +1,9 @@
 import jQuery from 'jquery';
 import React from 'react';
-import SEOInput from '../SEOTextarea/SEOInput';
-import SEOTextarea from '../SEOTextarea/SEOTextarea';
+import SEOInput from '../SEOInputs/SEOInput';
+import SEOTextarea from '../SEOInputs/SEOTextarea';
+import SEORobotsFollow from '../SEOInputs/SEORobotsFollow';
+import SEORobotsIndex from '../SEOInputs/SEORobotsIndex';
 
 const ss = typeof window.ss !== 'undefined' ? window.ss : {};
 
@@ -30,6 +32,8 @@ class SEOEditorHolder extends React.Component {
             Link: props.link,
             MetaTitle: props.seodata.MetaTitle,
             MetaDescription: props.seodata.MetaDescription,
+            MetaRobotsFollow: props.seodata.MetaRobotsFollow,
+            MetaRobotsIndex: props.seodata.MetaRobotsIndex,
             FacebookTitle: props.seodata.FacebookTitle,
             FacebookDescription: props.seodata.FacebookDescription,
             TwitterTitle: props.seodata.TwitterTitle,
@@ -71,6 +75,14 @@ class SEOEditorHolder extends React.Component {
         const val = {};
         val[name] = event.target.value;
         this.setState(val);
+    }
+
+    handleRadioChange(event, name) {
+        const val = {};
+        if(event.target.checked) {
+            val[name] = event.target.value;
+            this.setState(val);
+        }
     }
 
     openImageEditor(type) {
@@ -216,6 +228,20 @@ class SEOEditorHolder extends React.Component {
             </div>
             <div className={`seo-tab ${this.state.CurrentTab === 'settings' ? 'active' : ''}`} data-tab="settings">
               <h3 className="seo-tab__title">Settings</h3>
+
+              <SEORobotsIndex
+                label="Meta robots index"
+                value={this.state.MetaRobotsIndex}
+                name={this.getFieldName('MetaRobotsIndex')}
+                onChange={(e) => { this.handleInputChange(e, 'MetaRobotsIndex'); }}
+                ></SEORobotsIndex>
+
+              <SEORobotsFollow
+                    label="Meta robots follow"
+                    value={this.state.MetaRobotsFollow}
+                    name={this.getFieldName('MetaRobotsFollow')}
+                    onChange={(e) => { this.handleRadioChange(e, 'MetaRobotsFollow'); }}
+                ></SEORobotsFollow>
               <SEOInput
                 label="Canonical URL"
                 value={this.state.CanonicalURL}

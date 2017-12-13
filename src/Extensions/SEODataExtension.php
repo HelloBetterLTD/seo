@@ -19,7 +19,6 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
-use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -38,7 +37,7 @@ class SEODataExtension extends DataExtension
 		'TwitterTitle'			=> 'Varchar(300)',
 		'TwitterDescription'	=> 'Text',
 		'MetaRobotsFollow'		=> 'Varchar(100)',
-		'MetaRobots'			=> 'Text',
+		'MetaRobotsIndex'		=> 'Text',
 		'CanonicalURL'			=> 'Varchar(200)'
 	];
 
@@ -64,7 +63,7 @@ class SEODataExtension extends DataExtension
 			'TwitterTitle'			=> $this->owner->TwitterTitle,
 			'TwitterDescription'	=> $this->owner->TwitterDescription,
 			'MetaRobotsFollow'		=> $this->owner->MetaRobotsFollow,
-			'MetaRobots'			=> $this->owner->MetaRobots,
+			'MetaRobotsIndex'		=> $this->owner->MetaRobotsIndex,
 			'CanonicalURL'			=> $this->owner->CanonicalURL,
 			'FacebookImageID'		=> $this->owner->FacebookImageID,
 			'FacebookImageURL'		=> $this->owner->FacebookImageID ? $this->owner->FacebookImage()->Link() : null,
@@ -103,6 +102,24 @@ class SEODataExtension extends DataExtension
 				'name' => 'description',
 				'content' => $owner->MetaDescription,
 			));
+		}
+
+		$robots = [];
+		if(SiteConfig::current_site_config()->DisableSearchEngineVisibility) {
+			$robots[] = 'noindex';
+		}
+		else if($owner->MetaRobotsIndex) {
+			$robots[] = $owner->MetaRobotsIndex;
+		}
+		if($owner->MetaRobotsFollow) {
+			$robots[] = $owner->MetaRobotsFollow;
+		}
+
+		if(!empty($robots)) {
+			$tags[] = HTML::createTag('meta', [
+				'name' 		=> 'robots',
+				'content' 	=> implode(',', $robots)
+			]);
 		}
 
 		if (Permission::check('CMS_ACCESS_CMSMain')

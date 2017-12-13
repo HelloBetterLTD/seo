@@ -233,6 +233,14 @@ var _SEOTextarea = __webpack_require__(8);
 
 var _SEOTextarea2 = _interopRequireDefault(_SEOTextarea);
 
+var _SEORobotsFollow = __webpack_require__(11);
+
+var _SEORobotsFollow2 = _interopRequireDefault(_SEORobotsFollow);
+
+var _SEORobotsIndex = __webpack_require__(12);
+
+var _SEORobotsIndex2 = _interopRequireDefault(_SEORobotsIndex);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -273,6 +281,8 @@ var SEOEditorHolder = function (_React$Component) {
       Link: props.link,
       MetaTitle: props.seodata.MetaTitle,
       MetaDescription: props.seodata.MetaDescription,
+      MetaRobotsFollow: props.seodata.MetaRobotsFollow,
+      MetaRobotsIndex: props.seodata.MetaRobotsIndex,
       FacebookTitle: props.seodata.FacebookTitle,
       FacebookDescription: props.seodata.FacebookDescription,
       TwitterTitle: props.seodata.TwitterTitle,
@@ -320,6 +330,15 @@ var SEOEditorHolder = function (_React$Component) {
       var val = {};
       val[name] = event.target.value;
       this.setState(val);
+    }
+  }, {
+    key: 'handleRadioChange',
+    value: function handleRadioChange(event, name) {
+      var val = {};
+      if (event.target.checked) {
+        val[name] = event.target.value;
+        this.setState(val);
+      }
     }
   }, {
     key: 'openImageEditor',
@@ -607,6 +626,22 @@ var SEOEditorHolder = function (_React$Component) {
               { className: 'seo-tab__title' },
               'Settings'
             ),
+            _react2.default.createElement(_SEORobotsIndex2.default, {
+              label: 'Meta robots index',
+              value: this.state.MetaRobotsIndex,
+              name: this.getFieldName('MetaRobotsIndex'),
+              onChange: function onChange(e) {
+                _this2.handleInputChange(e, 'MetaRobotsIndex');
+              }
+            }),
+            _react2.default.createElement(_SEORobotsFollow2.default, {
+              label: 'Meta robots follow',
+              value: this.state.MetaRobotsFollow,
+              name: this.getFieldName('MetaRobotsFollow'),
+              onChange: function onChange(e) {
+                _this2.handleRadioChange(e, 'MetaRobotsFollow');
+              }
+            }),
             _react2.default.createElement(_SEOInput2.default, {
               label: 'Canonical URL',
               value: this.state.CanonicalURL,
@@ -899,6 +934,175 @@ module.exports = Injector;
 /***/ (function(module, exports) {
 
 module.exports = ReactApollo;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _SEOInput2 = __webpack_require__(3);
+
+var _SEOInput3 = _interopRequireDefault(_SEOInput2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SEORobotsFollow = function (_SEOInput) {
+    _inherits(SEORobotsFollow, _SEOInput);
+
+    function SEORobotsFollow() {
+        _classCallCheck(this, SEORobotsFollow);
+
+        return _possibleConstructorReturn(this, (SEORobotsFollow.__proto__ || Object.getPrototypeOf(SEORobotsFollow)).apply(this, arguments));
+    }
+
+    _createClass(SEORobotsFollow, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { className: 'seo-input field radio' },
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    this.props.label
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'radio-options' },
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        _react2.default.createElement('input', { type: 'radio',
+                            value: 'follow',
+                            name: this.props.name,
+                            onClick: this.props.onChange,
+                            checked: this.props.value === 'follow'
+                        }),
+                        'Follow'
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        _react2.default.createElement('input', { type: 'radio',
+                            value: 'no-follow',
+                            name: this.props.name,
+                            onClick: this.props.onChange,
+                            checked: this.props.value === 'no-follow'
+                        }),
+                        'No Follow'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return SEORobotsFollow;
+}(_SEOInput3.default);
+
+exports.default = SEORobotsFollow;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _SEOInput2 = __webpack_require__(3);
+
+var _SEOInput3 = _interopRequireDefault(_SEOInput2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SEORobotsIndex = function (_SEOInput) {
+    _inherits(SEORobotsIndex, _SEOInput);
+
+    function SEORobotsIndex() {
+        _classCallCheck(this, SEORobotsIndex);
+
+        return _possibleConstructorReturn(this, (SEORobotsIndex.__proto__ || Object.getPrototypeOf(SEORobotsIndex)).apply(this, arguments));
+    }
+
+    _createClass(SEORobotsIndex, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { className: 'seo-input field' },
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    this.props.label
+                ),
+                _react2.default.createElement(
+                    'select',
+                    { className: 'dropdown',
+                        name: this.props.name,
+                        onChange: this.props.onChange
+                    },
+                    _react2.default.createElement(
+                        'option',
+                        { value: '', selected: this.props.value == '' },
+                        'none'
+                    ),
+                    _react2.default.createElement(
+                        'option',
+                        { value: 'index', selected: this.props.value == 'index' },
+                        'index'
+                    ),
+                    _react2.default.createElement(
+                        'option',
+                        { value: 'noindex', selected: this.props.value == 'noindex' },
+                        'noindex'
+                    )
+                ),
+                _react2.default.createElement(
+                    'p',
+                    null,
+                    'Note: This setting will be overridden by the site config\'s search engine visibility setting'
+                )
+            );
+        }
+    }]);
+
+    return SEORobotsIndex;
+}(_SEOInput3.default);
+
+exports.default = SEORobotsIndex;
 
 /***/ })
 /******/ ]);
