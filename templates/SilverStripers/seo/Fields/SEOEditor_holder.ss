@@ -1,4 +1,4 @@
-<div id="$HolderID" class="field<% if $extraClass %> $extraClass<% end_if %>">
+<div id="$HolderID" class="field seo-editor-container <% if $extraClass %> $extraClass<% end_if %>">
     <div class="middleColumn">
         $Field
     </div>

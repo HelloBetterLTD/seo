@@ -1,4 +1,16 @@
+.seo-editor-container {
+	padding-bottom: 1.2308rem;
+	margin-bottom: 1rem;
 
+	&:after {
+		border-bottom: 1px solid #e5e8eb;
+		visibility: visible;
+		width: 100%;
+		content: " ";
+		display: block;
+		margin-top: 1.2308rem;
+	}
+}
 
 .seo-editor {
 
