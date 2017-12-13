@@ -13,6 +13,7 @@ namespace SilverStripers\seo\Extensions;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
 
 class SiteConfigExtension extends DataExtension
@@ -25,9 +26,9 @@ class SiteConfigExtension extends DataExtension
 	public function updateCMSFields(FieldList $fields)
 	{
 		$fields->addFieldsToTab('Root.Access', [
-			HeaderField::create('SEAccess', 'Search engine access'),
-			CheckboxField::create('DisableSearchEngineVisibility', 'Disable search engine visibility')
-				->setRightTitle('Note that it is up to the search engines not to index this site')
+			HeaderField::create('SEAccess', 'Search engine access')->setHeadingLevel(4),
+			CheckboxField::create('DisableSearchEngineVisibility', 'Disable search engine visibility'),
+			LiteralField::create('SearchNote', '<p>Note that it is up to the search engines not to index this site</p>')
 		]);
 	}
 
