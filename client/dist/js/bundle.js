@@ -1,1 +1,905 @@
-!function(e){function t(n){if(a[n])return a[n].exports;var r=a[n]={i:n,l:!1,exports:{}};return e[n].call(r.exports,r,r.exports,t),r.l=!0,r.exports}var a={};t.m=e,t.c=a,t.i=function(e){return e},t.d=function(e,a,n){t.o(e,a)||Object.defineProperty(e,a,{configurable:!1,enumerable:!0,get:n})},t.n=function(e){var a=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(a,"a",a),a},t.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},t.p="",t(t.s=7)}([function(e,t){e.exports=React},function(e,t){e.exports=jQuery},function(e,t){e.exports=ReactDom},function(e,t,a){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function o(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function i(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var l=function(){function e(e,t){for(var a=0;a<t.length;a++){var n=t[a];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,a,n){return a&&e(t.prototype,a),n&&e(t,n),t}}(),s=a(0),c=n(s),u=a(4),f=n(u),d=function(e){function t(e){return r(this,t),o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))}return i(t,e),l(t,[{key:"render",value:function(){return c.default.createElement("div",{className:"seo-input field"},c.default.createElement("label",null,this.props.label),c.default.createElement("input",{type:"text",className:"text",name:this.props.name,value:this.props.value,onChange:this.props.onChange}),c.default.createElement(f.default,null))}}]),t}(c.default.Component);t.default=d},function(e,t,a){"use strict";function n(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function r(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function o(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var i=function(){function e(e,t){for(var a=0;a<t.length;a++){var n=t[a];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,a,n){return a&&e(t.prototype,a),n&&e(t,n),t}}(),l=a(0),s=function(e){return e&&e.__esModule?e:{default:e}}(l),c=function(e){function t(e){return n(this,t),r(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))}return o(t,e),i(t,[{key:"render",value:function(){return s.default.createElement("div",{className:"seo-input-progress"},s.default.createElement("div",{className:"bar"},s.default.createElement("div",{className:"indicator"})))}}]),t}(s.default.Component);t.default=c},function(e,t,a){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function o(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function i(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var l=function(){function e(e,t){for(var a=0;a<t.length;a++){var n=t[a];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,a,n){return a&&e(t.prototype,a),n&&e(t,n),t}}(),s=a(1),c=n(s),u=a(0),f=n(u),d=a(3),m=n(d),p=a(8),h=n(p),b=void 0!==window.ss?window.ss:{};c.default.entwine("ss",function(e){b.seo={openImageEditor:function(t,a){var n=e("#insert-seo-media-react__dialog-wrapper");n.length||(n=e('<div id="insert-seo-media-react__dialog-wrapper" />'),e("body").append(n)),n.setElement({Type:t,Element:a}),n.open()}}});var g=function(e){function t(e){r(this,t);var a=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e));return a.state={Name:e.name,Link:e.link,MetaTitle:e.seodata.MetaTitle,MetaDescription:e.seodata.MetaDescription,FacebookTitle:e.seodata.FacebookTitle,FacebookDescription:e.seodata.FacebookDescription,TwitterTitle:e.seodata.TwitterTitle,TwitterDescription:e.seodata.TwitterDescription,CurrentTab:"seo",FacebookImageURL:e.seodata.FacebookImageURL,FacebookImageID:e.seodata.FacebookImageID,TwitterImageURL:e.seodata.TwitterImageURL,TwitterImageID:e.seodata.TwitterImageID,HostName:e.seodata.HostName},a}return i(t,e),l(t,[{key:"getFieldName",value:function(e){return this.state.Name+"["+e+"]"}},{key:"openTab",value:function(e){this.setState({CurrentTab:e})}},{key:"setImageForType",value:function(e,t){"FacebookImage"===e?this.setState({FacebookImageID:t.ID,FacebookImageURL:t.url}):this.setState({TwitterImageID:t.ID,TwitterImageURL:t.url})}},{key:"handleInputChange",value:function(e,t){var a={};a[t]=e.target.value,this.setState(a)}},{key:"openImageEditor",value:function(e){b.seo.openImageEditor(e,this)}},{key:"render",value:function(){var e=this;return f.default.createElement("div",{className:"seo-editor"},f.default.createElement("nav",null,f.default.createElement("ul",null,f.default.createElement("li",null,f.default.createElement("a",{className:"seo"===this.state.CurrentTab?"active":"","data-href":"#seo",onClick:function(){e.openTab("seo")}},f.default.createElement("i",{className:"seo-rocket"}))),f.default.createElement("li",null,f.default.createElement("a",{className:"facebook"===this.state.CurrentTab?"active":"","data-href":"#facebook",onClick:function(){e.openTab("facebook")}},f.default.createElement("i",{className:"seo-facebook-square"}))),f.default.createElement("li",null,f.default.createElement("a",{className:"twitter"===this.state.CurrentTab?"active":"","data-href":"#twitter",onClick:function(){e.openTab("twitter")}},f.default.createElement("i",{className:"seo-twitter-square"}))),f.default.createElement("li",null,f.default.createElement("a",{className:"settings"===this.state.CurrentTab?"active":"","data-href":"#settings",onClick:function(){e.openTab("settings")}},f.default.createElement("i",{className:"seo-cog"}))))),f.default.createElement("div",{className:"seo-tab-container"},f.default.createElement("div",{className:"seo-tab "+("seo"===this.state.CurrentTab?"active":""),"data-tab":"seo"},f.default.createElement("h3",{className:"seo-tab__title"},"SEO Data"),f.default.createElement("div",{className:"seo-section"},f.default.createElement("div",{className:"fields"},f.default.createElement(m.default,{label:"Meta Title",value:this.state.MetaTitle,name:this.getFieldName("MetaTitle"),onChange:function(t){e.handleInputChange(t,"MetaTitle")}}),f.default.createElement(h.default,{label:"Meta Description",value:this.state.MetaDescription,name:this.getFieldName("MetaDescription"),onChange:function(t){e.handleInputChange(t,"MetaDescription")}})),f.default.createElement("div",{className:"preview-holder"},f.default.createElement("div",{className:"preview-card"},f.default.createElement("h3",null,this.state.MetaTitle),f.default.createElement("p",{className:"preview-link"},this.state.Link),f.default.createElement("p",{className:"preview-description"},this.state.MetaDescription))))),f.default.createElement("div",{className:"seo-tab "+("facebook"===this.state.CurrentTab?"active":""),"data-tab":"facebook"},f.default.createElement("h3",{className:"seo-tab__title"},"Facebook"),f.default.createElement("div",{className:"seo-section"},f.default.createElement("div",{className:"fields"},f.default.createElement(m.default,{label:"Facebook Title",value:this.state.FacebookTitle,name:this.getFieldName("FacebookTitle"),onChange:function(t){e.handleInputChange(t,"FacebookTitle")}}),f.default.createElement(h.default,{label:"Facebook Description",value:this.state.FacebookDescription,name:this.getFieldName("FacebookDescription"),onChange:function(t){e.handleInputChange(t,"FacebookDescription")}}),f.default.createElement("input",{type:"hidden",value:this.state.FacebookImageID,name:this.getFieldName("FacebookImageID")})),f.default.createElement("div",{className:"preview-holder"},f.default.createElement("div",{className:"preview-card facebook"},f.default.createElement("div",{className:"preview-card--image"},f.default.createElement("a",{className:"js-og-image-selector",onClick:function(){e.openImageEditor("FacebookImage")}},f.default.createElement("i",{className:"seo-pencil-square-o"})),this.state.FacebookImageURL&&f.default.createElement("div",null,f.default.createElement("img",{src:this.state.FacebookImageURL}))),f.default.createElement("h3",null,this.state.FacebookTitle),f.default.createElement("p",{className:"preview-description"},this.state.FacebookDescription),f.default.createElement("p",{className:"preview-link"},this.state.HostName))))),f.default.createElement("div",{className:"seo-tab "+("twitter"===this.state.CurrentTab?"active":""),"data-tab":"twitter"},f.default.createElement("h3",{className:"seo-tab__title"},"Twitter"),f.default.createElement("div",{className:"seo-section"},f.default.createElement("div",{className:"fields"},f.default.createElement(m.default,{label:"Twitter Title",value:this.state.TwitterTitle,name:this.getFieldName("TwitterTitle"),onChange:function(t){e.handleInputChange(t,"TwitterTitle")}}),f.default.createElement(h.default,{label:"Twitter Description",value:this.state.TwitterDescription,name:this.getFieldName("TwitterDescription"),onChange:function(t){e.handleInputChange(t,"TwitterDescription")}}),f.default.createElement("input",{type:"hidden",value:this.state.TwitterImageID,name:this.getFieldName("TwitterImageID")})),f.default.createElement("div",{className:"preview-holder"},f.default.createElement("div",{className:"preview-card twitter"},f.default.createElement("div",{className:"preview-contents"},f.default.createElement("div",{className:"preview-card--image"},f.default.createElement("a",{className:"js-og-image-selector",onClick:function(){e.openImageEditor("TwitterImage")}},f.default.createElement("i",{className:"seo-pencil-square-o"})),this.state.TwitterImageURL&&f.default.createElement("div",null,f.default.createElement("img",{src:this.state.TwitterImageURL}))),f.default.createElement("h3",null,this.state.TwitterTitle),f.default.createElement("p",{className:"preview-description"},this.state.TwitterDescription),f.default.createElement("p",{className:"preview-link"},this.state.HostName)))))),f.default.createElement("div",{className:"seo-tab "+("settings"===this.state.CurrentTab?"active":""),"data-tab":"settings"},f.default.createElement("h3",{className:"seo-tab__title"},"Settings"),f.default.createElement(m.default,{label:"Canonical URL",value:this.state.CanonicalURL,name:this.getFieldName("CanonicalURL"),onChange:function(t){e.handleInputChange(t,"CanonicalURL")}}),f.default.createElement("p",null,"The canonical URL that this page should point to, leave empty to default to permalink.",f.default.createElement("a",{href:"https://webmasters.googleblog.com/2009/12/handling-legitimate-cross-domain.html",target:"_blank"},"Cross domain canonical")," supported too."))))}}]),t}(f.default.Component);t.default=g},function(e,t,a){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}var r=a(1),o=n(r),i=a(0),l=n(i),s=a(2),c=n(s),u=a(10),f=a(9),d=(0,f.provideInjector)(window.InsertMediaModal.default);o.default.entwine("ss",function(e){e("#insert-seo-media-react__dialog-wrapper").entwine({Element:null,ImageType:null,Data:{},onunmatch:function(){this._clearModal()},_clearModal:function(){c.default.unmountComponentAtNode(this[0])},open:function(){this._renderModal(!0)},close:function(){this._renderModal(!1)},setTypeField:function(e){this.ImageType=e,console.log(this.ImageType)},_renderModal:function(e){var t=this,a=function(){return t.close()},n=function(){return t._handleInsert.apply(t,arguments)},r=window.ss.store,o=window.ss.apolloClient,i={};delete i.url,c.default.render(l.default.createElement(u.ApolloProvider,{store:r,client:o},l.default.createElement(d,{title:!1,type:"insert-media",show:e,onInsert:n,onHide:a,bodyClassName:"modal__dialog",className:"insert-media-react__dialog-wrapper",requireLinkText:!1,fileAttributes:i})),this[0])},_handleInsert:function(e,t){var a=!1;this.setData(Object.assign({},e,t));try{if("image"!==(t?t.category:"image"))throw"Wrong file type";a=this.insertImage()}catch(e){this.statusMessage(e,"bad")}return a&&this.close(),Promise.resolve()},insertImage:function(){var e=this.getElement();if(!e)return!1;var t=this.getData();return e.Element.setImageForType(e.Type,t),!0},statusMessage:function(t,a){var n=e("<div/>").text(t).html();e.noticeAdd({text:n,type:a,stayTime:5e3,inEffect:{left:"0",opacity:"show"}})}})})},function(e,t,a){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}var r=a(1),o=n(r),i=a(0),l=n(i),s=a(2),c=n(s),u=a(5),f=n(u);a(6),o.default.entwine("ss",function(e){e(".js-seo-editor:visible").entwine({onunmatch:function(){this._super(),c.default.unmountComponentAtNode(this[0])},onmatch:function(){this._super(),this.refresh()},refresh:function(){var e=this.data("name"),t=this.data("seo"),a=this.data("recordlink");c.default.render(l.default.createElement(f.default,{link:a,name:e,seodata:t}),this[0])}})})},function(e,t,a){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function o(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function i(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var l=function(){function e(e,t){for(var a=0;a<t.length;a++){var n=t[a];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,a,n){return a&&e(t.prototype,a),n&&e(t,n),t}}(),s=a(0),c=n(s),u=a(3),f=n(u),d=a(4),m=n(d),p=function(e){function t(){return r(this,t),o(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return i(t,e),l(t,[{key:"render",value:function(){return c.default.createElement("div",{className:"seo-input field"},c.default.createElement("label",null,this.props.label),c.default.createElement("textarea",{className:"text",name:this.props.name,onChange:this.props.onChange},this.props.value),c.default.createElement(m.default,null))}}]),t}(f.default);t.default=p},function(e,t){e.exports=Injector},function(e,t){e.exports=ReactApollo}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+module.exports = React;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+module.exports = jQuery;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDom;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _SEOInputProgressbar = __webpack_require__(4);
+
+var _SEOInputProgressbar2 = _interopRequireDefault(_SEOInputProgressbar);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SEOInput = function (_React$Component) {
+  _inherits(SEOInput, _React$Component);
+
+  function SEOInput(props) {
+    _classCallCheck(this, SEOInput);
+
+    return _possibleConstructorReturn(this, (SEOInput.__proto__ || Object.getPrototypeOf(SEOInput)).call(this, props));
+  }
+
+  _createClass(SEOInput, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'seo-input field' },
+        _react2.default.createElement(
+          'label',
+          null,
+          this.props.label
+        ),
+        _react2.default.createElement('input', {
+          type: 'text',
+          className: 'text',
+          name: this.props.name,
+          value: this.props.value,
+          onChange: this.props.onChange
+        }),
+        _react2.default.createElement(_SEOInputProgressbar2.default, null)
+      );
+    }
+  }]);
+
+  return SEOInput;
+}(_react2.default.Component);
+
+exports.default = SEOInput;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SEOInputProgressbar = function (_React$Component) {
+  _inherits(SEOInputProgressbar, _React$Component);
+
+  function SEOInputProgressbar(props) {
+    _classCallCheck(this, SEOInputProgressbar);
+
+    return _possibleConstructorReturn(this, (SEOInputProgressbar.__proto__ || Object.getPrototypeOf(SEOInputProgressbar)).call(this, props));
+  }
+
+  _createClass(SEOInputProgressbar, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "seo-input-progress" },
+        _react2.default.createElement(
+          "div",
+          { className: "bar" },
+          _react2.default.createElement("div", { className: "indicator" })
+        )
+      );
+    }
+  }]);
+
+  return SEOInputProgressbar;
+}(_react2.default.Component);
+
+exports.default = SEOInputProgressbar;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _SEOInput = __webpack_require__(3);
+
+var _SEOInput2 = _interopRequireDefault(_SEOInput);
+
+var _SEOTextarea = __webpack_require__(8);
+
+var _SEOTextarea2 = _interopRequireDefault(_SEOTextarea);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ss = typeof window.ss !== 'undefined' ? window.ss : {};
+
+_jquery2.default.entwine('ss', function ($) {
+  ss.seo = {
+    openImageEditor: function openImageEditor(type, element) {
+      var dialog = $('#insert-seo-media-react__dialog-wrapper');
+      if (!dialog.length) {
+        dialog = $('<div id="insert-seo-media-react__dialog-wrapper" />');
+        $('body').append(dialog);
+      }
+      dialog.setElement({
+        Type: type,
+        Element: element
+      });
+      dialog.open();
+    }
+  };
+});
+
+var SEOEditorHolder = function (_React$Component) {
+  _inherits(SEOEditorHolder, _React$Component);
+
+  function SEOEditorHolder(props) {
+    _classCallCheck(this, SEOEditorHolder);
+
+    var _this = _possibleConstructorReturn(this, (SEOEditorHolder.__proto__ || Object.getPrototypeOf(SEOEditorHolder)).call(this, props));
+
+    _this.state = {
+      Name: props.name,
+      Link: props.link,
+      MetaTitle: props.seodata.MetaTitle,
+      MetaDescription: props.seodata.MetaDescription,
+      FacebookTitle: props.seodata.FacebookTitle,
+      FacebookDescription: props.seodata.FacebookDescription,
+      TwitterTitle: props.seodata.TwitterTitle,
+      TwitterDescription: props.seodata.TwitterDescription,
+      CurrentTab: 'seo',
+      FacebookImageURL: props.seodata.FacebookImageURL,
+      FacebookImageID: props.seodata.FacebookImageID,
+      TwitterImageURL: props.seodata.TwitterImageURL,
+      TwitterImageID: props.seodata.TwitterImageID,
+      HostName: props.seodata.HostName
+    };
+    return _this;
+  }
+
+  _createClass(SEOEditorHolder, [{
+    key: 'getFieldName',
+    value: function getFieldName(name) {
+      return this.state.Name + '[' + name + ']';
+    }
+  }, {
+    key: 'openTab',
+    value: function openTab(tab) {
+      this.setState({
+        CurrentTab: tab
+      });
+    }
+  }, {
+    key: 'setImageForType',
+    value: function setImageForType(type, data) {
+      if (type === 'FacebookImage') {
+        this.setState({
+          FacebookImageID: data.ID,
+          FacebookImageURL: data.url
+        });
+      } else {
+        this.setState({
+          TwitterImageID: data.ID,
+          TwitterImageURL: data.url
+        });
+      }
+    }
+  }, {
+    key: 'handleInputChange',
+    value: function handleInputChange(event, name) {
+      var val = {};
+      val[name] = event.target.value;
+      this.setState(val);
+    }
+  }, {
+    key: 'openImageEditor',
+    value: function openImageEditor(type) {
+      ss.seo.openImageEditor(type, this);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'seo-editor' },
+        _react2.default.createElement(
+          'nav',
+          null,
+          _react2.default.createElement(
+            'ul',
+            null,
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'a',
+                { className: '' + (this.state.CurrentTab === 'seo' ? 'active' : ''),
+                  'data-href': '#seo', onClick: function onClick() {
+                    _this2.openTab('seo');
+                  } },
+                _react2.default.createElement('i', { className: 'seo-rocket' })
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'a',
+                { className: '' + (this.state.CurrentTab === 'facebook' ? 'active' : ''),
+                  'data-href': '#facebook', onClick: function onClick() {
+                    _this2.openTab('facebook');
+                  } },
+                _react2.default.createElement('i', { className: 'seo-facebook-square' })
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'a',
+                { className: '' + (this.state.CurrentTab === 'twitter' ? 'active' : ''),
+                  'data-href': '#twitter', onClick: function onClick() {
+                    _this2.openTab('twitter');
+                  } },
+                _react2.default.createElement('i', { className: 'seo-twitter-square' })
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'a',
+                { className: '' + (this.state.CurrentTab === 'settings' ? 'active' : ''),
+                  'data-href': '#settings', onClick: function onClick() {
+                    _this2.openTab('settings');
+                  } },
+                _react2.default.createElement('i', { className: 'seo-cog' })
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'seo-tab-container' },
+          _react2.default.createElement(
+            'div',
+            { className: 'seo-tab ' + (this.state.CurrentTab === 'seo' ? 'active' : ''), 'data-tab': 'seo' },
+            _react2.default.createElement(
+              'h3',
+              { className: 'seo-tab__title' },
+              'SEO Data'
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'seo-section' },
+              _react2.default.createElement(
+                'div',
+                { className: 'fields' },
+                _react2.default.createElement(_SEOInput2.default, {
+                  label: 'Meta Title',
+                  value: this.state.MetaTitle,
+                  name: this.getFieldName('MetaTitle'),
+                  onChange: function onChange(e) {
+                    _this2.handleInputChange(e, 'MetaTitle');
+                  }
+                }),
+                _react2.default.createElement(_SEOTextarea2.default, {
+                  label: 'Meta Description',
+                  value: this.state.MetaDescription,
+                  name: this.getFieldName('MetaDescription'),
+                  onChange: function onChange(e) {
+                    _this2.handleInputChange(e, 'MetaDescription');
+                  }
+                })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'preview-holder' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'preview-card google' },
+                  _react2.default.createElement(
+                    'h3',
+                    null,
+                    this.state.MetaTitle
+                  ),
+                  _react2.default.createElement(
+                    'p',
+                    { className: 'preview-link' },
+                    this.state.Link
+                  ),
+                  _react2.default.createElement(
+                    'p',
+                    { className: 'preview-description' },
+                    this.state.MetaDescription
+                  )
+                )
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'seo-tab ' + (this.state.CurrentTab === 'facebook' ? 'active' : ''), 'data-tab': 'facebook' },
+            _react2.default.createElement(
+              'h3',
+              { className: 'seo-tab__title' },
+              'Facebook'
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'seo-section' },
+              _react2.default.createElement(
+                'div',
+                { className: 'fields' },
+                _react2.default.createElement(_SEOInput2.default, {
+                  label: 'Facebook Title',
+                  value: this.state.FacebookTitle,
+                  name: this.getFieldName('FacebookTitle'),
+                  onChange: function onChange(e) {
+                    _this2.handleInputChange(e, 'FacebookTitle');
+                  }
+                }),
+                _react2.default.createElement(_SEOTextarea2.default, {
+                  label: 'Facebook Description',
+                  value: this.state.FacebookDescription,
+                  name: this.getFieldName('FacebookDescription'),
+                  onChange: function onChange(e) {
+                    _this2.handleInputChange(e, 'FacebookDescription');
+                  }
+                }),
+                _react2.default.createElement('input', { type: 'hidden', value: this.state.FacebookImageID, name: this.getFieldName('FacebookImageID') })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'preview-holder' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'preview-card facebook' },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'preview-card--image' },
+                    _react2.default.createElement(
+                      'a',
+                      { className: 'js-og-image-selector', onClick: function onClick() {
+                          _this2.openImageEditor('FacebookImage');
+                        } },
+                      _react2.default.createElement('i', { className: 'seo-pencil-square-o' })
+                    ),
+                    this.state.FacebookImageURL && _react2.default.createElement(
+                      'div',
+                      null,
+                      _react2.default.createElement('img', { src: this.state.FacebookImageURL })
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'h3',
+                    null,
+                    this.state.FacebookTitle
+                  ),
+                  _react2.default.createElement(
+                    'p',
+                    { className: 'preview-description' },
+                    this.state.FacebookDescription
+                  ),
+                  _react2.default.createElement(
+                    'p',
+                    { className: 'preview-link' },
+                    this.state.HostName
+                  )
+                )
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'seo-tab ' + (this.state.CurrentTab === 'twitter' ? 'active' : ''), 'data-tab': 'twitter' },
+            _react2.default.createElement(
+              'h3',
+              { className: 'seo-tab__title' },
+              'Twitter'
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'seo-section' },
+              _react2.default.createElement(
+                'div',
+                { className: 'fields' },
+                _react2.default.createElement(_SEOInput2.default, {
+                  label: 'Twitter Title',
+                  value: this.state.TwitterTitle,
+                  name: this.getFieldName('TwitterTitle'),
+                  onChange: function onChange(e) {
+                    _this2.handleInputChange(e, 'TwitterTitle');
+                  }
+                }),
+                _react2.default.createElement(_SEOTextarea2.default, {
+                  label: 'Twitter Description',
+                  value: this.state.TwitterDescription,
+                  name: this.getFieldName('TwitterDescription'),
+                  onChange: function onChange(e) {
+                    _this2.handleInputChange(e, 'TwitterDescription');
+                  }
+                }),
+                _react2.default.createElement('input', { type: 'hidden', value: this.state.TwitterImageID, name: this.getFieldName('TwitterImageID') })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'preview-holder' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'preview-card twitter' },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'preview-contents' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'preview-card--image' },
+                      _react2.default.createElement(
+                        'a',
+                        { className: 'js-og-image-selector', onClick: function onClick() {
+                            _this2.openImageEditor('TwitterImage');
+                          } },
+                        _react2.default.createElement('i', { className: 'seo-pencil-square-o' })
+                      ),
+                      this.state.TwitterImageURL && _react2.default.createElement(
+                        'div',
+                        null,
+                        _react2.default.createElement('img', { src: this.state.TwitterImageURL })
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'h3',
+                      null,
+                      this.state.TwitterTitle
+                    ),
+                    _react2.default.createElement(
+                      'p',
+                      { className: 'preview-description' },
+                      this.state.TwitterDescription
+                    ),
+                    _react2.default.createElement(
+                      'p',
+                      { className: 'preview-link' },
+                      this.state.HostName
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'seo-tab ' + (this.state.CurrentTab === 'settings' ? 'active' : ''), 'data-tab': 'settings' },
+            _react2.default.createElement(
+              'h3',
+              { className: 'seo-tab__title' },
+              'Settings'
+            ),
+            _react2.default.createElement(_SEOInput2.default, {
+              label: 'Canonical URL',
+              value: this.state.CanonicalURL,
+              name: this.getFieldName('CanonicalURL'),
+              onChange: function onChange(e) {
+                _this2.handleInputChange(e, 'CanonicalURL');
+              }
+            }),
+            _react2.default.createElement(
+              'p',
+              null,
+              'The canonical URL that this page should point to, leave empty to default to permalink.',
+              _react2.default.createElement(
+                'a',
+                { href: 'https://webmasters.googleblog.com/2009/12/handling-legitimate-cross-domain.html', target: '_blank' },
+                'Cross domain canonical'
+              ),
+              ' supported too.'
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return SEOEditorHolder;
+}(_react2.default.Component);
+
+exports.default = SEOEditorHolder;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(2);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactApollo = __webpack_require__(10);
+
+var _Injector = __webpack_require__(9);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var InjectableInsertMediaModal = (0, _Injector.provideInjector)(window.InsertMediaModal.default);
+
+_jquery2.default.entwine('ss', function ($) {
+    $('#insert-seo-media-react__dialog-wrapper').entwine({
+
+        Element: null,
+        ImageType: null,
+        Data: {},
+        onunmatch: function onunmatch() {
+            this._clearModal();
+        },
+        _clearModal: function _clearModal() {
+            _reactDom2.default.unmountComponentAtNode(this[0]);
+        },
+        open: function open() {
+            this._renderModal(true);
+        },
+        close: function close() {
+            this._renderModal(false);
+        },
+        setTypeField: function setTypeField(type) {
+            this.ImageType = type;
+            console.log(this.ImageType);
+        },
+        _renderModal: function _renderModal(show) {
+            var _this = this;
+
+            var handleHide = function handleHide() {
+                return _this.close();
+            };
+            var handleInsert = function handleInsert() {
+                return _this._handleInsert.apply(_this, arguments);
+            };
+            var store = window.ss.store;
+            var client = window.ss.apolloClient;
+            var attrs = {};
+
+            delete attrs.url;
+
+            _reactDom2.default.render(_react2.default.createElement(
+                _reactApollo.ApolloProvider,
+                { store: store, client: client },
+                _react2.default.createElement(InjectableInsertMediaModal, {
+                    title: false,
+                    type: 'insert-media',
+                    show: show,
+                    onInsert: handleInsert,
+                    onHide: handleHide,
+                    bodyClassName: 'modal__dialog',
+                    className: 'insert-media-react__dialog-wrapper',
+                    requireLinkText: false,
+                    fileAttributes: attrs
+                })
+            ), this[0]);
+        },
+        _handleInsert: function _handleInsert(data, file) {
+            var result = false;
+            this.setData(Object.assign({}, data, file));
+
+            try {
+                var category = null;
+                if (file) {
+                    category = file.category;
+                } else {
+                    category = 'image';
+                }
+
+                if (category === 'image') {
+                    result = this.insertImage();
+                } else {
+                    throw 'Wrong file type';
+                }
+            } catch (e) {
+                this.statusMessage(e, 'bad');
+            }
+
+            if (result) {
+                this.close();
+            }
+            return Promise.resolve();
+        },
+        insertImage: function insertImage() {
+            var $field = this.getElement();
+            if (!$field) {
+                return false;
+            }
+
+            var data = this.getData();
+            $field.Element.setImageForType($field.Type, data);
+            return true;
+        },
+        statusMessage: function statusMessage(text, type) {
+            var content = $('<div/>').text(text).html();
+            $.noticeAdd({
+                text: content,
+                type: type,
+                stayTime: 5000,
+                inEffect: { left: '0', opacity: 'show' }
+            });
+        }
+    });
+});
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(2);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _SEOEditorHolder = __webpack_require__(5);
+
+var _SEOEditorHolder2 = _interopRequireDefault(_SEOEditorHolder);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+__webpack_require__(6);
+
+_jquery2.default.entwine('ss', function ($) {
+    $('.js-seo-editor:visible').entwine({
+        onunmatch: function onunmatch() {
+            this._super();
+            _reactDom2.default.unmountComponentAtNode(this[0]);
+        },
+        onmatch: function onmatch() {
+            this._super();
+            this.refresh();
+        },
+        refresh: function refresh() {
+            var name = this.data('name');
+            var seoData = this.data('seo');
+            var link = this.data('recordlink');
+
+            _reactDom2.default.render(_react2.default.createElement(_SEOEditorHolder2.default, {
+                link: link,
+                name: name,
+                seodata: seoData
+            }), this[0]);
+        }
+    });
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _SEOInput2 = __webpack_require__(3);
+
+var _SEOInput3 = _interopRequireDefault(_SEOInput2);
+
+var _SEOInputProgressbar = __webpack_require__(4);
+
+var _SEOInputProgressbar2 = _interopRequireDefault(_SEOInputProgressbar);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SEOTextarea = function (_SEOInput) {
+  _inherits(SEOTextarea, _SEOInput);
+
+  function SEOTextarea() {
+    _classCallCheck(this, SEOTextarea);
+
+    return _possibleConstructorReturn(this, (SEOTextarea.__proto__ || Object.getPrototypeOf(SEOTextarea)).apply(this, arguments));
+  }
+
+  _createClass(SEOTextarea, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'seo-input field' },
+        _react2.default.createElement(
+          'label',
+          null,
+          this.props.label
+        ),
+        _react2.default.createElement(
+          'textarea',
+          {
+            className: 'text',
+            name: this.props.name,
+            onChange: this.props.onChange
+          },
+          this.props.value
+        ),
+        _react2.default.createElement(_SEOInputProgressbar2.default, null)
+      );
+    }
+  }]);
+
+  return SEOTextarea;
+}(_SEOInput3.default);
+
+exports.default = SEOTextarea;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = Injector;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = ReactApollo;
+
+/***/ })
+/******/ ]);
+//# sourceMappingURL=bundle.js.map

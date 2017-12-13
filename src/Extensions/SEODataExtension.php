@@ -18,9 +18,13 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\HTML;
+use SilverStripe\View\Parsers\HTMLValue;
 use SilverStripers\seo\Fields\SEOEditor;
 
 class SEODataExtension extends DataExtension
@@ -95,7 +99,10 @@ class SEODataExtension extends DataExtension
 		]);
 
 		if($owner->MetaDescription) {
-			$tags[] = HTML::createTag('description', [], $owner->MetaDescription);
+			$tags[] = HTML::createTag('meta', array(
+				'name' => 'description',
+				'content' => $owner->MetaDescription,
+			));
 		}
 
 		if (Permission::check('CMS_ACCESS_CMSMain')
@@ -208,6 +215,69 @@ class SEODataExtension extends DataExtension
 			return $this->owner->getOGPostType();
 		}
 		return 'article';
+	}
+
+	public function checkMetaTitle()
+	{
+		$validator = new ValidationResult();
+		if(!$this->owner->MetaTitle)
+			$validator->addError(_t(SEODataExtension::class . '.MetaTitleEmpty', 'Meta Title is empty'));
+		if(strlen($this->owner->MetaTitle) <= 10)
+			$validator->addError(_t(SEODataExtension::class . '.MetaTitleShort', 'Meta Title should be more that 10 characters of length'));
+		return $validator;
+	}
+
+	public function checkMetaDescription()
+	{
+		$validator = new ValidationResult();
+		if(!$this->owner->MetaDescription)
+			$validator->addError(_t(SEODataExtension::class . '.MetaDescriptionEmpty', 'Meta Description is empty'));
+		if(strlen($this->owner->MetaDescription) > 160)
+			$validator->addError(_t(SEODataExtension::class . '.MetaDescriptionLong', 'Meta Description should be no more that 160 characters of length'));
+		return $validator;
+	}
+
+	public function checkDuplicates()
+	{
+		$validator = new ValidationResult();
+		if($this->owner->MetaTitle) {
+			$list = DataList::create(get_class($this->owner))
+				->exclude('ID', $this->owner->ID)
+				->filter('MetaTitle', $this->owner->MetaTitle);
+			if ($list->count()) {
+				$validator->addError(_t(SEODataExtension::class . '.Duplicates',
+					'We found duplicate entries with the same meta title (' . implode(', ', $list->column('MetaTitle')) . ')'));
+			}
+		}
+		return $validator;
+	}
+
+	public function getSEOComments()
+	{
+		$comments = [];
+		$metaTitle = $this->checkMetaTitle();
+		if(!$metaTitle->isValid()) {
+			$comments = array_merge($comments, $metaTitle->getMessages());
+		}
+		$metaDesc = $this->checkMetaDescription();
+		if(!$metaDesc->isValid()) {
+			$comments = array_merge($comments, $metaDesc->getMessages());
+		}
+		$duplicates = $this->checkDuplicates();
+		if(!$duplicates->isValid()) {
+			$comments = array_merge($comments, $duplicates->getMessages());
+		}
+
+		if(!empty($comments)) {
+			$errors = [];
+			foreach ($comments as $comment) {
+				$errors[] = $comment['message'];
+			}
+			$htmlText = HTMLValue::create();
+			$htmlText->setContent(implode(', ', $errors));
+			return $htmlText;
+		}
+		return null;
 	}
 
 }

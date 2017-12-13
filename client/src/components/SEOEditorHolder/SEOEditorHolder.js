@@ -125,7 +125,7 @@ class SEOEditorHolder extends React.Component {
                   />
                 </div>
                 <div className="preview-holder">
-                  <div className="preview-card">
+                  <div className="preview-card google">
                     <h3>{this.state.MetaTitle}</h3>
                     <p className="preview-link">{this.state.Link}</p>
                     <p className="preview-description">{this.state.MetaDescription}</p>
