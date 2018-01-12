@@ -52,7 +52,7 @@ class SEODataExtension extends DataExtension
 	public function updateCMSFields(FieldList $fields)
 	{
 		$fields->removeByName('Metadata');
-		$fields->addFieldToTab('Root.Main', SEOEditor::create('SEOFields')->setRecord($this->owner), 'Content');
+		$fields->addFieldToTab('Root.Main', SEOEditor::create('SEOFields')->setRecord($this->owner));
 	}
 
 	public static function override_seo_from(DataObject $record)
