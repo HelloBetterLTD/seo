@@ -89,6 +89,20 @@ class SEOEditorHolder extends React.Component {
         ss.seo.openImageEditor(type, this);
     }
 
+    removeImage(type) {
+        if (type === 'FacebookImage') {
+            this.setState({
+                FacebookImageID: 0,
+                FacebookImageURL: null
+            });
+        } else {
+            this.setState({
+                TwitterImageID: 0,
+                TwitterImageURL: null
+            });
+        }
+    }
+
     render() {
         return (<div className="seo-editor">
           <nav>
@@ -168,11 +182,16 @@ class SEOEditorHolder extends React.Component {
                 <div className="preview-holder">
                   <div className="preview-card facebook">
                     <div className="preview-card--image">
+                        <div className="preview-card--actions">
                       <a className="js-og-image-selector" onClick={() => { this.openImageEditor('FacebookImage'); }}>
                         <i className="seo-pencil-square-o" />
                       </a>
+                      <a className="js-og-image-selector" onClick={() => { this.removeImage('FacebookImage'); }}>
+                        <i className="seo-trash" />
+                      </a>
+                        </div>
                       {this.state.FacebookImageURL &&
-                        <div>
+                        <div className="img">
                           <img src={this.state.FacebookImageURL} />
                         </div>
                       }
@@ -209,11 +228,16 @@ class SEOEditorHolder extends React.Component {
                   <div className="preview-card twitter">
                     <div className="preview-contents">
                       <div className="preview-card--image">
-                        <a className="js-og-image-selector" onClick={() => { this.openImageEditor('TwitterImage'); }}>
-                          <i className="seo-pencil-square-o" />
-                        </a>
+                        <div className="preview-card--actions">
+                            <a className="js-og-image-selector" onClick={() => { this.openImageEditor('TwitterImage'); }}>
+                              <i className="seo-pencil-square-o" />
+                            </a>
+                            <a className="js-og-image-selector" onClick={() => { this.removeImage('TwitterImage'); }}>
+                                <i className="seo-trash" />
+                            </a>
+                        </div>
                         {this.state.TwitterImageURL &&
-                        <div>
+                        <div className="img">
                           <img src={this.state.TwitterImageURL} />
                         </div>
                                         }

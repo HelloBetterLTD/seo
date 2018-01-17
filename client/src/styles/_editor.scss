@@ -74,10 +74,6 @@
 
 			a {
 				font-size: 18px;
-				position: absolute;
-				top: 20px;
-				right: 20px;
-				z-index: 999;
 				cursor: pointer;
 
 				&:hover {
@@ -85,7 +81,7 @@
 				}
 			}
 
-			div {
+			div.img {
 				display: block;
 				position: absolute;
 				top: 0;
@@ -107,6 +103,14 @@
 					transform: translate(-50%, -50%);
 				}
 			}
+		}
+
+
+		.preview-card--actions {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			z-index: 999;
 		}
 
 		h3 {

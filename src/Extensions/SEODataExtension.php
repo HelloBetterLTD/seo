@@ -241,10 +241,12 @@ class SEODataExtension extends DataExtension
 
 	}
 
-	public function MetaTags(&$tags)
+	public function MetaTags(&$tags = '')
 	{
-		$tags = $this->GenerateMetaTags();
+		$tags = $this->owner->GenerateMetaTags();
+		return $tags;
 	}
+
 
 	public function getOGPostType()
 	{
