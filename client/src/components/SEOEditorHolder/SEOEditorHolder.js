@@ -79,7 +79,7 @@ class SEOEditorHolder extends React.Component {
 
     handleRadioChange(event, name) {
         const val = {};
-        if(event.target.checked) {
+        if (event.target.checked) {
             val[name] = event.target.value;
             this.setState(val);
         }
@@ -108,26 +108,38 @@ class SEOEditorHolder extends React.Component {
           <nav>
             <ul>
               <li>
-                <a className={`${this.state.CurrentTab === 'seo' ? 'active' : ''}`}
-                    data-href="#seo" onClick={() => { this.openTab('seo'); }}>
-                    <i className="seo-rocket" /></a>
+                <a
+                  className={`${this.state.CurrentTab === 'seo' ? 'active' : ''}`}
+                  data-href="#seo"
+                  onClick={() => { this.openTab('seo'); }}
+                >
+                  <i className="seo-rocket" /></a>
               </li>
               <li>
-                <a className={`${this.state.CurrentTab === 'facebook' ? 'active' : ''}`}
-                    data-href="#facebook" onClick={() => { this.openTab('facebook'); }}>
-                    <i className="seo-facebook-square" />
+                <a
+                  className={`${this.state.CurrentTab === 'facebook' ? 'active' : ''}`}
+                  data-href="#facebook"
+                  onClick={() => { this.openTab('facebook'); }}
+                >
+                  <i className="seo-facebook-square" />
                 </a>
               </li>
               <li>
-                <a className={`${this.state.CurrentTab === 'twitter' ? 'active' : ''}`}
-                    data-href="#twitter" onClick={() => { this.openTab('twitter'); }}>
-                    <i className="seo-twitter-square" />
+                <a
+                  className={`${this.state.CurrentTab === 'twitter' ? 'active' : ''}`}
+                  data-href="#twitter"
+                  onClick={() => { this.openTab('twitter'); }}
+                >
+                  <i className="seo-twitter-square" />
                 </a>
               </li>
               <li>
-                <a className={`${this.state.CurrentTab === 'settings' ? 'active' : ''}`}
-                    data-href="#settings" onClick={() => { this.openTab('settings'); }}>
-                    <i className="seo-cog" />
+                <a
+                  className={`${this.state.CurrentTab === 'settings' ? 'active' : ''}`}
+                  data-href="#settings"
+                  onClick={() => { this.openTab('settings'); }}
+                >
+                  <i className="seo-cog" />
                 </a>
               </li>
             </ul>
@@ -182,14 +194,14 @@ class SEOEditorHolder extends React.Component {
                 <div className="preview-holder">
                   <div className="preview-card facebook">
                     <div className="preview-card--image">
-                        <div className="preview-card--actions">
-                      <a className="js-og-image-selector" onClick={() => { this.openImageEditor('FacebookImage'); }}>
-                        <i className="seo-pencil-square-o" />
-                      </a>
-                      <a className="js-og-image-selector" onClick={() => { this.removeImage('FacebookImage'); }}>
-                        <i className="seo-trash" />
-                      </a>
-                        </div>
+                      <div className="preview-card--actions">
+                        <a className="js-og-image-selector" onClick={() => { this.openImageEditor('FacebookImage'); }}>
+                          <i className="seo-pencil-square-o" />
+                        </a>
+                        <a className="js-og-image-selector" onClick={() => { this.removeImage('FacebookImage'); }}>
+                          <i className="seo-trash" />
+                        </a>
+                      </div>
                       {this.state.FacebookImageURL &&
                         <div className="img">
                           <img src={this.state.FacebookImageURL} />
@@ -229,12 +241,12 @@ class SEOEditorHolder extends React.Component {
                     <div className="preview-contents">
                       <div className="preview-card--image">
                         <div className="preview-card--actions">
-                            <a className="js-og-image-selector" onClick={() => { this.openImageEditor('TwitterImage'); }}>
-                              <i className="seo-pencil-square-o" />
-                            </a>
-                            <a className="js-og-image-selector" onClick={() => { this.removeImage('TwitterImage'); }}>
-                                <i className="seo-trash" />
-                            </a>
+                          <a className="js-og-image-selector" onClick={() => { this.openImageEditor('TwitterImage'); }}>
+                            <i className="seo-pencil-square-o" />
+                          </a>
+                          <a className="js-og-image-selector" onClick={() => { this.removeImage('TwitterImage'); }}>
+                            <i className="seo-trash" />
+                          </a>
                         </div>
                         {this.state.TwitterImageURL &&
                         <div className="img">
@@ -258,14 +270,14 @@ class SEOEditorHolder extends React.Component {
                 value={this.state.MetaRobotsIndex}
                 name={this.getFieldName('MetaRobotsIndex')}
                 onChange={(e) => { this.handleInputChange(e, 'MetaRobotsIndex'); }}
-                ></SEORobotsIndex>
+              />
 
               <SEORobotsFollow
-                    label="Meta robots follow"
-                    value={this.state.MetaRobotsFollow}
-                    name={this.getFieldName('MetaRobotsFollow')}
-                    onChange={(e) => { this.handleRadioChange(e, 'MetaRobotsFollow'); }}
-                ></SEORobotsFollow>
+                label="Meta robots follow"
+                value={this.state.MetaRobotsFollow}
+                name={this.getFieldName('MetaRobotsFollow')}
+                onChange={(e) => { this.handleRadioChange(e, 'MetaRobotsFollow'); }}
+              />
               <SEOInput
                 label="Canonical URL"
                 value={this.state.CanonicalURL}
