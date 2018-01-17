@@ -198,9 +198,11 @@ class SEOEditorHolder extends React.Component {
                         <a className="js-og-image-selector" onClick={() => { this.openImageEditor('FacebookImage'); }}>
                           <i className="seo-pencil-square-o" />
                         </a>
+                        {this.state.FacebookImageURL &&
                         <a className="js-og-image-selector" onClick={() => { this.removeImage('FacebookImage'); }}>
                           <i className="seo-trash" />
                         </a>
+                        }
                       </div>
                       {this.state.FacebookImageURL &&
                         <div className="img">
@@ -244,9 +246,11 @@ class SEOEditorHolder extends React.Component {
                           <a className="js-og-image-selector" onClick={() => { this.openImageEditor('TwitterImage'); }}>
                             <i className="seo-pencil-square-o" />
                           </a>
-                          <a className="js-og-image-selector" onClick={() => { this.removeImage('TwitterImage'); }}>
-                            <i className="seo-trash" />
-                          </a>
+                          {this.state.TwitterImageURL &&
+                            <a className="js-og-image-selector" onClick={() => { this.removeImage('TwitterImage'); }}>
+                              <i className="seo-trash" />
+                            </a>
+                            }
                         </div>
                         {this.state.TwitterImageURL &&
                         <div className="img">
