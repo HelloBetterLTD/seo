@@ -260,9 +260,9 @@ class SEODataExtension extends DataExtension
 	{
 		$validator = new ValidationResult();
 		if(!$this->owner->MetaTitle)
-			$validator->addError(_t(SEODataExtension::class . '.MetaTitleEmpty', 'Meta Title is empty'));
+			$validator->addError(_t(__CLASS__.'.MetaTitleEmpty', 'Meta Title is empty'));
 		if(strlen($this->owner->MetaTitle) <= 10)
-			$validator->addError(_t(SEODataExtension::class . '.MetaTitleShort', 'Meta Title should be more that 10 characters of length'));
+			$validator->addError(_t(__CLASS__.'.MetaTitleShort', 'Meta Title should be more that 10 characters of length'));
 		return $validator;
 	}
 
@@ -270,9 +270,9 @@ class SEODataExtension extends DataExtension
 	{
 		$validator = new ValidationResult();
 		if(!$this->owner->MetaDescription)
-			$validator->addError(_t(SEODataExtension::class . '.MetaDescriptionEmpty', 'Meta Description is empty'));
+			$validator->addError(_t(__CLASS__.'.MetaDescriptionEmpty', 'Meta Description is empty'));
 		if(strlen($this->owner->MetaDescription) > 160)
-			$validator->addError(_t(SEODataExtension::class . '.MetaDescriptionLong', 'Meta Description should be no more that 160 characters of length'));
+			$validator->addError(_t(__CLASS__.'.MetaDescriptionLong', 'Meta Description should be no more that 160 characters of length'));
 		return $validator;
 	}
 
@@ -284,7 +284,7 @@ class SEODataExtension extends DataExtension
 				->exclude('ID', $this->owner->ID)
 				->filter('MetaTitle', $this->owner->MetaTitle);
 			if ($list->count()) {
-				$validator->addError(_t(SEODataExtension::class . '.Duplicates',
+				$validator->addError(_t(__CLASS__.'.Duplicates',
 					'We found duplicate entries with the same meta title (' . implode(', ', $list->column('MetaTitle')) . ')'));
 			}
 		}
