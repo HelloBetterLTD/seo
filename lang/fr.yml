@@ -1,0 +1,9 @@
+fr:
+  SilverStripers\seo\Extensions\SEODataExtension:
+    MetaDescriptionEmpty: 'La Meta Description est vide'
+    MetaDescriptionLong: 'La Meta Description ne devrait pas faire plus de 160 caractères de long'
+    MetaTitleEmpty: 'Le Meta Title est vide'
+    MetaTitleShort: 'Le Meta Title devrait faire plus de 10 caractères de long'
+  SilverStripers\seo\Reporting\SEOReport:
+    SEOReport: 'Rapport SEO'
+    SEOReportGroup: 'Rapports SEO'
