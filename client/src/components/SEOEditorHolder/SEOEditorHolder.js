@@ -30,6 +30,7 @@ class SEOEditorHolder extends React.Component {
         this.state = {
             Name: props.name,
             Link: props.link,
+            FocusKeyword: props.seodata.FocusKeyword,
             MetaTitle: props.seodata.MetaTitle,
             MetaDescription: props.seodata.MetaDescription,
             MetaRobotsFollow: props.seodata.MetaRobotsFollow,
@@ -149,6 +150,12 @@ class SEOEditorHolder extends React.Component {
               <h3 className="seo-tab__title">SEO Data</h3>
               <div className="seo-section">
                 <div className="fields">
+                  <SEOInput
+                    label="Focus Keyword"
+                    value={this.state.FocusKeyword}
+                    name={this.getFieldName('FocusKeyword')}
+                    onChange={(e) => { this.handleInputChange(e, 'FocusKeyword'); }}
+                  />
                   <SEOInput
                     label="Meta Title"
                     value={this.state.MetaTitle}

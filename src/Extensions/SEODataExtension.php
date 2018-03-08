@@ -33,6 +33,7 @@ class SEODataExtension extends DataExtension
 	private static $override_seo = null;
 
 	private static $db = [
+		'FocusKeyword'			=> 'Varchar(300)',
 		'MetaTitle'				=> 'Varchar(300)',
 		'MetaDescription'		=> 'Text',
 		'FacebookTitle'			=> 'Varchar(300)',
@@ -52,7 +53,8 @@ class SEODataExtension extends DataExtension
 	public function updateCMSFields(FieldList $fields)
 	{
 		$fields->removeByName('Metadata');
-		$fields->addFieldToTab('Root.Main', SEOEditor::create('SEOFields')->setRecord($this->owner));
+		$fields->addFieldToTab('Root.Main',
+			SEOEditor::create('SEOFields')->setRecord($this->owner));
 	}
 
 	public static function override_seo_from(DataObject $record)
@@ -74,6 +76,7 @@ class SEODataExtension extends DataExtension
 	{
 		return [
 			'HostName'				=> Director::host(),
+			'FocusKeyword'			=> $this->owner->FocusKeyword,
 			'MetaTitle'				=> $this->owner->MetaTitle,
 			'MetaDescription'		=> $this->owner->MetaDescription,
 			'FacebookTitle'			=> $this->owner->FacebookTitle,
@@ -254,6 +257,183 @@ class SEODataExtension extends DataExtension
 			return $this->owner->getOGPostType();
 		}
 		return 'article';
+	}
+
+
+	private function getDuplicateRecordsList(DataList $list)
+	{
+		$list = [];
+		foreach ($list as $duplicate) {
+			$link = method_exists($duplicate, 'Link') ? $duplicate->Link : null;
+			if($link) {
+				$list[] = '<a href="' . $link . '" target="_blank">' . $duplicate->getTitle() . '</a>';
+			}
+			else {
+				$list[] = $duplicate->getTitle();
+			}
+		}
+		return implode(",\n ", $list);
+
+	}
+
+	public function validateSEO()
+	{
+		$result = new ValidationResult();
+		$this->validateKeyword($result);
+		$this->validateMetaTitle($result);
+		$this->validateMetaDescription($result);
+	}
+
+	//
+	public function validateKeyword(ValidationResult $result)
+	{
+		$record = $this->owner;
+		$keyword = $record->FocusKeyword;
+		if(empty($keyword)) {
+			$result->addFieldError('FocusKeyword',
+				_t(__CLASS__.'.FocusKeywordEmpty',
+					'No focus keyword was set for this page. If you do not set a focus keyword, no score can be calculated.'),
+				ValidationResult::TYPE_ERROR);
+		}
+		else {
+			$duplicates = DataList::create(get_class($this->owner))
+				->exclude('ID', $record->ID)
+				->filter('Keywords', $keyword);
+			if ($duplicates->count()) {
+				$items = $this->getDuplicateRecordsList($duplicates);
+				$result->addFieldError('FocusKeyword', sprintf(_t(__CLASS__.'.FocusKeywordIsNotUnique',
+					'This keyword is not unique. It is also used by \'%s\''), implode(', ', $items)),
+					ValidationResult::TYPE_ERROR, null, ValidationResult::CAST_HTML);
+			}
+			if ($result->isValid()) {
+				$result->addFieldMessage('FocusKeyword', _t(__CLASS__.'.FocusKeywordPassed',
+					'This keyword is not used by any other pages on this site'), ValidationResult::TYPE_GOOD);
+			}
+		}
+	}
+
+
+	public function validateMetaTitle(ValidationResult $result)
+	{
+		$record = $this->owner;
+		$metaTitle = trim($record->MetaTitle);
+
+		if(empty($metaTitle)) {
+			$result->addFieldError('MetaTitle',
+				sprintf(_t(__CLASS__.'.MetaTitleEmpty',
+					'You have not set a meta title. The title will default to "%s"', $record->getTitle())),
+				ValidationResult::TYPE_WARNING);
+		}
+		else {
+			if ($record->FocusKeyword && strpos($metaTitle, $record->FocusKeyword) === false) {
+				$result->addFieldError('MetaTitle',
+					sprintf(_t(__CLASS__.'.MetaTitleNoKeyword',
+						'The focus keyword "%s" does not appear in the SEO title.', $record->Keywords)),
+					ValidationResult::TYPE_ERROR);
+			}
+			if (strlen($metaTitle) < 45) {
+				$result->addFieldError('MetaTitle',
+					_t(__CLASS__.'.MetaTitleTooShort',
+						'The SEO title is too short. Use the space to add keyword variations or create 
+							compelling call-to-action copy.'), ValidationResult::TYPE_WARNING);
+			} else if (strlen($metaTitle) > 70) {
+				$result->addFieldError('MetaTitle',
+					_t(__CLASS__.'.MetaTitleTooLong', 'The SEO title is over 70 characters and may be truncated on search 
+							results pages'), ValidationResult::TYPE_WARNING);
+			} else {
+				$result->addFieldMessage('MetaTitle',
+					_t(__CLASS__.'.MetaTitleLengthGood', 'The SEO title has a nice length.') , ValidationResult::TYPE_GOOD);
+			}
+
+			$duplicates = DataList::create(get_class($record))
+				->exclude('ID', $record->ID)
+				->filter('MetaTitle', $record->MetaTitle);
+			if ($duplicates->count()) {
+				$items = $this->getDuplicateRecordsList($duplicates);
+				$result->addFieldError('MetaTitle',
+					sprintf(_t(__CLASS__.'.MetaTitleDuplicated',
+						'This title is not unique. It is also used by %s'), $items),
+					ValidationResult::TYPE_ERROR, null, ValidationResult::CAST_HTML);
+			} else {
+				$result->addFieldMessage('MetaTitle',
+					_t(__CLASS__.'.MetaTitleUnique',
+						'This title is not used by any other pages on this site'),
+					ValidationResult::TYPE_GOOD);
+			}
+		}
+		return $result;
+	}
+
+
+	public function validateMetaDescription(ValidationResult $result)
+	{
+		$record = $this->owner;
+		$desc = $record->MetaDescription;
+		if(empty($desc)) {
+			$result->addFieldError('MetaDescription', _t(__CLASS__.'.MetaDescriptionEmpty',
+				'No meta description has been specified.'),
+				ValidationResult::TYPE_ERROR);
+		}
+		else {
+			if ($record->Keywords && strpos($desc, $record->Keywords) === false) {
+				$result->addFieldError('MetaDescription',
+					_t(__CLASS__.'.MetaDescriptionNoKeyword','The meta description does not contain the focus keyword.'),
+					ValidationResult::TYPE_ERROR);
+			}
+			if (strlen($desc) < 120) {
+				$result->addFieldError('MetaDescription',
+					_t(__CLASS__.'.MetaDescriptionTooShort',
+						'The meta description is under 120 characters long. However, up to 156 characters are available.'),
+					ValidationResult::TYPE_WARNING);
+			} else if (strlen($desc) < 156) {
+				$result->addFieldError('MetaDescription',
+					_t(__CLASS__.'.MetaDescriptionTooLong',
+						'The meta description is over 156 characters. Reducing the length will ensure the entire description will be visible.'),
+					ValidationResult::TYPE_WARNING);
+			} else {
+				$result->addFieldMessage('MetaDescription',
+					_t(__CLASS__.'.MetaDescriptionGoodLength', 'The length of the meta description is sufficient.'),
+					ValidationResult::TYPE_GOOD);
+			}
+			$duplicates = DataList::create(get_class($record))
+				->exclude('ID', $record->ID)
+				->filter('MetaDescription', $record->MetaDescription);
+			if ($duplicates->count()) {
+				$items = $this->getDuplicateRecordsList($duplicates);
+				$result->addFieldError('MetaDescription',
+					sprintf(_t(__CLASS__.'.MetaDescriptionGoodLength', 'This description is not unique. It is also used by %s'), $items),
+					ValidationResult::TYPE_ERROR, null, ValidationResult::CAST_HTML);
+			} else {
+				$result->addFieldMessage('MetaDescription',
+					_t(__CLASS__.'.MetaDescriptionUnique', 'This description is unique to this page'),
+					ValidationResult::TYPE_GOOD);
+			}
+		}
+		return $result;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	public function checkFocusKeyword()
+	{
+		$validator = new ValidationResult();
+		if(!$this->owner->FocusKeyword)
+			$validator->addError(_t(__CLASS__.'.FocusKeywordEmpty',
+				'No focus keyword was set for this page. If you do not set a focus keyword, no score can be calculated.'));
+		return $validator;
 	}
 
 	public function checkMetaTitle()

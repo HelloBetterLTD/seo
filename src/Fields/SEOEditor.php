@@ -68,6 +68,7 @@ class SEOEditor extends FormField
 
 	public function saveInto(DataObjectInterface $record)
 	{
+		$this->record->setCastedField('FocusKeyword', !empty($this->value['FocusKeyword']) ? $this->value['FocusKeyword'] : null);
 		$this->record->setCastedField('MetaTitle', !empty($this->value['MetaTitle']) ? $this->value['MetaTitle'] : null);
 		$this->record->setCastedField('MetaDescription', !empty($this->value['MetaDescription']) ? $this->value['MetaDescription'] : null);
 		$this->record->setCastedField('FacebookTitle', !empty($this->value['FacebookTitle']) ? $this->value['FacebookTitle'] : null);
