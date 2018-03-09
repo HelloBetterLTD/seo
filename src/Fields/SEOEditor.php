@@ -13,11 +13,18 @@ namespace SilverStripers\seo\Fields;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Convert;
 use SilverStripe\Forms\FormField;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\View\Requirements;
+use SilverStripers\seo\Extensions\SEODataExtension;
 
 class SEOEditor extends FormField
 {
+
+
+	private static $allowed_actions = [
+		'duplicatecheck'
+	];
 
 	private $record = null;
 
@@ -55,6 +62,7 @@ class SEOEditor extends FormField
 	{
 		Requirements::javascript('silverstripers/seo:client/dist/js/bundle.js');
 		Requirements::css('silverstripers/seo:client/dist/styles/bundle.css');
+		Requirements::add_i18n_javascript('silverstripers/seo:client/lang', false, true);
 		return parent::Field($properties);
 	}
 
@@ -83,6 +91,31 @@ class SEOEditor extends FormField
 		$this->record->setCastedField('TwitterImageID', !empty($this->value['TwitterImageID']) ? $this->value['TwitterImageID'] : 0);
 		$this->record->setCastedField('MetaRobotsFollow', !empty($this->value['MetaRobotsFollow']) ? $this->value['MetaRobotsFollow'] : '');
 		$this->record->setCastedField('MetaRobotsIndex', !empty($this->value['MetaRobotsIndex']) ? $this->value['MetaRobotsIndex'] : '');
+	}
+
+	public function DuplicateCheckLink()
+	{
+		return $this->Link('duplicatecheck');
+	}
+
+	public function duplicatecheck()
+	{
+		$result = [
+			'checked'	=> 0,
+			'valid'		=> 1,
+			'duplicates'=> ''
+		];
+		if($this->record && $this->request->requestVar('Field') && $this->request->requestVar('Needle')) {
+			$result['checked'] = 1;
+			$list = DataList::create(get_class($this->record))
+				->filter($this->request->requestVar('Field') . ':PartialMatch', $this->request->requestVar('Needle'))
+				->exclude('ID', $this->record->ID);
+			if($list->count()) {
+				$result['valid'] = 0;
+				$result['duplicates'] = SEODataExtension::get_duplicates_list($list);
+			}
+		}
+		return Convert::array2json($result);
 	}
 
 

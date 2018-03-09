@@ -260,29 +260,22 @@ class SEODataExtension extends DataExtension
 	}
 
 
-	private function getDuplicateRecordsList(DataList $list)
+	public static function get_duplicates_list(DataList $list)
 	{
-		$list = [];
+		$items = [];
 		foreach ($list as $duplicate) {
-			$link = method_exists($duplicate, 'Link') ? $duplicate->Link : null;
+			$link = method_exists($duplicate, 'Link') ? $duplicate->Link() : null;
 			if($link) {
-				$list[] = '<a href="' . $link . '" target="_blank">' . $duplicate->getTitle() . '</a>';
+				$items[] = '<a href="' . $link . '" target="_blank">' . $duplicate->getTitle() . '</a>';
 			}
 			else {
-				$list[] = $duplicate->getTitle();
+				$items[] = $duplicate->getTitle();
 			}
 		}
-		return implode(",\n ", $list);
+		return implode(",\n ", $items);
 
 	}
 
-	public function validateSEO()
-	{
-		$result = new ValidationResult();
-		$this->validateKeyword($result);
-		$this->validateMetaTitle($result);
-		$this->validateMetaDescription($result);
-	}
 
 	//
 	public function validateKeyword(ValidationResult $result)
@@ -300,7 +293,7 @@ class SEODataExtension extends DataExtension
 				->exclude('ID', $record->ID)
 				->filter('Keywords', $keyword);
 			if ($duplicates->count()) {
-				$items = $this->getDuplicateRecordsList($duplicates);
+				$items = self::get_duplicates_list($duplicates);
 				$result->addFieldError('FocusKeyword', sprintf(_t(__CLASS__.'.FocusKeywordIsNotUnique',
 					'This keyword is not unique. It is also used by \'%s\''), implode(', ', $items)),
 					ValidationResult::TYPE_ERROR, null, ValidationResult::CAST_HTML);
@@ -312,7 +305,6 @@ class SEODataExtension extends DataExtension
 		}
 	}
 
-
 	public function validateMetaTitle(ValidationResult $result)
 	{
 		$record = $this->owner;
@@ -321,14 +313,14 @@ class SEODataExtension extends DataExtension
 		if(empty($metaTitle)) {
 			$result->addFieldError('MetaTitle',
 				sprintf(_t(__CLASS__.'.MetaTitleEmpty',
-					'You have not set a meta title. The title will default to "%s"', $record->getTitle())),
+					'You have not set a meta title. The title will default to "%s"'), $record->getTitle()),
 				ValidationResult::TYPE_WARNING);
 		}
 		else {
 			if ($record->FocusKeyword && strpos($metaTitle, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaTitle',
 					sprintf(_t(__CLASS__.'.MetaTitleNoKeyword',
-						'The focus keyword "%s" does not appear in the SEO title.', $record->Keywords)),
+						'The focus keyword "%s" does not appear in the SEO title.'), $record->Keywords),
 					ValidationResult::TYPE_ERROR);
 			}
 			if (strlen($metaTitle) < 45) {
@@ -349,7 +341,7 @@ class SEODataExtension extends DataExtension
 				->exclude('ID', $record->ID)
 				->filter('MetaTitle', $record->MetaTitle);
 			if ($duplicates->count()) {
-				$items = $this->getDuplicateRecordsList($duplicates);
+				$items = self::get_duplicates_list($duplicates);
 				$result->addFieldError('MetaTitle',
 					sprintf(_t(__CLASS__.'.MetaTitleDuplicated',
 						'This title is not unique. It is also used by %s'), $items),
@@ -363,7 +355,6 @@ class SEODataExtension extends DataExtension
 		}
 		return $result;
 	}
-
 
 	public function validateMetaDescription(ValidationResult $result)
 	{
@@ -399,7 +390,7 @@ class SEODataExtension extends DataExtension
 				->exclude('ID', $record->ID)
 				->filter('MetaDescription', $record->MetaDescription);
 			if ($duplicates->count()) {
-				$items = $this->getDuplicateRecordsList($duplicates);
+				$items = self::get_duplicates_list($duplicates);
 				$result->addFieldError('MetaDescription',
 					sprintf(_t(__CLASS__.'.MetaDescriptionGoodLength', 'This description is not unique. It is also used by %s'), $items),
 					ValidationResult::TYPE_ERROR, null, ValidationResult::CAST_HTML);
@@ -412,91 +403,29 @@ class SEODataExtension extends DataExtension
 		return $result;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	public function checkFocusKeyword()
+	public function getSEOComments($type = null)
 	{
-		$validator = new ValidationResult();
-		if(!$this->owner->FocusKeyword)
-			$validator->addError(_t(__CLASS__.'.FocusKeywordEmpty',
-				'No focus keyword was set for this page. If you do not set a focus keyword, no score can be calculated.'));
-		return $validator;
-	}
-
-	public function checkMetaTitle()
-	{
-		$validator = new ValidationResult();
-		if(!$this->owner->MetaTitle)
-			$validator->addError(_t(__CLASS__.'.MetaTitleEmpty', 'Meta Title is empty'));
-		if(strlen($this->owner->MetaTitle) <= 10)
-			$validator->addError(_t(__CLASS__.'.MetaTitleShort', 'Meta Title should be more that 10 characters of length'));
-		return $validator;
-	}
-
-	public function checkMetaDescription()
-	{
-		$validator = new ValidationResult();
-		if(!$this->owner->MetaDescription)
-			$validator->addError(_t(__CLASS__.'.MetaDescriptionEmpty', 'Meta Description is empty'));
-		if(strlen($this->owner->MetaDescription) > 160)
-			$validator->addError(_t(__CLASS__.'.MetaDescriptionLong', 'Meta Description should be no more that 160 characters of length'));
-		return $validator;
-	}
-
-	public function checkDuplicates()
-	{
-		$validator = new ValidationResult();
-		if($this->owner->MetaTitle) {
-			$list = DataList::create(get_class($this->owner))
-				->exclude('ID', $this->owner->ID)
-				->filter('MetaTitle', $this->owner->MetaTitle);
-			if ($list->count()) {
-				$validator->addError(_t(__CLASS__.'.Duplicates',
-					'We found duplicate entries with the same meta title (' . implode(', ', $list->column('MetaTitle')) . ')'));
-			}
-		}
-		return $validator;
-	}
-
-	public function getSEOComments()
-	{
-		$comments = [];
-		$metaTitle = $this->checkMetaTitle();
-		if(!$metaTitle->isValid()) {
-			$comments = array_merge($comments, $metaTitle->getMessages());
-		}
-		$metaDesc = $this->checkMetaDescription();
-		if(!$metaDesc->isValid()) {
-			$comments = array_merge($comments, $metaDesc->getMessages());
-		}
-		$duplicates = $this->checkDuplicates();
-		if(!$duplicates->isValid()) {
-			$comments = array_merge($comments, $duplicates->getMessages());
-		}
-
-		if(!empty($comments)) {
+		$results = new ValidationResult();
+		$this->validateKeyword($results);
+		$this->validateMetaTitle($results);
+		$this->validateMetaDescription($results);
+		if(!$results->isValid()) {
 			$errors = [];
-			foreach ($comments as $comment) {
-				$errors[] = $comment['message'];
+			foreach ($results->getMessages() as $comment) {
+				if(!$type || $type == $comment['messageType']) {
+					$errors[] = $comment['message'];
+				}
 			}
 			$htmlText = HTMLValue::create();
 			$htmlText->setContent(implode(', ', $errors));
 			return $htmlText;
 		}
 		return null;
+	}
+
+	public function getSEOErrors()
+	{
+		return $this->getSEOComments('error');
 	}
 
 }

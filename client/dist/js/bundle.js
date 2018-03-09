@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -80,18 +80,26 @@ module.exports = React;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(2);
+
+var _jquery2 = _interopRequireDefault(_jquery);
 
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _SEOInputProgressbar = __webpack_require__(4);
+var _SEOInputProgressbar = __webpack_require__(5);
 
 var _SEOInputProgressbar2 = _interopRequireDefault(_SEOInputProgressbar);
+
+var _SEOInputMessages = __webpack_require__(4);
+
+var _SEOInputMessages2 = _interopRequireDefault(_SEOInputMessages);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -102,38 +110,180 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var SEOInput = function (_React$Component) {
-  _inherits(SEOInput, _React$Component);
+    _inherits(SEOInput, _React$Component);
 
-  function SEOInput(props) {
-    _classCallCheck(this, SEOInput);
+    function SEOInput(props) {
+        _classCallCheck(this, SEOInput);
 
-    return _possibleConstructorReturn(this, (SEOInput.__proto__ || Object.getPrototypeOf(SEOInput)).call(this, props));
-  }
+        var _this = _possibleConstructorReturn(this, (SEOInput.__proto__ || Object.getPrototypeOf(SEOInput)).call(this, props));
 
-  _createClass(SEOInput, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        { className: 'seo-input field' },
-        _react2.default.createElement(
-          'label',
-          null,
-          this.props.label
-        ),
-        _react2.default.createElement('input', {
-          type: 'text',
-          className: 'text',
-          name: this.props.name,
-          value: this.props.value,
-          onChange: this.props.onChange
-        }),
-        _react2.default.createElement(_SEOInputProgressbar2.default, null)
-      );
+        _this.onChange = _this.onChange.bind(_this);
+        _this.validateMessages = [];
+        _this.duplicateCheckRequest = null;
+        _this.state = {
+            'Messages': _this.validateMessages
+        };
+        return _this;
     }
-  }]);
 
-  return SEOInput;
+    _createClass(SEOInput, [{
+        key: 'addValidationsMessage',
+        value: function addValidationsMessage(type, message, data) {
+            this.validateMessages.push({
+                'type': type,
+                'message': ss.i18n.inject(message, data)
+            });
+        }
+    }, {
+        key: 'validateRequired',
+        value: function validateRequired(value, params) {
+            var trimmedValue = value.trim();
+            if (!trimmedValue || trimmedValue.length === 0) {
+                this.addValidationsMessage('error', params, {});
+            }
+        }
+    }, {
+        key: 'validateShorterThan',
+        value: function validateShorterThan(value, params) {
+            if (value.length > 0 && value.length < params.chars) {
+                this.addValidationsMessage('warning', params.message, {});
+            }
+        }
+    }, {
+        key: 'validateLongerThan',
+        value: function validateLongerThan(value, params) {
+            if (value.length > 0 && value.length > params.chars) {
+                this.addValidationsMessage('warning', params.message, {});
+            }
+        }
+    }, {
+        key: 'validateLengthWithin',
+        value: function validateLengthWithin(value, params) {
+            if (value.length > 0 && value.length >= params.min && value.length <= params.max) {
+                this.addValidationsMessage('good', params.message, {});
+            }
+        }
+    }, {
+        key: 'validateFieldValueNotFound',
+        value: function validateFieldValueNotFound(value, params) {
+            var haystack = value.toLowerCase();
+            var needle = document.getElementsByName(params.name)[0].value.toString().trim();
+            needle = needle.toLowerCase();
+            if (needle.length > 0 && haystack.length > 0 && haystack.indexOf(needle) < 0) {
+                this.addValidationsMessage('error', params.message, {
+                    'needle': needle
+                });
+            }
+        }
+    }, {
+        key: 'validateDuplicates',
+        value: function validateDuplicates(value, params) {
+            var _this2 = this;
+
+            if (this.duplicateCheckRequest) {
+                this.duplicateCheckRequest.abort();
+            }
+
+            this.duplicateCheckRequest = _jquery2.default.ajax({
+                url: params.link,
+                data: {
+                    Field: params.field,
+                    Needle: value
+                },
+                type: 'POST',
+                method: 'POST',
+                dataType: 'json',
+                success: function success(data) {
+                    if (data.checked === 1) {
+                        if (data.valid === 0) {
+                            _this2.addValidationsMessage('error', params.message, {
+                                'duplicates': data.duplicates
+                            });
+                        } else {
+                            _this2.addValidationsMessage('good', params.unique, {});
+                        }
+                    }
+                    _this2.setState({
+                        'Messages': _this2.validateMessages
+                    });
+                }
+
+            });
+        }
+    }, {
+        key: 'processValidateItem',
+        value: function processValidateItem(type, value, params) {
+            if (type == 'required') {
+                return this.validateRequired(value, params);
+            }
+            if (type == 'shorter_than') {
+                return this.validateShorterThan(value, params);
+            }
+            if (type == 'longer_than') {
+                return this.validateLongerThan(value, params);
+            }
+            if (type == 'within_range') {
+                return this.validateLengthWithin(value, params);
+            }
+            if (type == 'not_found') {
+                return this.validateFieldValueNotFound(value, params);
+            }
+            if (type == 'duplicate_check') {
+                return this.validateDuplicates(value, params);
+            }
+        }
+    }, {
+        key: 'validate',
+        value: function validate() {
+            if (this.props.validations) {
+                var value = document.getElementsByName(this.props.name)[0].value.toString();
+                this.validateMessages = [];
+                for (var type in this.props.validations) {
+                    this.processValidateItem(type, value, this.props.validations[type]);
+                }
+                this.setState({
+                    'Messages': this.validateMessages
+                });
+            }
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.validate();
+        }
+    }, {
+        key: 'onChange',
+        value: function onChange(e) {
+            this.validate();
+            if (this.props.onChange) {
+                this.props.onChange(e);
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { className: 'seo-input field' },
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    this.props.label
+                ),
+                _react2.default.createElement('input', {
+                    type: 'text',
+                    className: 'text',
+                    name: this.props.name,
+                    value: this.props.value,
+                    onChange: this.onChange
+                }),
+                _react2.default.createElement(_SEOInputProgressbar2.default, null),
+                _react2.default.createElement(_SEOInputMessages2.default, { messages: this.state.Messages })
+            );
+        }
+    }]);
+
+    return SEOInput;
 }(_react2.default.Component);
 
 exports.default = SEOInput;
@@ -152,6 +302,58 @@ module.exports = ReactDom;
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SEOInputMessages = function (_React$Component) {
+    _inherits(SEOInputMessages, _React$Component);
+
+    function SEOInputMessages(props) {
+        _classCallCheck(this, SEOInputMessages);
+
+        return _possibleConstructorReturn(this, (SEOInputMessages.__proto__ || Object.getPrototypeOf(SEOInputMessages)).call(this, props));
+    }
+
+    _createClass(SEOInputMessages, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { className: 'seo-messages' },
+                this.props.messages.length ? this.props.messages.map(function (message) {
+                    return [_react2.default.createElement('p', { className: 'message ' + message.type, dangerouslySetInnerHTML: { __html: message.message } })];
+                }) : ''
+            );
+        }
+    }]);
+
+    return SEOInputMessages;
+}(_react2.default.Component);
+
+exports.default = SEOInputMessages;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -205,7 +407,7 @@ var SEOInputProgressbar = function (_React$Component) {
 exports.default = SEOInputProgressbar;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -229,15 +431,15 @@ var _SEOInput = __webpack_require__(1);
 
 var _SEOInput2 = _interopRequireDefault(_SEOInput);
 
-var _SEOTextarea = __webpack_require__(10);
+var _SEOTextarea = __webpack_require__(11);
 
 var _SEOTextarea2 = _interopRequireDefault(_SEOTextarea);
 
-var _SEORobotsFollow = __webpack_require__(8);
+var _SEORobotsFollow = __webpack_require__(9);
 
 var _SEORobotsFollow2 = _interopRequireDefault(_SEORobotsFollow);
 
-var _SEORobotsIndex = __webpack_require__(9);
+var _SEORobotsIndex = __webpack_require__(10);
 
 var _SEORobotsIndex2 = _interopRequireDefault(_SEORobotsIndex);
 
@@ -458,6 +660,15 @@ var SEOEditorHolder = function (_React$Component) {
                   label: 'Focus Keyword',
                   value: this.state.FocusKeyword,
                   name: this.getFieldName('FocusKeyword'),
+                  validations: {
+                    'required': ss.i18n._t('SEO.EMPTY_KEYWORD'),
+                    'duplicate_check': {
+                      field: 'FocusKeyword',
+                      link: this.props.duplicatelink,
+                      message: ss.i18n._t('SEO.DUPLICATE_KEYWORD'),
+                      unique: ss.i18n._t('SEO.UNIQUE_KEYWORD')
+                    }
+                  },
                   onChange: function onChange(e) {
                     _this2.handleInputChange(e, 'FocusKeyword');
                   }
@@ -466,6 +677,32 @@ var SEOEditorHolder = function (_React$Component) {
                   label: 'Meta Title',
                   value: this.state.MetaTitle,
                   name: this.getFieldName('MetaTitle'),
+                  validations: {
+                    'required': ss.i18n._t('SEO.EMPTY_META_TITLE'),
+                    'not_found': {
+                      name: this.getFieldName('FocusKeyword'),
+                      message: ss.i18n._t('SEO.KEYWORD_NOT_FOUND_IN_META_TITLE')
+                    },
+                    'longer_than': {
+                      chars: 70,
+                      message: ss.i18n._t('SEO.META_TITLE_LONG')
+                    },
+                    'shorter_than': {
+                      chars: 45,
+                      message: ss.i18n._t('SEO.META_TITLE_SHORT')
+                    },
+                    'within_range': {
+                      min: 45,
+                      max: 70,
+                      message: ss.i18n._t('SEO.META_TITLE_GOOD_LENGTH')
+                    },
+                    'duplicate_check': {
+                      field: 'MetaTitle',
+                      link: this.props.duplicatelink,
+                      message: ss.i18n._t('SEO.DUPLICATE_META_TITLE'),
+                      unique: ss.i18n._t('SEO.UNIQUE_META_TITLE')
+                    }
+                  },
                   onChange: function onChange(e) {
                     _this2.handleInputChange(e, 'MetaTitle');
                   }
@@ -474,6 +711,32 @@ var SEOEditorHolder = function (_React$Component) {
                   label: 'Meta Description',
                   value: this.state.MetaDescription,
                   name: this.getFieldName('MetaDescription'),
+                  validations: {
+                    'required': ss.i18n._t('SEO.EMPTY_META_DESC'),
+                    'not_found': {
+                      name: this.getFieldName('FocusKeyword'),
+                      message: ss.i18n._t('SEO.KEYWORD_NOT_FOUND_IN_META_DESC')
+                    },
+                    'longer_than': {
+                      chars: 156,
+                      message: ss.i18n._t('SEO.META_DESC_LONG')
+                    },
+                    'shorter_than': {
+                      chars: 120,
+                      message: ss.i18n._t('SEO.META_DESC_SHORT')
+                    },
+                    'within_range': {
+                      min: 120,
+                      max: 156,
+                      message: ss.i18n._t('SEO.META_DESC_GOOD_LENGTH')
+                    },
+                    'duplicate_check': {
+                      field: 'MetaDescription',
+                      link: this.props.duplicatelink,
+                      message: ss.i18n._t('SEO.DUPLICATE_META_DESC'),
+                      unique: ss.i18n._t('SEO.UNIQUE_META_DESC')
+                    }
+                  },
                   onChange: function onChange(e) {
                     _this2.handleInputChange(e, 'MetaDescription');
                   }
@@ -522,6 +785,9 @@ var SEOEditorHolder = function (_React$Component) {
                   label: 'Facebook Title',
                   value: this.state.FacebookTitle,
                   name: this.getFieldName('FacebookTitle'),
+                  validations: {
+                    'required': ss.i18n._t('SEO.FB_TITLE_EMPTY')
+                  },
                   onChange: function onChange(e) {
                     _this2.handleInputChange(e, 'FacebookTitle');
                   }
@@ -606,6 +872,9 @@ var SEOEditorHolder = function (_React$Component) {
                   label: 'Twitter Title',
                   value: this.state.TwitterTitle,
                   name: this.getFieldName('TwitterTitle'),
+                  validations: {
+                    'required': ss.i18n._t('SEO.TWITTER_TITLE_EMPTY')
+                  },
                   onChange: function onChange(e) {
                     _this2.handleInputChange(e, 'TwitterTitle');
                   }
@@ -731,7 +1000,7 @@ var SEOEditorHolder = function (_React$Component) {
 exports.default = SEOEditorHolder;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -749,9 +1018,9 @@ var _reactDom = __webpack_require__(3);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactApollo = __webpack_require__(12);
+var _reactApollo = __webpack_require__(13);
 
-var _Injector = __webpack_require__(11);
+var _Injector = __webpack_require__(12);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -859,7 +1128,7 @@ _jquery2.default.entwine('ss', function ($) {
 });
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -877,13 +1146,13 @@ var _reactDom = __webpack_require__(3);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _SEOEditorHolder = __webpack_require__(5);
+var _SEOEditorHolder = __webpack_require__(6);
 
 var _SEOEditorHolder2 = _interopRequireDefault(_SEOEditorHolder);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(6);
+__webpack_require__(7);
 
 _jquery2.default.entwine('ss', function ($) {
     $('.js-seo-editor:visible').entwine({
@@ -899,18 +1168,20 @@ _jquery2.default.entwine('ss', function ($) {
             var name = this.data('name');
             var seoData = this.data('seo');
             var link = this.data('recordlink');
+            var duplicateCheckLink = this.data('duplicatelink');
 
             _reactDom2.default.render(_react2.default.createElement(_SEOEditorHolder2.default, {
                 link: link,
                 name: name,
-                seodata: seoData
+                seodata: seoData,
+                duplicatelink: duplicateCheckLink
             }), this[0]);
         }
     });
 });
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -996,7 +1267,7 @@ var SEORobotsFollow = function (_SEOInput) {
 exports.default = SEORobotsFollow;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1082,7 +1353,7 @@ var SEORobotsIndex = function (_SEOInput) {
 exports.default = SEORobotsIndex;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1102,9 +1373,13 @@ var _SEOInput2 = __webpack_require__(1);
 
 var _SEOInput3 = _interopRequireDefault(_SEOInput2);
 
-var _SEOInputProgressbar = __webpack_require__(4);
+var _SEOInputProgressbar = __webpack_require__(5);
 
 var _SEOInputProgressbar2 = _interopRequireDefault(_SEOInputProgressbar);
+
+var _SEOInputMessages = __webpack_require__(4);
+
+var _SEOInputMessages2 = _interopRequireDefault(_SEOInputMessages);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1139,11 +1414,12 @@ var SEOTextarea = function (_SEOInput) {
           {
             className: 'text',
             name: this.props.name,
-            onChange: this.props.onChange
+            onChange: this.onChange
           },
           this.props.value
         ),
-        _react2.default.createElement(_SEOInputProgressbar2.default, null)
+        _react2.default.createElement(_SEOInputProgressbar2.default, null),
+        _react2.default.createElement(_SEOInputMessages2.default, { messages: this.state.Messages })
       );
     }
   }]);
@@ -1154,13 +1430,13 @@ var SEOTextarea = function (_SEOInput) {
 exports.default = SEOTextarea;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = Injector;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = ReactApollo;
