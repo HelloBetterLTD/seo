@@ -1,0 +1,32 @@
+.badge {
+
+	&.status-seowarning,
+	&.status-seogood,
+	&.status-seoerror {
+		position: relative!important;
+		padding: 0!important;
+		width: 15px;
+		height: 15px;
+		border-radius: 50%!important;
+		border: 1px solid transparent;
+		line-height: 14px!important;
+		margin-left: 3px!important;
+		top: -2px!important;
+	}
+
+	&.status-seowarning {
+		background-color: #fefbde;
+		border-color: #e9d104;
+		color: #43536d;
+	}
+	&.status-seogood {
+		background-color: #eaf6e4;
+		border-color: #72c34b;
+		color: #43536d;
+	}
+	&.status-seoerror {
+		background-color: #fae8e9;
+		border-color: #e68288;
+		color: #43536d;
+	}
+}

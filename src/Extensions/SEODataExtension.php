@@ -250,6 +250,31 @@ class SEODataExtension extends DataExtension
 		return $tags;
 	}
 
+	public function updateStatusFlags(&$flags)
+	{
+		$result = $this->validateSEO();
+		$scores = [
+			'good'		=> 0,
+			'warning'	=> 0,
+			'error'		=> 0,
+		];
+		foreach ($result->getMessages() as $message) {
+			if(isset($scores[$message['messageType']])) {
+				$scores[$message['messageType']] += 1;
+			}
+		}
+
+		foreach ($scores as $type => $score) {
+			if($score) {
+				$flags['seo' . $type] = [
+					'text'		=> $score > 9 ? '9+' : $score,
+					'title'		=> $score . ' ' . $type . 's'
+				];
+			}
+		}
+
+	}
+
 
 	public function getOGPostType()
 	{
@@ -403,12 +428,22 @@ class SEODataExtension extends DataExtension
 		return $result;
 	}
 
-	public function getSEOComments($type = null)
+
+	/**
+	 * @return ValidationResult
+	 */
+	public function validateSEO()
 	{
 		$results = new ValidationResult();
 		$this->validateKeyword($results);
 		$this->validateMetaTitle($results);
 		$this->validateMetaDescription($results);
+		return $results;
+	}
+
+	public function getSEOComments($type = null)
+	{
+		$results = $this->validateSEO();
 		if(!$results->isValid()) {
 			$errors = [];
 			foreach ($results->getMessages() as $comment) {
