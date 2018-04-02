@@ -316,7 +316,7 @@ class SEODataExtension extends DataExtension
 		else {
 			$duplicates = DataList::create(get_class($this->owner))
 				->exclude('ID', $record->ID)
-				->filter('Keywords', $keyword);
+				->filter('FocusKeyword', $keyword);
 			if ($duplicates->count()) {
 				$items = self::get_duplicates_list($duplicates);
 				$result->addFieldError('FocusKeyword', sprintf(_t(__CLASS__.'.FocusKeywordIsNotUnique',
@@ -345,7 +345,7 @@ class SEODataExtension extends DataExtension
 			if ($record->FocusKeyword && strpos($metaTitle, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaTitle',
 					sprintf(_t(__CLASS__.'.MetaTitleNoKeyword',
-						'The focus keyword "%s" does not appear in the SEO title.'), $record->Keywords),
+						'The focus keyword "%s" does not appear in the SEO title.'), $record->FocusKeyword),
 					ValidationResult::TYPE_ERROR);
 			}
 			if (strlen($metaTitle) < 45) {
@@ -391,7 +391,7 @@ class SEODataExtension extends DataExtension
 				ValidationResult::TYPE_ERROR);
 		}
 		else {
-			if ($record->Keywords && strpos($desc, $record->Keywords) === false) {
+			if ($record->FocusKeyword && strpos($desc, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaDescription',
 					_t(__CLASS__.'.MetaDescriptionNoKeyword','The meta description does not contain the focus keyword.'),
 					ValidationResult::TYPE_ERROR);
