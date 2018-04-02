@@ -16,6 +16,7 @@ use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
 
@@ -26,7 +27,11 @@ class SiteConfigExtension extends DataExtension
 		'DisableSearchEngineVisibility'		=> 'Boolean',
 		'TwitterUsername'					=> 'Varchar(250)',
 		'FacebookAdmin'						=> 'Varchar(250)',
-		'FacebookAppID'						=> 'Varchar(250)'
+		'FacebookAppID'						=> 'Varchar(250)',
+
+		'HeadScripts'						=> 'Text',
+		'BodyStartScripts'					=> 'Text',
+		'BodyEndScripts'					=> 'Text'
 	];
 
 	private static $has_one = [
@@ -42,7 +47,12 @@ class SiteConfigExtension extends DataExtension
 			TextField::create('TwitterUsername', 'Twitter Username'),
 			TextField::create('FacebookAdmin', 'Facebook Admin Meta'),
 			TextField::create('FacebookAppID', 'Facebook App ID'),
-			UploadField::create('GlobalSocialSharingImage', 'Global Social Sharing Image')
+			UploadField::create('GlobalSocialSharingImage', 'Global Social Sharing Image'),
+
+			HeaderField::create('Embeds', 'Embed scripts for analytics etc')->setHeadingLevel(4),
+			TextareaField::create('HeadScripts', 'Scripts within <head> block'),
+			TextareaField::create('BodyStartScripts', 'Scripts just after opening <body>'),
+			TextareaField::create('BodyEndScripts', 'Scripts just before opening <body>'),
 		]);
 	}
 

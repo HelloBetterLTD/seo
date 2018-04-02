@@ -7,3 +7,9 @@ SilverStripe\CMS\Model\SiteTree:
 SilverStripe\SiteConfig\SiteConfig:
   extensions:
     - SilverStripers\seo\Extensions\SiteConfigExtension
+
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Control\Director:
+    properties:
+      Middlewares:
+        SEORequestProcessor: '%$SilverStripers\seo\Control\SEORequestProcessor'
