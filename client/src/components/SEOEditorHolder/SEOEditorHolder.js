@@ -30,6 +30,7 @@ class SEOEditorHolder extends React.Component {
         this.state = {
             Name: props.name,
             Link: props.link,
+            FocusKeyword: props.seodata.FocusKeyword,
             MetaTitle: props.seodata.MetaTitle,
             MetaDescription: props.seodata.MetaDescription,
             MetaRobotsFollow: props.seodata.MetaRobotsFollow,
@@ -150,15 +151,82 @@ class SEOEditorHolder extends React.Component {
               <div className="seo-section">
                 <div className="fields">
                   <SEOInput
+                    label="Focus Keyword"
+                    value={this.state.FocusKeyword}
+                    name={this.getFieldName('FocusKeyword')}
+                    validations={{
+                        'required': ss.i18n._t('SEO.EMPTY_KEYWORD'),
+                        'duplicate_check': {
+                            field : 'FocusKeyword',
+                            link: this.props.duplicatelink,
+                            message : ss.i18n._t('SEO.DUPLICATE_KEYWORD'),
+                            unique: ss.i18n._t('SEO.UNIQUE_KEYWORD')
+                        }
+                    }}
+                    onChange={(e) => { this.handleInputChange(e, 'FocusKeyword'); }}
+                  />
+                  <SEOInput
                     label="Meta Title"
                     value={this.state.MetaTitle}
                     name={this.getFieldName('MetaTitle')}
+                    validations={{
+                        'required': ss.i18n._t('SEO.EMPTY_META_TITLE'),
+                        'not_found': {
+                            name: this.getFieldName('FocusKeyword'),
+                            message : ss.i18n._t('SEO.KEYWORD_NOT_FOUND_IN_META_TITLE')
+                        },
+                        'longer_than': {
+                            chars : 70,
+                            message : ss.i18n._t('SEO.META_TITLE_LONG')
+                        },
+                        'shorter_than': {
+                            chars : 45,
+                            message : ss.i18n._t('SEO.META_TITLE_SHORT')
+                        },
+                        'within_range': {
+                            min : 45,
+                            max: 70,
+                            message : ss.i18n._t('SEO.META_TITLE_GOOD_LENGTH')
+                        },
+                        'duplicate_check': {
+                            field : 'MetaTitle',
+                            link: this.props.duplicatelink,
+                            message : ss.i18n._t('SEO.DUPLICATE_META_TITLE'),
+                            unique: ss.i18n._t('SEO.UNIQUE_META_TITLE')
+                        }
+                    }}
                     onChange={(e) => { this.handleInputChange(e, 'MetaTitle'); }}
                   />
                   <SEOTextarea
                     label="Meta Description"
                     value={this.state.MetaDescription}
                     name={this.getFieldName('MetaDescription')}
+                    validations={{
+                        'required': ss.i18n._t('SEO.EMPTY_META_DESC'),
+                        'not_found': {
+                            name: this.getFieldName('FocusKeyword'),
+                            message : ss.i18n._t('SEO.KEYWORD_NOT_FOUND_IN_META_DESC')
+                        },
+                        'longer_than': {
+                            chars : 156,
+                            message : ss.i18n._t('SEO.META_DESC_LONG')
+                        },
+                        'shorter_than': {
+                            chars : 120,
+                            message : ss.i18n._t('SEO.META_DESC_SHORT')
+                        },
+                        'within_range': {
+                            min : 120,
+                            max: 156,
+                            message : ss.i18n._t('SEO.META_DESC_GOOD_LENGTH')
+                        },
+                        'duplicate_check': {
+                            field : 'MetaDescription',
+                            link: this.props.duplicatelink,
+                            message : ss.i18n._t('SEO.DUPLICATE_META_DESC'),
+                            unique: ss.i18n._t('SEO.UNIQUE_META_DESC')
+                        }
+                    }}
                     onChange={(e) => { this.handleInputChange(e, 'MetaDescription'); }}
                   />
                 </div>
@@ -181,6 +249,9 @@ class SEOEditorHolder extends React.Component {
                     label="Facebook Title"
                     value={this.state.FacebookTitle}
                     name={this.getFieldName('FacebookTitle')}
+                    validations={{
+                        'required': ss.i18n._t('SEO.FB_TITLE_EMPTY')
+                    }}
                     onChange={(e) => { this.handleInputChange(e, 'FacebookTitle'); }}
                   />
                   <SEOTextarea
@@ -226,6 +297,9 @@ class SEOEditorHolder extends React.Component {
                     label="Twitter Title"
                     value={this.state.TwitterTitle}
                     name={this.getFieldName('TwitterTitle')}
+                    validations={{
+                        'required': ss.i18n._t('SEO.TWITTER_TITLE_EMPTY')
+                    }}
                     onChange={(e) => { this.handleInputChange(e, 'TwitterTitle'); }}
                   />
                   <SEOTextarea

@@ -1,8 +1,11 @@
 import React from 'react';
 import SEOInput from './SEOInput';
 import SEOInputProgressbar from './SEOInputProgressbar';
+import SEOInputMessages from './SEOInputMessages';
 
 class SEOTextarea extends SEOInput {
+
+    
     render() {
         return (
           <div className="seo-input field">
@@ -10,9 +13,10 @@ class SEOTextarea extends SEOInput {
             <textarea
               className="text"
               name={this.props.name}
-              onChange={this.props.onChange}
+              onChange={this.onChange}
             >{this.props.value}</textarea>
             <SEOInputProgressbar />
+            <SEOInputMessages messages={this.state.Messages} />
           </div>
         );
     }

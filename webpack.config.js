@@ -14,6 +14,7 @@ const ENV = process.env.NODE_ENV;
 const PATHS = {
   MODULES: 'node_modules',
   ROOT: Path.resolve(),
+  FILES_PATH: '../',
   SRC: Path.resolve('client/src'),
   DIST: Path.resolve('client/dist'),
 };

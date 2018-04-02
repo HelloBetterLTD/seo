@@ -59,7 +59,7 @@ class SEOReport extends Report
 				'title' 		=> 'Meta Description',
 				'link' 			=> true,
 			],
-			'SEOComments'		=> [
+			'SEOErrors'			=> [
 				'title'			=> 'Comments',
 				'link'			=> true
 			]

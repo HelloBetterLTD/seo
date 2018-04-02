@@ -19,12 +19,14 @@ jQuery.entwine('ss', ($) => {
             const name = this.data('name');
             const seoData = this.data('seo');
             const link = this.data('recordlink');
+            const duplicateCheckLink = this.data('duplicatelink');
 
             ReactDOM.render(
               <SEOEditorHolder
                 link={link}
                 name={name}
                 seodata={seoData}
+                duplicatelink={duplicateCheckLink}
               />
                 , this[0]);
         }

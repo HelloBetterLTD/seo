@@ -1,0 +1,21 @@
+{
+  "SEO.EMPTY_KEYWORD": "No focus keyword was set for this page. If you do not set a focus keyword, no score can be calculated.",
+  "SEO.DUPLICATE_KEYWORD": "This keyword is not unique. It is also used by {duplicates}",
+  "SEO.UNIQUE_KEYWORD": "This keyword is not used by any other pages on this site",
+  "SEO.EMPTY_META_TITLE": "You have not set a meta title.",
+  "SEO.KEYWORD_NOT_FOUND_IN_META_TITLE": "The focus keyword '{needle}' does not appear in the SEO title.",
+  "SEO.META_TITLE_SHORT": "The SEO title is too short. Use the space to add keyword variations or create compelling call-to-action copy.",
+  "SEO.META_TITLE_LONG": "The SEO title is over 70 characters and may be truncated on search results pages",
+  "SEO.META_TITLE_GOOD_LENGTH": "The SEO title has a nice length.",
+  "SEO.DUPLICATE_META_TITLE": "This title is not unique. It is also used by {duplicates}",
+  "SEO.UNIQUE_META_TITLE": "This title is not used by any other pages on this site",
+  "SEO.EMPTY_META_DESC": "No meta description has been specified.",
+  "SEO.KEYWORD_NOT_FOUND_IN_META_DESC": "The meta description does not contain the focus keyword.",
+  "SEO.META_DESC_LONG": "The meta description is under 120 characters long. However, up to 156 characters are available.",
+  "SEO.META_DESC_SHORT": "The meta description is over 156 characters. Reducing the length will ensure the entire description will be visible.",
+  "SEO.META_DESC_GOOD_LENGTH": "The length of the meta description is sufficient.",
+  "SEO.DUPLICATE_META_DESC": "This description is not unique. It is also used by {duplicates}",
+  "SEO.UNIQUE_META_DESC": "This description is unique to this page",
+  "SEO.FB_TITLE_EMPTY": "You haven't set a Facebook Title. That's okay, the SEO Title will be used instead.",
+  "SEO.TWITTER_TITLE_EMPTY": "You haven't set a Twitter Title. That's okay, the SEO Title will be used instead."
+}
