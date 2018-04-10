@@ -239,15 +239,11 @@ class SEODataExtension extends DataExtension
 		if ($record->ExtraMeta) {
 			$tags .= $record->obj('ExtraMeta')->forTemplate();
 		}
+		
+        $record->extend('MetaTags', $tags);
 
 		return $tags;
 
-	}
-
-	public function MetaTags(&$tags = '')
-	{
-		$tags = $this->owner->GenerateMetaTags();
-		return $tags;
 	}
 
 	public function updateStatusFlags(&$flags)
