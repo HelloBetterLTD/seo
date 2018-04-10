@@ -7,10 +7,6 @@ require('../entwine/images-selector');
 
 jQuery.entwine('ss', ($) => {
     $('.js-seo-editor:visible').entwine({
-        onunmatch() {
-            this._super();
-            ReactDOM.unmountComponentAtNode(this[0]);
-        },
         onmatch() {
             this._super();
             this.refresh();

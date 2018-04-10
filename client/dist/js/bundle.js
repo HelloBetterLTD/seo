@@ -1156,10 +1156,6 @@ __webpack_require__(7);
 
 _jquery2.default.entwine('ss', function ($) {
     $('.js-seo-editor:visible').entwine({
-        onunmatch: function onunmatch() {
-            this._super();
-            _reactDom2.default.unmountComponentAtNode(this[0]);
-        },
         onmatch: function onmatch() {
             this._super();
             this.refresh();
