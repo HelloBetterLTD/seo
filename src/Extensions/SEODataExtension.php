@@ -145,18 +145,18 @@ class SEODataExtension extends DataExtension
 			]);
 		}
 
-//		if (Permission::check('CMS_ACCESS_CMSMain')
-//			&& $record->ID > 0
-//		) {
-//			$tags[] = HTML::createTag('meta', [
-//				'name' => 'x-page-id',
-//				'content' => $record->obj('ID')->forTemplate(),
-//			]);
-//			$tags[] = HTML::createTag('meta', [
-//				'name' => 'x-cms-edit-link',
-//				'content' => $record->obj('CMSEditLink')->forTemplate(),
-//			]);
-//		}
+		if (Permission::check('CMS_ACCESS_CMSMain')
+			&& $record->ID > 0
+		) {
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'x-page-id',
+				'content' => $record->obj('ID')->forTemplate(),
+			]);
+			$tags[] = HTML::createTag('meta', [
+				'name' => 'x-cms-edit-link',
+				'content' => $record->obj('CMSEditLink')->forTemplate(),
+			]);
+		}
 
 		if($record->CanonicalURL) {
 			$tags[] = HTML::createTag('link', [
