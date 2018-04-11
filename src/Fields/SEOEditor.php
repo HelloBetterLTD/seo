@@ -61,7 +61,6 @@ class SEOEditor extends FormField
 	public function Field($properties = array())
 	{
 		Requirements::javascript('silverstripers/seo:client/dist/js/bundle.js');
-		Requirements::css('silverstripers/seo:client/dist/styles/bundle.css');
 		Requirements::add_i18n_javascript('silverstripers/seo:client/lang', false, true);
 		return parent::Field($properties);
 	}

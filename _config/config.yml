@@ -13,3 +13,7 @@ SilverStripe\Core\Injector\Injector:
     properties:
       Middlewares:
         SEORequestProcessor: '%$SilverStripers\seo\Control\SEORequestProcessor'
+
+SilverStripe\Admin\LeftAndMain:
+  extra_requirements_css:
+    - silverstripers/seo:client/dist/styles/bundle.css
