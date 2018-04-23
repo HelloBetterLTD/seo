@@ -50,6 +50,11 @@ class SEODataExtension extends DataExtension
 		'TwitterImage'			=> Image::class
 	];
 
+	private static $owns = [
+		'FacebookImage',
+		'TwitterImage'
+	];
+
 	public function updateCMSFields(FieldList $fields)
 	{
 		$fields->removeByName('Metadata');
