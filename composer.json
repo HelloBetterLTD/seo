@@ -2,7 +2,7 @@
     "name": "silverstripers/seo",
     "description": "SEO for SilverStripe websites",
     "type": "silverstripe-vendormodule",
-    "keywords": ["silverstripe", "markdown", "module"],
+    "keywords": ["silverstripe", "seo", "module"],
     "license": "BSD-3-Clause",
     "authors": [
     {
