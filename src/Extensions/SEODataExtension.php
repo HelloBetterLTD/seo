@@ -16,6 +16,7 @@ use SilverStripe\Control\ContentNegotiator;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
@@ -59,7 +60,14 @@ class SEODataExtension extends DataExtension
 	{
 		$fields->removeByName('Metadata');
 		$fields->addFieldToTab('Root.Main',
-			SEOEditor::create('SEOFields')->setRecord($this->owner));
+            ToggleCompositeField::create(
+                'SEOFields_Container',
+                'Meta Data & SEO',
+                [
+                    SEOEditor::create('SEOFields')->setRecord($this->owner)
+                ]
+            )
+        );
 	}
 
 	public static function override_seo_from(DataObject $record)
@@ -244,7 +252,7 @@ class SEODataExtension extends DataExtension
 		if ($record->ExtraMeta) {
 			$tags .= $record->obj('ExtraMeta')->forTemplate();
 		}
-		
+
         $record->extend('MetaTags', $tags);
 
 		return $tags;
