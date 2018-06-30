@@ -15,6 +15,7 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\ContentNegotiator;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\i18n\i18n;
@@ -30,6 +31,8 @@ use SilverStripers\seo\Fields\SEOEditor;
 
 class SEODataExtension extends DataExtension
 {
+
+    use Configurable;
 
 	private static $override_seo = null;
 
@@ -59,6 +62,12 @@ class SEODataExtension extends DataExtension
 	public function updateCMSFields(FieldList $fields)
 	{
 		$fields->removeByName('Metadata');
+
+        $scaffoldFields = array_merge(array_keys(self::config()->get('db')), array_keys(self::config()->get('has_one')));
+        foreach ($scaffoldFields as $fieldName) {
+            $fields->removeByName($fieldName);
+        }
+
 		$fields->addFieldToTab('Root.Main',
             ToggleCompositeField::create(
                 'SEOFields_Container',
