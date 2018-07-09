@@ -123,10 +123,25 @@ class SEODataExtension extends DataExtension
 
 		if($record->MetaTitle) {
 			$tags[] = HTML::createTag('title', [], $record->obj('MetaTitle')->forTemplate());
+            $tags[] = HTML::createTag('meta', array(
+                'name' => 'title',
+                'content' => $record->obj('MetaTitle')->forTemplate(),
+            ));
 		}
 		else {
 			$tags[] = HTML::createTag('title', [], $record->obj('Title')->forTemplate());
+            $tags[] = HTML::createTag('meta', array(
+                'name' => 'title',
+                'content' => $record->obj('Title')->forTemplate(),
+            ));
 		}
+
+        if($record->MetaDescription) {
+            $tags[] = HTML::createTag('meta', array(
+                'name' => 'description',
+                'content' => $record->MetaDescription,
+            ));
+        }
 
 		$generator = trim(Config::inst()->get(SiteTree::class, 'meta_generator'));
 		if (!empty($generator)) {
@@ -142,12 +157,7 @@ class SEODataExtension extends DataExtension
 			'content' => 'text/html; charset=' . $charset,
 		]);
 
-		if($record->MetaDescription) {
-			$tags[] = HTML::createTag('meta', array(
-				'name' => 'description',
-				'content' => $record->MetaDescription,
-			));
-		}
+
 
 		$robots = [];
 		if(SiteConfig::current_site_config()->DisableSearchEngineVisibility) {
