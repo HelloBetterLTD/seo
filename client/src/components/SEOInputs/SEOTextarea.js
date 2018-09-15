@@ -4,8 +4,6 @@ import SEOInputProgressbar from './SEOInputProgressbar';
 import SEOInputMessages from './SEOInputMessages';
 
 class SEOTextarea extends SEOInput {
-
-    
     render() {
         return (
           <div className="seo-input field">
