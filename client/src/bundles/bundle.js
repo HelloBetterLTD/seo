@@ -6,7 +6,7 @@ import SEOEditorHolder from '../components/SEOEditorHolder/SEOEditorHolder';
 require('../entwine/images-selector');
 
 jQuery.entwine('ss', ($) => {
-    $('.js-seo-editor:visible').entwine({
+    $('.js-seo-editor').entwine({
         onmatch() {
             this._super();
             this.refresh();
