@@ -50,9 +50,11 @@
 		@media (min-width: 1200px) {
 			display: flex;
 			justify-content: space-between;
+            flex-wrap: wrap;
 
 			.fields {
 				max-width: 500px;
+                width: 45%;
 			}
 		}
 	}
@@ -68,7 +70,7 @@
 		width: 100%;
 
 		@media (min-width: 1200px) {
-			max-width: 50%;
+            width: 45%;
 		}
 
 		.preview-card {
@@ -83,7 +85,10 @@
 			width: 100%;
 			padding-top: (279/426)*100%;
 			position: relative;
-			background: #f1f1f1;
+			background-color: #f1f1f1;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
 			margin-bottom: 20px;
 			font-size: 0;
 			line-height: 0;
@@ -91,32 +96,27 @@
 			a {
 				font-size: 18px;
 				cursor: pointer;
-				width: 20px;
-				height: 20px;
+				width: 24px;
+				height: 24px;
 				text-align: center;
 				display: flex;
 				justify-content: center;
 				align-items: center;
 				margin-right: 10px;
 				background: #FFFFFF;
-				opacity: 0.5;
 				border-radius: 3px;
 				-webkit-transition: all 0.2s;
 				-moz-transition: all 0.2s;
 				-ms-transition: all 0.2s;
 				-o-transition: all 0.2s;
 				transition: all 0.2s;
+                box-shadow: 0 1px 2px rgba(0,0,0,.2);
 
 				&:hover {
 					color: #000000;
 					background: #FFFFFF;
-					opacity: 1;
 				}
 
-				i {
-					top: 2px;
-					left: 1px;
-				}
 			}
 
 			div.img {
@@ -184,7 +184,8 @@
 		}
 
 		.preview-card.facebook {
-			width: 476px;
+            // width: 100%;
+			max-width: 476px;
 			box-shadow: 0 0 0 1px rgba(0, 0, 0, .15) inset, 0 1px 4px rgba(0, 0, 0, .1);
 			position: relative;
 			font-family: SF Optimized, system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
@@ -216,7 +217,7 @@
 		}
 
 		.preview-card.twitter {
-			width: 456px;
+			max-width: 456px;
 			border-radius: .42857em;
 			border-width: 1px;
 			border-style: solid;

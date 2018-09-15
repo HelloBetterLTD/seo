@@ -264,7 +264,7 @@ class SEOEditorHolder extends React.Component {
                 </div>
                 <div className="preview-holder">
                   <div className="preview-card facebook">
-                    <div className="preview-card--image">
+                    <div className="preview-card--image" style={ { backgroundImage: `url(${this.state.FacebookImageURL})` } }>
                       <div className="preview-card--actions">
                         <a className="js-og-image-selector" onClick={() => { this.openImageEditor('FacebookImage'); }}>
                           <i className="seo-pencil-square-o" />
@@ -275,11 +275,6 @@ class SEOEditorHolder extends React.Component {
                         </a>
                         }
                       </div>
-                      {this.state.FacebookImageURL &&
-                        <div className="img">
-                          <img src={this.state.FacebookImageURL} />
-                        </div>
-                      }
                     </div>
                     <h3>{this.state.FacebookTitle}</h3>
                     <p className="preview-description">{this.state.FacebookDescription}</p>
@@ -315,7 +310,7 @@ class SEOEditorHolder extends React.Component {
                 <div className="preview-holder">
                   <div className="preview-card twitter">
                     <div className="preview-contents">
-                      <div className="preview-card--image">
+                      <div className="preview-card--image" style={ { backgroundImage: `url(${this.state.TwitterImageURL})` } }>
                         <div className="preview-card--actions">
                           <a className="js-og-image-selector" onClick={() => { this.openImageEditor('TwitterImage'); }}>
                             <i className="seo-pencil-square-o" />
@@ -326,11 +321,6 @@ class SEOEditorHolder extends React.Component {
                             </a>
                             }
                         </div>
-                        {this.state.TwitterImageURL &&
-                        <div className="img">
-                          <img src={this.state.TwitterImageURL} />
-                        </div>
-                                        }
                       </div>
                       <h3>{this.state.TwitterTitle}</h3>
                       <p className="preview-description">{this.state.TwitterDescription}</p>

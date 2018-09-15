@@ -810,7 +810,7 @@ var SEOEditorHolder = function (_React$Component) {
                   { className: 'preview-card facebook' },
                   _react2.default.createElement(
                     'div',
-                    { className: 'preview-card--image' },
+                    { className: 'preview-card--image', style: { backgroundImage: 'url(' + this.state.FacebookImageURL + ')' } },
                     _react2.default.createElement(
                       'div',
                       { className: 'preview-card--actions' },
@@ -828,11 +828,6 @@ var SEOEditorHolder = function (_React$Component) {
                           } },
                         _react2.default.createElement('i', { className: 'seo-trash' })
                       )
-                    ),
-                    this.state.FacebookImageURL && _react2.default.createElement(
-                      'div',
-                      { className: 'img' },
-                      _react2.default.createElement('img', { src: this.state.FacebookImageURL })
                     )
                   ),
                   _react2.default.createElement(
@@ -900,7 +895,7 @@ var SEOEditorHolder = function (_React$Component) {
                     { className: 'preview-contents' },
                     _react2.default.createElement(
                       'div',
-                      { className: 'preview-card--image' },
+                      { className: 'preview-card--image', style: { backgroundImage: 'url(' + this.state.TwitterImageURL + ')' } },
                       _react2.default.createElement(
                         'div',
                         { className: 'preview-card--actions' },
@@ -918,11 +913,6 @@ var SEOEditorHolder = function (_React$Component) {
                             } },
                           _react2.default.createElement('i', { className: 'seo-trash' })
                         )
-                      ),
-                      this.state.TwitterImageURL && _react2.default.createElement(
-                        'div',
-                        { className: 'img' },
-                        _react2.default.createElement('img', { src: this.state.TwitterImageURL })
                       )
                     ),
                     _react2.default.createElement(
@@ -1062,8 +1052,6 @@ _jquery2.default.entwine('ss', function ($) {
             var client = window.ss.apolloClient;
             var attrs = {};
 
-            delete attrs.url;
-
             _reactDom2.default.render(_react2.default.createElement(
                 _reactApollo.ApolloProvider,
                 { client: client },
@@ -1074,8 +1062,12 @@ _jquery2.default.entwine('ss', function ($) {
                         title: false,
                         type: 'insert-media',
                         isOpen: show,
+                        onInsert: handleInsert,
+                        onHide: handleHide,
                         bodyClassName: 'modal__dialog',
-                        className: 'insert-media-react__dialog-wrapper'
+                        className: 'insert-media-react__dialog-wrapper',
+                        equireLinkText: false,
+                        fileAttributes: attrs
                     })
                 )
             ), this[0]);

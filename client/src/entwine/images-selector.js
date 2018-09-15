@@ -43,26 +43,8 @@ jQuery.entwine('ss', ($) => {
             const store = window.ss.store;
             const client = window.ss.apolloClient;
             const attrs = {};
-
-
-            delete attrs.url;
-
+            
             // create/update the react component
-        //     ReactDOM.render(
-        //         <InjectableInsertMediaModal
-        //           title={false}
-        //           type="insert-media"
-        //           show={show}
-        //           onInsert={handleInsert}
-        //           onHide={handleHide}
-        //           bodyClassName="modal__dialog"
-        //           className="insert-media-react__dialog-wrapper"
-        //           requireLinkText={false}
-        //           fileAttributes={attrs}
-        //         />,
-        //         this[0]
-        // );
-
             ReactDOM.render(
               <ApolloProvider client={client}>
                 <Provider store={store}>
@@ -70,8 +52,12 @@ jQuery.entwine('ss', ($) => {
                       title={false}
                       type="insert-media"
                       isOpen={show}
+                      onInsert={handleInsert}
+                      onHide={handleHide}
                       bodyClassName="modal__dialog"
                       className="insert-media-react__dialog-wrapper"
+                      equireLinkText={false}
+                      fileAttributes={attrs}
                     />
                   </Provider>
               </ApolloProvider>,
