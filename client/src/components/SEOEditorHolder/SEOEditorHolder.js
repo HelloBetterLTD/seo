@@ -12,7 +12,7 @@ jQuery.entwine('ss', ($) => {
         openImageEditor(type, element) {
             let dialog = $('#insert-seo-media-react__dialog-wrapper');
             if (!dialog.length) {
-                dialog = $('<div id="insert-seo-media-react__dialog-wrapper" />');
+                dialog = $('<div id="insert-seo-media-react__dialog-wrapper"/>');
                 $('body').append(dialog);
             }
             dialog.setElement({

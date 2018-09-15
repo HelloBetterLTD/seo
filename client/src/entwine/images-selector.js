@@ -1,6 +1,7 @@
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
 import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
@@ -28,7 +29,6 @@ jQuery.entwine('ss', ($) => {
         },
         setTypeField(type) {
             this.ImageType = type;
-            console.log(this.ImageType);
         },
 
         /**
@@ -44,22 +44,36 @@ jQuery.entwine('ss', ($) => {
             const client = window.ss.apolloClient;
             const attrs = {};
 
+
             delete attrs.url;
 
             // create/update the react component
+        //     ReactDOM.render(
+        //         <InjectableInsertMediaModal
+        //           title={false}
+        //           type="insert-media"
+        //           show={show}
+        //           onInsert={handleInsert}
+        //           onHide={handleHide}
+        //           bodyClassName="modal__dialog"
+        //           className="insert-media-react__dialog-wrapper"
+        //           requireLinkText={false}
+        //           fileAttributes={attrs}
+        //         />,
+        //         this[0]
+        // );
+
             ReactDOM.render(
-              <ApolloProvider store={store} client={client}>
-                <InjectableInsertMediaModal
-                  title={false}
-                  type="insert-media"
-                  show={show}
-                  onInsert={handleInsert}
-                  onHide={handleHide}
-                  bodyClassName="modal__dialog"
-                  className="insert-media-react__dialog-wrapper"
-                  requireLinkText={false}
-                  fileAttributes={attrs}
-                />
+              <ApolloProvider client={client}>
+                <Provider store={store}>
+                    <InjectableInsertMediaModal
+                      title={false}
+                      type="insert-media"
+                      isOpen={show}
+                      bodyClassName="modal__dialog"
+                      className="insert-media-react__dialog-wrapper"
+                    />
+                  </Provider>
               </ApolloProvider>,
                 this[0]
         );
