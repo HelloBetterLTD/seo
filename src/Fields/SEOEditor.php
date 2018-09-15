@@ -20,7 +20,7 @@ use SilverStripers\seo\Extensions\SEODataExtension;
 
 class SEOEditor extends FormField
 {
-    
+
 	private static $allowed_actions = [
 		'duplicatecheck'
 	];
