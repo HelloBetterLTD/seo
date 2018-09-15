@@ -10,11 +10,7 @@
         "email": "nivanka@silverstripers.com"
     }],
     "require": {
-        "silverstripe/framework": "^4.0.0",
-        "silverstripe/cms": "^4.0.0",
-        "silverstripe/siteconfig": "^4",
-        "silverstripe/reports": "^4",
-        "silverstripe/asset-admin": "^1"
+        "silverstripe/recipe-cms": "^4.2.0"
     },
     "autoload": {
         "psr-4": {
