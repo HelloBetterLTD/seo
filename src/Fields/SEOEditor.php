@@ -20,8 +20,7 @@ use SilverStripers\seo\Extensions\SEODataExtension;
 
 class SEOEditor extends FormField
 {
-
-
+    
 	private static $allowed_actions = [
 		'duplicatecheck'
 	];
@@ -73,23 +72,30 @@ class SEOEditor extends FormField
 		return Director::absoluteBaseURL();
 	}
 
+    public function getFields()
+    {
+        $seoData = $this->record->SEOData();
+        $fields = array_keys($seoData);
+        return $fields;
+    }
+
+    public function isSavable()
+    {
+        foreach ($this->getFields() as $fieldName) {
+            if(is_array($this->value) && array_key_exists($fieldName, $this->value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 	public function saveInto(DataObjectInterface $record)
 	{
-		$this->record->setCastedField('FocusKeyword', !empty($this->value['FocusKeyword']) ? $this->value['FocusKeyword'] : null);
-		$this->record->setCastedField('MetaTitle', !empty($this->value['MetaTitle']) ? $this->value['MetaTitle'] : null);
-		$this->record->setCastedField('MetaDescription', !empty($this->value['MetaDescription']) ? $this->value['MetaDescription'] : null);
-		$this->record->setCastedField('FacebookTitle', !empty($this->value['FacebookTitle']) ? $this->value['FacebookTitle'] : null);
-		$this->record->setCastedField('FacebookDescription', !empty($this->value['FacebookDescription']) ? $this->value['FacebookDescription'] : null);
-		$this->record->setCastedField('TwitterTitle', !empty($this->value['TwitterTitle']) ? $this->value['TwitterTitle'] : null);
-		$this->record->setCastedField('TwitterDescription', !empty($this->value['TwitterDescription']) ? $this->value['TwitterDescription'] : null);
-		$this->record->setCastedField('MetaRobotsFollow', !empty($this->value['MetaRobotsFollow']) ? $this->value['MetaRobotsFollow'] : null);
-		$this->record->setCastedField('MetaRobots', !empty($this->value['MetaRobots']) ? $this->value['MetaRobots'] : null);
-		$this->record->setCastedField('CanonicalURL', !empty($this->value['CanonicalURL']) ? $this->value['CanonicalURL'] : null);
-
-		$this->record->setCastedField('FacebookImageID', !empty($this->value['FacebookImageID']) ? $this->value['FacebookImageID'] : 0);
-		$this->record->setCastedField('TwitterImageID', !empty($this->value['TwitterImageID']) ? $this->value['TwitterImageID'] : 0);
-		$this->record->setCastedField('MetaRobotsFollow', !empty($this->value['MetaRobotsFollow']) ? $this->value['MetaRobotsFollow'] : '');
-		$this->record->setCastedField('MetaRobotsIndex', !empty($this->value['MetaRobotsIndex']) ? $this->value['MetaRobotsIndex'] : '');
+        if($this->isSavable()) {
+            foreach($this->getFields() as $fieldName) {
+                $this->record->setCastedField($fieldName, !empty($this->value[$fieldName]) ? $this->value[$fieldName] : null);
+            }
+        }
 	}
 
 	public function DuplicateCheckLink()
