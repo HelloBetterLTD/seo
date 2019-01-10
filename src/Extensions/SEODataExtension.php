@@ -198,43 +198,43 @@ class SEODataExtension extends DataExtension
 		}
 
 		$tags[] = HTML::createTag('meta', [
-			'name' => 'og:locale',
+			'property' => 'og:locale',
 			'content' => i18n::get_locale()
 		]);
 
 		$tags[] = HTML::createTag('meta', [
-			'name' => 'og:type',
+			'property' => 'og:type',
 			'content' => $this->getOGPostType()
 		]);
 
 		if($record->FacebookTitle) {
 			$tags[] = HTML::createTag('meta', [
-				'name' => 'og:title',
+				'property' => 'og:title',
 				'content' => $record->FacebookTitle
 			]);
 		}
 
 		if($record->FacebookDescription) {
 			$tags[] = HTML::createTag('meta', [
-				'name' => 'og:description',
+				'property' => 'og:description',
 				'content' => $record->FacebookDescription
 			]);
 		}
 
 		$tags[] = HTML::createTag('meta', [
-			'name' => 'og:url',
+			'property' => 'og:url',
 			'content' => $record->AbsoluteLink()
 		]);
 
 
 		$tags[] = HTML::createTag('meta', [
-			'name' => 'og:site_name',
+			'property' => 'og:site_name',
 			'content' => SiteConfig::current_site_config()->Title
 		]);
 
 		if($record->FacebookImage()->exists()) {
 			$tags[] = HTML::createTag('meta', [
-				'name' => 'og:image',
+				'property' => 'og:image',
 				'content' => $record->FacebookImage()->AbsoluteLink()
 			]);
 		}
