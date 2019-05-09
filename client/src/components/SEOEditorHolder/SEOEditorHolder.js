@@ -44,6 +44,7 @@ class SEOEditorHolder extends React.Component {
             FacebookImageID: props.seodata.FacebookImageID,
             TwitterImageURL: props.seodata.TwitterImageURL,
             TwitterImageID: props.seodata.TwitterImageID,
+            CanonicalURL: props.seodata.CanonicalURL,
             HostName: props.seodata.HostName
         };
     }
