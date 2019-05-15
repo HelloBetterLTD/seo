@@ -273,6 +273,7 @@ class SEODataExtension extends DataExtension
 		}
 
         $record->extend('MetaTags', $tags);
+        $record->invokeWithExtensions('updateMetaTags', $tags);
 
 		return $tags;
 
