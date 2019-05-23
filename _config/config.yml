@@ -17,3 +17,7 @@ SilverStripe\Core\Injector\Injector:
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
     - silverstripers/seo:client/dist/styles/bundle.css
+
+SilverStripe\Control\Director:
+  rules:
+    'robots.txt': 'SilverStripers\seo\Control\RobotsTXTController'

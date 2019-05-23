@@ -24,18 +24,20 @@ class SiteConfigExtension extends DataExtension
 {
 
 	private static $db = [
-		'DisableSearchEngineVisibility'		=> 'Boolean',
-		'TwitterUsername'					=> 'Varchar(250)',
-		'FacebookAdmin'						=> 'Varchar(250)',
-		'FacebookAppID'						=> 'Varchar(250)',
+		'DisableSearchEngineVisibility' => 'Boolean',
+		'TwitterUsername' => 'Varchar(250)',
+		'FacebookAdmin' => 'Varchar(250)',
+		'FacebookAppID' => 'Varchar(250)',
 
-		'HeadScripts'						=> 'Text',
-		'BodyStartScripts'					=> 'Text',
-		'BodyEndScripts'					=> 'Text'
+		'HeadScripts' => 'Text',
+		'BodyStartScripts' => 'Text',
+		'BodyEndScripts' => 'Text',
+
+        'RobotsTXT' => 'Text'
 	];
 
 	private static $has_one = [
-		'GlobalSocialSharingImage'			=> Image::class
+		'GlobalSocialSharingImage' => Image::class
 	];
 
 	private static $owns = [
@@ -57,7 +59,15 @@ class SiteConfigExtension extends DataExtension
 			TextareaField::create('HeadScripts', 'Scripts within <head> block'),
 			TextareaField::create('BodyStartScripts', 'Scripts just after opening <body>'),
 			TextareaField::create('BodyEndScripts', 'Scripts just before opening <body>'),
-		]);
+
+            HeaderField::create('RobotsTXTHeading', 'Robots TXT')->setHeadingLevel(4),
+            TextareaField::create('RobotsTXT', 'Robots TXT')
+                ->setDescription('<p>An example robots.txt<br>
+<pre>
+User-agent: *
+Allow: /
+</pre></p>')
+        ]);
 	}
 
 
