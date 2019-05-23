@@ -118,7 +118,7 @@ class SEODataExtension extends DataExtension
 	public function GenerateMetaTags()
 	{
 		$tags = [];
-
+        $siteConfig = SiteConfig::current_site_config();
 		$record = SEODataExtension::get_override() ? : $this->owner;
 
 		if($record->MetaTitle) {
@@ -238,6 +238,12 @@ class SEODataExtension extends DataExtension
 				'content' => $record->FacebookImage()->AbsoluteLink()
 			]);
 		}
+		else if ($siteConfig->GlobalSocialSharingImage()->exists()) {
+            $tags[] = HTML::createTag('meta', [
+                'property' => 'og:image',
+                'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
+            ]);
+        }
 
 
 		$tags[] = HTML::createTag('meta', [
@@ -265,6 +271,12 @@ class SEODataExtension extends DataExtension
 				'content' => $record->TwitterImage()->AbsoluteLink()
 			]);
 		}
+        else if ($siteConfig->GlobalSocialSharingImage()->exists()) {
+            $tags[] = HTML::createTag('meta', [
+                'name' => 'twitter:image',
+                'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
+            ]);
+        }
 
 		$tags = implode("\n", $tags);
 

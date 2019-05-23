@@ -38,6 +38,10 @@ class SiteConfigExtension extends DataExtension
 		'GlobalSocialSharingImage'			=> Image::class
 	];
 
+	private static $owns = [
+	    'GlobalSocialSharingImage'
+    ];
+
 	public function updateCMSFields(FieldList $fields)
 	{
 		$fields->addFieldsToTab('Root.SEO', [
