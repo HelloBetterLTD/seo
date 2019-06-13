@@ -21,10 +21,13 @@ class SEOInput extends React.Component {
         });
     }
 
-    validateRequired(value, params) {
+    validateRequired(value, params, type) {
+        if(!type) {
+            type = 'error';
+        }
         const trimmedValue = value.trim();
         if (!trimmedValue || trimmedValue.length === 0) {
-            this.addValidationsMessage('error', params, {});
+            this.addValidationsMessage(type, params, {});
         }
     }
 
@@ -91,7 +94,10 @@ class SEOInput extends React.Component {
 
     processValidateItem(type, value, params) {
         if (type == 'required') {
-            return this.validateRequired(value, params);
+            return this.validateRequired(value, params, 'error');
+        }
+        if (type == 'required_warning') {
+            return this.validateRequired(value, params, 'warning');
         }
         if (type == 'shorter_than') {
             return this.validateShorterThan(value, params);

@@ -156,7 +156,7 @@ class SEOEditorHolder extends React.Component {
                     value={this.state.FocusKeyword}
                     name={this.getFieldName('FocusKeyword')}
                     validations={{
-                        required: ss.i18n._t('SEO.EMPTY_KEYWORD'),
+                        required_warning: ss.i18n._t('SEO.EMPTY_KEYWORD'),
                         duplicate_check: {
                             field: 'FocusKeyword',
                             link: this.props.duplicatelink,
