@@ -363,7 +363,7 @@ class SEODataExtension extends DataExtension
 			if ($duplicates->count()) {
 				$items = self::get_duplicates_list($duplicates);
 				$result->addFieldError('FocusKeyword', sprintf(_t(__CLASS__.'.FocusKeywordIsNotUnique',
-					'This keyword is not unique. It is also used by \'%s\''), implode(', ', $items)),
+					'This keyword is not unique. It is also used by \'%s\''), $items),
 					ValidationResult::TYPE_ERROR, null, ValidationResult::CAST_HTML);
 			}
 			if ($result->isValid()) {
