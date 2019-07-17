@@ -68,6 +68,9 @@ User-agent: *
 Allow: /
 </pre></p>')
         ]);
+        
+        $this->owner->invokeWithExtensions('updateSEOFields', $fields);
+        
 	}
 
 
