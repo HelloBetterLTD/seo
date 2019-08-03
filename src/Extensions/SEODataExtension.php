@@ -14,6 +14,7 @@ use SilverStripe\Assets\Image;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\ContentNegotiator;
 use SilverStripe\Control\Director;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Forms\FieldList;
@@ -145,21 +146,21 @@ class SEODataExtension extends DataExtension
             ));
         }
 
-		$generator = trim(Config::inst()->get(SiteTree::class, 'meta_generator'));
-		if (!empty($generator)) {
-			$tags[] = HTML::createTag('meta', [
-				'name' => 'generator',
-				'content' => $generator,
-			]);
-		}
+        if (ClassInfo::exists('SilverStripe\CMS\Model\SiteTree')) {
+            $generator = trim(Config::inst()->get(SiteTree::class, 'meta_generator'));
+            if (!empty($generator)) {
+                $tags[] = HTML::createTag('meta', [
+                    'name' => 'generator',
+                    'content' => $generator,
+                ]);
+            }
+        }
 
 		$charset = ContentNegotiator::config()->uninherited('encoding');
 		$tags[] = HTML::createTag('meta', [
 			'http-equiv' => 'Content-Type',
 			'content' => 'text/html; charset=' . $charset,
 		]);
-
-
 
 		$robots = [];
 		if(SiteConfig::current_site_config()->DisableSearchEngineVisibility) {
@@ -223,10 +224,12 @@ class SEODataExtension extends DataExtension
 			]);
 		}
 
-		$tags[] = HTML::createTag('meta', [
-			'property' => 'og:url',
-			'content' => $record->AbsoluteLink()
-		]);
+		if (method_exists($record, 'AbsoluteLink')) {
+            $tags[] = HTML::createTag('meta', [
+                'property' => 'og:url',
+                'content' => $record->AbsoluteLink()
+            ]);
+        }
 
 
 		$tags[] = HTML::createTag('meta', [
