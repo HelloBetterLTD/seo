@@ -16,6 +16,11 @@ jQuery.entwine('ss', ($) => {
             const seoData = this.data('seo');
             const link = this.data('recordlink');
             const duplicateCheckLink = this.data('duplicatelink');
+            const singular = this.data('singular');
+            const plural = this.data('plural');
+            const settings = this.data('settings') === 1;
+            const seoimages = this.data('seoimages') === 1;
+            const fallbackseoimage = this.data('fallbackseoimage');
 
             ReactDOM.render(
               <SEOEditorHolder
@@ -23,6 +28,11 @@ jQuery.entwine('ss', ($) => {
                 name={name}
                 seodata={seoData}
                 duplicatelink={duplicateCheckLink}
+                singular={singular}
+                plural={plural}
+                settings={settings}
+                seoimages={seoimages}
+                fallbackseoimage={fallbackseoimage}
               />
                 , this[0]);
         }

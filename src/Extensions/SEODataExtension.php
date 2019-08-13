@@ -30,6 +30,12 @@ use SilverStripe\View\HTML;
 use SilverStripe\View\Parsers\HTMLValue;
 use SilverStripers\seo\Fields\SEOEditor;
 
+/**
+ * Class SEODataExtension
+ * @package SilverStripers\seo\Extensions
+ *
+ * @property DataObject $owner
+ */
 class SEODataExtension extends DataExtension
 {
 
@@ -237,10 +243,14 @@ class SEODataExtension extends DataExtension
 			'content' => SiteConfig::current_site_config()->Title
 		]);
 
-		if($record->FacebookImage()->exists()) {
+		$fbImage = $record->FacebookImage();
+		if (!$fbImage->exists()) {
+		    $fbImage = $this->getDefaultImage();
+        }
+		if($fbImage->exists()) {
 			$tags[] = HTML::createTag('meta', [
 				'property' => 'og:image',
-				'content' => $record->FacebookImage()->AbsoluteLink()
+				'content' => $fbImage->AbsoluteLink()
 			]);
 		}
 		else if ($siteConfig->GlobalSocialSharingImage()->exists()) {
@@ -270,13 +280,16 @@ class SEODataExtension extends DataExtension
 			]);
 		}
 
-		if($record->TwitterImage()->exists()) {
+        $twImage = $record->TwitterImage();
+        if (!$twImage->exists()) {
+            $twImage = $this->getDefaultImage();
+        }
+        if ($twImage->exists()) {
 			$tags[] = HTML::createTag('meta', [
 				'name' => 'twitter:image',
-				'content' => $record->TwitterImage()->AbsoluteLink()
+				'content' => $twImage->AbsoluteLink()
 			]);
-		}
-        else if ($siteConfig->GlobalSocialSharingImage()->exists()) {
+		} elseif ($siteConfig->GlobalSocialSharingImage()->exists()) {
             $tags[] = HTML::createTag('meta', [
                 'name' => 'twitter:image',
                 'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
@@ -295,6 +308,16 @@ class SEODataExtension extends DataExtension
 		return $tags;
 
 	}
+
+	protected function getDefaultImage()
+    {
+        $relation = $this->owner->config()->get('default_seo_image');
+        $image = $this->owner->getComponent($relation);
+        if ($image && $image->exists()) {
+            return $image;
+        }
+        return null;
+    }
 
 	public function updateStatusFlags(&$flags)
 	{

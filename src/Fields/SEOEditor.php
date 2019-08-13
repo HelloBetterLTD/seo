@@ -10,14 +10,27 @@
 namespace SilverStripers\seo\Fields;
 
 
+use SilverStripe\Assets\Image;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Convert;
 use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\View\Requirements;
 use SilverStripers\seo\Extensions\SEODataExtension;
 
+/**
+ * Class SEOEditor
+ * @package SilverStripers\seo\Fields
+ *
+ * @property DataObject $record
+ * @property boolean $enableSettings
+ * @property boolean $enableSEOImages
+ * @property string $singular_name
+ * @property string $plural_name
+ * @property Image $fallBackImage
+ */
 class SEOEditor extends FormField
 {
 
@@ -26,6 +39,11 @@ class SEOEditor extends FormField
 	];
 
 	private $record = null;
+	private $enableSettings = true;
+	private $enableSEOImages = true;
+	private $fallBackImage = null;
+	private $singular_name = null;
+	private $plural_name = null;
 
 	public function __construct($name, $title = null, $value = null, $record = null)
 	{
@@ -47,14 +65,84 @@ class SEOEditor extends FormField
 		return $this->record;
 	}
 
+	public function setEnableSettings($enable = true)
+    {
+        $this->enableSettings = $enable;
+        return $this;
+    }
+
+	public function setEnableSEOImages($enable = true)
+    {
+        $this->enableSEOImages = $enable;
+        return $this;
+    }
+
+    public function setFallbackImage(Image $image)
+    {
+        $this->fallBackImage = $image;
+        return $this;
+    }
+
+    public function getEnabledSettings()
+    {
+        return $this->enableSettings;
+    }
+
+    public function getEnableSEOImages()
+    {
+        return $this->enableSEOImages;
+    }
+
+    public function getFallbackImage()
+    {
+        return $this->fallBackImage;
+    }
+
+    public function setSingularName($name)
+    {
+        $this->singular_name = $name;
+        return $this;
+    }
+
+    public function setPluralName($name)
+    {
+        $this->plural_name = $name;
+        return $this;
+    }
+
+    public function getSingularName()
+    {
+        if ($this->singular_name) {
+            return $this->singular_name;
+        }
+        return $this->record->i18n_singular_name();
+    }
+
+    public function getPluralName()
+    {
+        if ($this->plural_name) {
+            return $this->plural_name;
+        }
+        return $this->record->i18n_plural_name();
+    }
+
 	public function getSEOJSON()
 	{
-		return Convert::array2json($this->record->SEOData());
+        $data = $this->record->SEOData();
+        if ($this->value && is_array($this->value)) {
+            foreach ($data as $key => $value) {
+                if (isset($this->value[$key])) {
+                    $data[$key] = $value;
+                }
+            }
+        }
+		return json_encode($data);
 	}
 
 	public function getSEOJSONAttr()
 	{
-		return Convert::raw2att($this->getSEOJSON());
+	    $data = $this->getSEOJSON();
+	    return Convert::raw2att($data);
 	}
 
 	public function Field($properties = array())
@@ -93,10 +181,18 @@ class SEOEditor extends FormField
 	{
         if($this->isSavable()) {
             foreach($this->getFields() as $fieldName) {
-                $this->record->setCastedField($fieldName, !empty($this->value[$fieldName]) ? $this->value[$fieldName] : null);
+                if (isset($this->value[$fieldName])) {
+                    $this->record->setCastedField($fieldName, !empty($this->value[$fieldName]) ? $this->value[$fieldName] : null);
+                }
             }
         }
 	}
+
+    public function setValue($value, $data = null)
+    {
+        $this->value = $value;
+        return $this;
+    }
 
 	public function DuplicateCheckLink()
 	{

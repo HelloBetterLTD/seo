@@ -45,8 +45,22 @@ class SEOEditorHolder extends React.Component {
             TwitterImageURL: props.seodata.TwitterImageURL,
             TwitterImageID: props.seodata.TwitterImageID,
             CanonicalURL: props.seodata.CanonicalURL,
-            HostName: props.seodata.HostName
+            HostName: props.seodata.HostName,
+            SingiluarName: props.singular,
+            PluralName: props.plural,
+
+            SettingsTab: props.settings,
+            EditableSEOImages: props.seoimages,
+            SEODefaultURL: props.fallbackseoimage
         };
+    }
+    
+    getSingularName() {
+        return this.state.SingiluarName;
+    }
+    
+    getPluralName() {
+        return this.state.PluralName;
     }
 
     getFieldName(name) {
@@ -105,6 +119,20 @@ class SEOEditorHolder extends React.Component {
         }
     }
 
+    getFacebookImageURL() {
+        if (this.state.FacebookImageURL) {
+            return this.state.FacebookImageURL;
+        }
+        return this.state.SEODefaultURL;
+    }
+
+    getTwitterImageURL() {
+        if (this.state.TwitterImageURL) {
+            return this.state.TwitterImageURL;
+        }
+        return this.state.SEODefaultURL;
+    }
+
     render() {
         return (<div className="seo-editor">
           <nav>
@@ -135,6 +163,7 @@ class SEOEditorHolder extends React.Component {
                   <i className="seo-twitter-square" />
                 </a>
               </li>
+              {this.state.SettingsTab &&
               <li>
                 <a
                   className={`${this.state.CurrentTab === 'settings' ? 'active' : ''}`}
@@ -144,6 +173,7 @@ class SEOEditorHolder extends React.Component {
                   <i className="seo-cog" />
                 </a>
               </li>
+              }
             </ul>
           </nav>
           <div className="seo-tab-container">
@@ -155,6 +185,7 @@ class SEOEditorHolder extends React.Component {
                     label="Focus Keyword"
                     value={this.state.FocusKeyword}
                     name={this.getFieldName('FocusKeyword')}
+                    parent={this}
                     validations={{
                         required_warning: ss.i18n._t('SEO.EMPTY_KEYWORD'),
                         duplicate_check: {
@@ -170,6 +201,7 @@ class SEOEditorHolder extends React.Component {
                     label="Meta Title"
                     value={this.state.MetaTitle}
                     name={this.getFieldName('MetaTitle')}
+                    parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.EMPTY_META_TITLE'),
                         not_found: {
@@ -202,6 +234,7 @@ class SEOEditorHolder extends React.Component {
                     label="Meta Description"
                     value={this.state.MetaDescription}
                     name={this.getFieldName('MetaDescription')}
+                    parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.EMPTY_META_DESC'),
                         not_found: {
@@ -250,6 +283,7 @@ class SEOEditorHolder extends React.Component {
                     label="Facebook Title"
                     value={this.state.FacebookTitle}
                     name={this.getFieldName('FacebookTitle')}
+                    parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.FB_TITLE_EMPTY')
                     }}
@@ -259,23 +293,30 @@ class SEOEditorHolder extends React.Component {
                     label="Facebook Description"
                     value={this.state.FacebookDescription}
                     name={this.getFieldName('FacebookDescription')}
+                    parent={this}
                     onChange={(e) => { this.handleInputChange(e, 'FacebookDescription'); }}
                   />
                   <input type="hidden" value={this.state.FacebookImageID} name={this.getFieldName('FacebookImageID')} />
                 </div>
                 <div className="preview-holder">
                   <div className="preview-card facebook">
-                    <div className="preview-card--image" style={ { backgroundImage: `url(${this.state.FacebookImageURL})` } }>
-                      <div className="preview-card--actions">
-                        <a className="js-og-image-selector" onClick={() => { this.openImageEditor('FacebookImage'); }}>
-                          <i className="seo-pencil-square-o" />
-                        </a>
-                        {this.state.FacebookImageURL &&
-                        <a className="js-og-image-selector" onClick={() => { this.removeImage('FacebookImage'); }}>
-                          <i className="seo-trash" />
-                        </a>
+                    <div className="preview-card--image" style={ { backgroundImage: `url(${this.getFacebookImageURL()})` } }>
+                        {this.state.EditableSEOImages &&
+                        <div className="preview-card--actions">
+                            <a className="js-og-image-selector" onClick={() => {
+                                this.openImageEditor('FacebookImage');
+                            }}>
+                                <i className="seo-pencil-square-o"/>
+                            </a>
+                            {this.state.FacebookImageURL &&
+                            <a className="js-og-image-selector" onClick={() => {
+                                this.removeImage('FacebookImage');
+                            }}>
+                                <i className="seo-trash"/>
+                            </a>
+                            }
+                        </div>
                         }
-                      </div>
                     </div>
                     <h3>{this.state.FacebookTitle}</h3>
                     <p className="preview-description">{this.state.FacebookDescription}</p>
@@ -293,6 +334,7 @@ class SEOEditorHolder extends React.Component {
                     label="Twitter Title"
                     value={this.state.TwitterTitle}
                     name={this.getFieldName('TwitterTitle')}
+                    parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.TWITTER_TITLE_EMPTY')
                     }}
@@ -302,6 +344,7 @@ class SEOEditorHolder extends React.Component {
                     label="Twitter Description"
                     value={this.state.TwitterDescription}
                     name={this.getFieldName('TwitterDescription')}
+                    parent={this}
                     onChange={(e) => { this.handleInputChange(e, 'TwitterDescription'); }}
                   />
                   <input type="hidden" value={this.state.TwitterImageID} name={this.getFieldName('TwitterImageID')} />
@@ -311,17 +354,23 @@ class SEOEditorHolder extends React.Component {
                 <div className="preview-holder">
                   <div className="preview-card twitter">
                     <div className="preview-contents">
-                      <div className="preview-card--image" style={ { backgroundImage: `url(${this.state.TwitterImageURL})` } }>
-                        <div className="preview-card--actions">
-                          <a className="js-og-image-selector" onClick={() => { this.openImageEditor('TwitterImage'); }}>
-                            <i className="seo-pencil-square-o" />
-                          </a>
-                          {this.state.TwitterImageURL &&
-                            <a className="js-og-image-selector" onClick={() => { this.removeImage('TwitterImage'); }}>
-                              <i className="seo-trash" />
-                            </a>
-                            }
-                        </div>
+                      <div className="preview-card--image" style={ { backgroundImage: `url(${this.getTwitterImageURL()})` } }>
+                          {this.state.EditableSEOImages &&
+                          <div className="preview-card--actions">
+                              <a className="js-og-image-selector" onClick={() => {
+                                  this.openImageEditor('TwitterImage');
+                              }}>
+                                  <i className="seo-pencil-square-o"/>
+                              </a>
+                              {this.state.TwitterImageURL &&
+                              <a className="js-og-image-selector" onClick={() => {
+                                  this.removeImage('TwitterImage');
+                              }}>
+                                  <i className="seo-trash"/>
+                              </a>
+                              }
+                          </div>
+                          }
                       </div>
                       <h3>{this.state.TwitterTitle}</h3>
                       <p className="preview-description">{this.state.TwitterDescription}</p>
@@ -331,32 +380,44 @@ class SEOEditorHolder extends React.Component {
                 </div>
               </div>
             </div>
-            <div className={`seo-tab ${this.state.CurrentTab === 'settings' ? 'active' : ''}`} data-tab="settings">
-              <h3 className="seo-tab__title">Settings</h3>
+              {this.state.SettingsTab &&
+              <div className={`seo-tab ${this.state.CurrentTab === 'settings' ? 'active' : ''}`} data-tab="settings">
+                  <h3 className="seo-tab__title">Settings</h3>
 
-              <SEORobotsIndex
-                label="Meta robots index"
-                value={this.state.MetaRobotsIndex}
-                name={this.getFieldName('MetaRobotsIndex')}
-                onChange={(e) => { this.handleInputChange(e, 'MetaRobotsIndex'); }}
-              />
+                  <SEORobotsIndex
+                      label="Meta robots index"
+                      value={this.state.MetaRobotsIndex}
+                      name={this.getFieldName('MetaRobotsIndex')}
+                      parent={this}
+                      onChange={(e) => {
+                          this.handleInputChange(e, 'MetaRobotsIndex');
+                      }}
+                  />
 
-              <SEORobotsFollow
-                label="Meta robots follow"
-                value={this.state.MetaRobotsFollow}
-                name={this.getFieldName('MetaRobotsFollow')}
-                onChange={(e) => { this.handleRadioChange(e, 'MetaRobotsFollow'); }}
-              />
-              <SEOInput
-                label="Canonical URL"
-                value={this.state.CanonicalURL}
-                name={this.getFieldName('CanonicalURL')}
-                onChange={(e) => { this.handleInputChange(e, 'CanonicalURL'); }}
-              />
-              <p>The canonical URL that this page should point to, leave empty to default to permalink.
-                <a href="https://webmasters.googleblog.com/2009/12/handling-legitimate-cross-domain.html" target="_blank">
-                        Cross domain canonical</a> supported too.</p>
-            </div>
+                  <SEORobotsFollow
+                      label="Meta robots follow"
+                      value={this.state.MetaRobotsFollow}
+                      name={this.getFieldName('MetaRobotsFollow')}
+                      parent={this}
+                      onChange={(e) => {
+                          this.handleRadioChange(e, 'MetaRobotsFollow');
+                      }}
+                  />
+                  <SEOInput
+                      label="Canonical URL"
+                      value={this.state.CanonicalURL}
+                      name={this.getFieldName('CanonicalURL')}
+                      parent={this}
+                      onChange={(e) => {
+                          this.handleInputChange(e, 'CanonicalURL');
+                      }}
+                  />
+                  <p>The canonical URL that this page should point to, leave empty to default to permalink.
+                      <a href="https://webmasters.googleblog.com/2009/12/handling-legitimate-cross-domain.html"
+                         target="_blank">
+                          Cross domain canonical</a> supported too.</p>
+              </div>
+              }
           </div>
         </div>);
     }

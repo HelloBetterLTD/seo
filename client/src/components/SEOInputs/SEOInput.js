@@ -15,6 +15,11 @@ class SEOInput extends React.Component {
     }
 
     addValidationsMessage(type, message, data) {
+        data.singular_name = this.props.parent.getSingularName();
+        data.plural_name = this.props.parent.getPluralName();
+
+        console.log(data);
+
         this.validateMessages.push({
             type,
             message: ss.i18n.inject(message, data)
