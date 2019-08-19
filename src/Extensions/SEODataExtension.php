@@ -247,7 +247,7 @@ class SEODataExtension extends DataExtension
 		if (!$fbImage->exists()) {
 		    $fbImage = $this->getDefaultImage();
         }
-		if($fbImage->exists()) {
+		if($fbImage && $fbImage->exists()) {
 			$tags[] = HTML::createTag('meta', [
 				'property' => 'og:image',
 				'content' => $fbImage->AbsoluteLink()
@@ -284,7 +284,7 @@ class SEODataExtension extends DataExtension
         if (!$twImage->exists()) {
             $twImage = $this->getDefaultImage();
         }
-        if ($twImage->exists()) {
+        if ($twImage && $twImage->exists()) {
 			$tags[] = HTML::createTag('meta', [
 				'name' => 'twitter:image',
 				'content' => $twImage->AbsoluteLink()
@@ -312,9 +312,11 @@ class SEODataExtension extends DataExtension
 	protected function getDefaultImage()
     {
         $relation = $this->owner->config()->get('default_seo_image');
-        $image = $this->owner->getComponent($relation);
-        if ($image && $image->exists()) {
-            return $image;
+        if ($relation) {
+            $image = $this->owner->getComponent($relation);
+            if ($image && $image->exists()) {
+                return $image;
+            }
         }
         return null;
     }
