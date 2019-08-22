@@ -75,15 +75,17 @@ class SEODataExtension extends DataExtension
             $fields->removeByName($fieldName);
         }
 
-		$fields->addFieldToTab('Root.Main',
-            ToggleCompositeField::create(
-                'SEOFields_Container',
-                'Meta Data & SEO',
-                [
-                    SEOEditor::create('SEOFields')->setRecord($this->owner)
-                ]
-            )
-        );
+        if (!$fields->fieldByName('Root.Main.SEOFields_Container')) {
+            $fields->addFieldToTab('Root.Main',
+                ToggleCompositeField::create(
+                    'SEOFields_Container',
+                    'Meta Data & SEO',
+                    [
+                        SEOEditor::create('SEOFields')->setRecord($this->owner)
+                    ]
+                )
+            );
+        }
 	}
 
 	public static function override_seo_from(DataObject $record)
@@ -130,6 +132,9 @@ class SEODataExtension extends DataExtension
 
         $metaTitle = $record->obj('MetaTitle')->forTemplate();
         $this->owner->invokeWithExtensions('updateMetaTitle', $metaTitle);
+        if (!$metaTitle) {
+            $metaTitle = $record->obj('Title')->forTemplate();
+        }
 		if($metaTitle) {
 		    $tags[] = HTML::createTag('title', [], $metaTitle);
             $tags[] = HTML::createTag('meta', array(
@@ -137,18 +142,16 @@ class SEODataExtension extends DataExtension
                 'content' => $metaTitle,
             ));
 		}
-		else {
-			$tags[] = HTML::createTag('title', [], $record->obj('Title')->forTemplate());
-            $tags[] = HTML::createTag('meta', array(
-                'name' => 'title',
-                'content' => $record->obj('Title')->forTemplate(),
-            ));
-		}
 
-        if($record->MetaDescription) {
+		$metaDescription = $record->MetaDescription;
+		if (!$metaDescription && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->getField($fallbackField)) {
+		    $metaDescription = $record->dbObject($fallbackField)->forTemplate();
+        }
+
+        if ($metaDescription) {
             $tags[] = HTML::createTag('meta', array(
                 'name' => 'description',
-                'content' => $record->MetaDescription,
+                'content' => $metaDescription,
             ));
         }
 
@@ -216,17 +219,18 @@ class SEODataExtension extends DataExtension
 			'content' => $this->getOGPostType()
 		]);
 
-		if($record->FacebookTitle) {
+		$facebookTitle = $record->FacebookTitle ? : $record->getTitle();
+		if($facebookTitle) {
 			$tags[] = HTML::createTag('meta', [
 				'property' => 'og:title',
-				'content' => $record->FacebookTitle
+				'content' => $facebookTitle
 			]);
 		}
-
-		if($record->FacebookDescription) {
+        $fbDescription = $record->FacebookDescription ? : $metaDescription;
+		if($fbDescription) {
 			$tags[] = HTML::createTag('meta', [
 				'property' => 'og:description',
-				'content' => $record->FacebookDescription
+				'content' => $fbDescription
 			]);
 		}
 
@@ -245,7 +249,7 @@ class SEODataExtension extends DataExtension
 
 		$fbImage = $record->FacebookImage();
 		if (!$fbImage->exists()) {
-		    $fbImage = $this->getDefaultImage();
+		    $fbImage = $record->getDefaultImage();
         }
 		if($fbImage && $fbImage->exists()) {
 			$tags[] = HTML::createTag('meta', [
@@ -266,23 +270,27 @@ class SEODataExtension extends DataExtension
 			'content' => 'summary_large_image'
 		]);
 
-		if($record->TwitterTitle) {
+
+		$twTitle = $record->TwitterTitle ? : $metaTitle;
+		if($metaTitle) {
 			$tags[] = HTML::createTag('meta', [
 				'name' => 'twitter:title',
-				'content' => $record->TwitterTitle
+				'content' => $metaTitle
 			]);
 		}
 
-		if($record->TwitterDescription) {
+
+        $twDescription = $record->TwitterDescription ? : $metaDescription;
+		if($twDescription) {
 			$tags[] = HTML::createTag('meta', [
 				'name' => 'twitter:description',
-				'content' => $record->TwitterDescription
+				'content' => $twDescription
 			]);
 		}
 
         $twImage = $record->TwitterImage();
         if (!$twImage->exists()) {
-            $twImage = $this->getDefaultImage();
+            $twImage = $record->getDefaultImage();
         }
         if ($twImage && $twImage->exists()) {
 			$tags[] = HTML::createTag('meta', [
@@ -309,7 +317,7 @@ class SEODataExtension extends DataExtension
 
 	}
 
-	protected function getDefaultImage()
+	public function getDefaultImage()
     {
         $relation = $this->owner->config()->get('default_seo_image');
         if ($relation) {
