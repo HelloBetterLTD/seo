@@ -190,6 +190,7 @@ class SEODataExtension extends DataExtension
 		}
 
 		if (Permission::check('CMS_ACCESS_CMSMain')
+            && is_a($record, 'SilverStripe\CMS\Model\SiteTree')
 			&& $record->ID > 0
 		) {
 			$tags[] = HTML::createTag('meta', [
