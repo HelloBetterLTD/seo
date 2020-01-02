@@ -70,10 +70,11 @@ class SEODataExtension extends DataExtension
 	{
 		$fields->removeByName('Metadata');
 
-        $scaffoldFields = array_merge(array_keys(self::config()->get('db')), array_keys(self::config()->get('has_one')));
-        foreach ($scaffoldFields as $fieldName) {
-            $fields->removeByName($fieldName);
-        }
+        $scaffoldFields = array_keys(array_merge(
+            self::config()->get('db'),
+            self::config()->get('has_one')
+        ));
+        $fields->removeByName($scaffoldFields);
 
         if (!$fields->fieldByName('Root.Main.SEOFields_Container')) {
             $fields->addFieldToTab('Root.Main',
