@@ -134,6 +134,7 @@ class SEODataExtension extends DataExtension
         if (!$metaTitle) {
             $metaTitle = $record->obj('Title')->forTemplate();
         }
+        $this->owner->invokeWithExtensions('updateMetaTitle', $metaTitle);
 		if($metaTitle) {
 		    $tags[] = HTML::createTag('title', [], $metaTitle);
             $tags[] = HTML::createTag('meta', array(
