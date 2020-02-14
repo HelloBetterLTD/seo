@@ -130,9 +130,7 @@ class SEODataExtension extends DataExtension
 		$tags = [];
         $siteConfig = SiteConfig::current_site_config();
 		$record = SEODataExtension::get_override() ? : $this->owner;
-
         $metaTitle = $record->obj('MetaTitle')->forTemplate();
-        $this->owner->invokeWithExtensions('updateMetaTitle', $metaTitle);
         if (!$metaTitle) {
             $metaTitle = $record->obj('Title')->forTemplate();
         }
