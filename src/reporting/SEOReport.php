@@ -75,11 +75,11 @@ class SEOReport extends Report
 		// check for meta title
 		// check for meta description
 		// duplicate title check
-		$list = $list->where('("MetaTitle" IS NULL OR CHAR_LENGTH("MetaTitle") < 10)
+		$list = $list->where('("SiteTree"."MetaTitle" IS NULL OR CHAR_LENGTH("SiteTree"."MetaTitle") < 10)
 			OR (
-				"MetaDescription" IS NULL 
-				OR CHAR_LENGTH("MetaDescription") < 20
-				OR CHAR_LENGTH("MetaDescription") > 160
+				"SiteTree"."MetaDescription" IS NULL 
+				OR CHAR_LENGTH("SiteTree"."MetaDescription") < 20
+				OR CHAR_LENGTH("SiteTree"."MetaDescription") > 160
 			)
 			OR (
 				EXISTS (SELECT 1 FROM "SiteTree" ds WHERE
