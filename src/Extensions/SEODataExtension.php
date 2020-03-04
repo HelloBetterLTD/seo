@@ -70,10 +70,11 @@ class SEODataExtension extends DataExtension
 	{
 		$fields->removeByName('Metadata');
 
-        $scaffoldFields = array_merge(array_keys(self::config()->get('db')), array_keys(self::config()->get('has_one')));
-        foreach ($scaffoldFields as $fieldName) {
-            $fields->removeByName($fieldName);
-        }
+        $scaffoldFields = array_keys(array_merge(
+            self::config()->get('db'),
+            self::config()->get('has_one')
+        ));
+        $fields->removeByName($scaffoldFields);
 
         if (!$fields->fieldByName('Root.Main.SEOFields_Container')) {
             $fields->addFieldToTab('Root.Main',
@@ -129,12 +130,11 @@ class SEODataExtension extends DataExtension
 		$tags = [];
         $siteConfig = SiteConfig::current_site_config();
 		$record = SEODataExtension::get_override() ? : $this->owner;
-
         $metaTitle = $record->obj('MetaTitle')->forTemplate();
-        $this->owner->invokeWithExtensions('updateMetaTitle', $metaTitle);
         if (!$metaTitle) {
             $metaTitle = $record->obj('Title')->forTemplate();
         }
+        $this->owner->invokeWithExtensions('updateMetaTitle', $metaTitle);
 		if($metaTitle) {
 		    $tags[] = HTML::createTag('title', [], $metaTitle);
             $tags[] = HTML::createTag('meta', array(

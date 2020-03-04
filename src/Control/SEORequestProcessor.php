@@ -27,18 +27,21 @@ class SEORequestProcessor implements HTTPMiddleware {
 			$head = strpos($body, '</head>');
 			$before = substr($body, 0, $head);
 			$after = substr($body, $head + strlen('</head>'));
-			$body = $before . $config->HeadScripts . '</head>' . $after;
+			$body = $before . "\n" . $config->HeadScripts . "\n" . '</head>' . "\n" . $after;
 		}
 
 		// end of body
 		if($config->BodyStartScripts && strpos($body, '<body') !== false) {
-			preg_match("/<body(.)*>/", $body, $matches);
+		    preg_match("/<body(.)*>/", $body, $matches);
+		    if (!$matches) {
+                preg_match("/<body[\s\S]+?>/", $body, $matches);
+            }
 			if($matches) {
 				$bodyTag = $matches[0];
 				$start = strpos($body, $bodyTag);
 				$before = substr($body, 0, $start);
 				$after = substr($body, $start + strlen($bodyTag));
-				$body = $before . $bodyTag . $config->BodyStartScripts . $after;
+				$body = $before . "\n" . $bodyTag . "\n" . $config->BodyStartScripts . "\n" . $after;
 			}
 		}
 
@@ -47,7 +50,7 @@ class SEORequestProcessor implements HTTPMiddleware {
 			$bodyEnd = strpos($body, '</body>');
 			$before = substr($body, 0, $bodyEnd);
 			$after = substr($body, $bodyEnd + strlen('</body>'));
-			$body = $before . $config->BodyEndScripts . '</body>' . $after;
+			$body = $before . "\n" . $config->BodyEndScripts . "\n" . '</body>' . "\n" . $after;
 		}
 		return $body;
 	}
