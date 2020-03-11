@@ -65,11 +65,22 @@ class SEORequestProcessor implements HTTPMiddleware {
 		$headers = $response->getHeaders();
 		if($response
             && ($body = $response->getbody())
-            && isset($headers['content-type'])
-            && strpos($headers['content-type'], 'text/html;') !== false) {
+            && $this->canAddSEOScripts($request, $response)) {
 			$body = $this->processInputs($body);
 			$response->setBody($body);
 		}
 		return $response;
 	}
+
+	private function canAddSEOScripts(HTTPRequest $request, HTTPResponse $response)
+    {
+        $url = ltrim($request->getURL(), '/');
+        $headers = $response->getHeaders();
+
+        return isset($headers['content-type'])
+            && strpos($headers['content-type'], 'text/html;') !== false
+            && strpos($url, 'admin') === false
+            && strpos($url, 'dev') === false;
+    }
+
 }
