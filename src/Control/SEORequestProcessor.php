@@ -13,10 +13,18 @@ namespace SilverStripers\seo\Control;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Control\Middleware\HTTPMiddleware;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\SiteConfig\SiteConfig;
 
 class SEORequestProcessor implements HTTPMiddleware {
 
+    use Configurable;
+
+    private static $exclude_rules = [
+        'Security/*',
+        'admin/*',
+        'dev/*'
+    ];
 
 	public function processInputs($body)
 	{
@@ -77,10 +85,24 @@ class SEORequestProcessor implements HTTPMiddleware {
         $url = ltrim($request->getURL(), '/');
         $headers = $response->getHeaders();
 
-        return isset($headers['content-type'])
-            && strpos($headers['content-type'], 'text/html;') !== false
-            && strpos($url, 'admin') === false
-            && strpos($url, 'dev') === false;
-    }
+        $rules = self::config()->get('exclude_rules');
+        if (count($rules)) {
+            foreach ($rules as $rule) {
+                if (substr($rule, -1) == '*') {
+                    if (strpos($url, substr($rule, 0, -1)) === 0) {
+                        return false;
+                    }
+                } elseif (substr($rule, 0, 1) == '*') {
+                    if (substr($url, -1 * strlen(substr($rule, 0, 1))) == substr($rule, 0, 1)) {
+                        return false;
+                    }
+                } elseif (ltrim($url) == ltrim($rule)) {
+                    return false;
+                }
+            }
+        }
 
+        return isset($headers['content-type'])
+            && strpos($headers['content-type'], 'text/html;') !== false;
+    }
 }
