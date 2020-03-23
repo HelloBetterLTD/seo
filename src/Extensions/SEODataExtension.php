@@ -220,7 +220,7 @@ class SEODataExtension extends DataExtension
 			'content' => $this->getOGPostType()
 		]);
 
-		$facebookTitle = $record->FacebookTitle ? : $record->getTitle();
+		$facebookTitle = $record->FacebookTitle ? : $metaTitle;
 		if($facebookTitle) {
 			$tags[] = HTML::createTag('meta', [
 				'property' => 'og:title',
