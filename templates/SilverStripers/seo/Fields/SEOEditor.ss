@@ -1,5 +1,7 @@
 <div class="js-seo-editor" data-name="{$Name}"
     data-seo="{$SEOJSONAttr.RAW}"
+    data-vars="{$VariableDefinitionsJSONAttr.RAW}"
+    data-metatitles="{$VariableMetaTitlesJSONAttr.RAW}"
     data-singular="{$SingularName}"
     data-plural="{$PluralName}"
     data-recordlink="{$RecordLink}"

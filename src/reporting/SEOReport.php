@@ -8,7 +8,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace SilverStripers\seo\Reporting;
+namespace SilverStripers\SEO\Reporting;
 
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Forms\CheckboxField;

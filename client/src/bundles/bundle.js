@@ -14,6 +14,8 @@ jQuery.entwine('ss', ($) => {
         refresh() {
             const name = this.data('name');
             const seoData = this.data('seo');
+            const seoVariables = this.data('vars');
+            const metaTitles = this.data('metatitles');
             const link = this.data('recordlink');
             const duplicateCheckLink = this.data('duplicatelink');
             const singular = this.data('singular');
@@ -27,6 +29,8 @@ jQuery.entwine('ss', ($) => {
                 link={link}
                 name={name}
                 seodata={seoData}
+                seovariables={seoVariables}
+                metatitles={metaTitles}
                 duplicatelink={duplicateCheckLink}
                 singular={singular}
                 plural={plural}

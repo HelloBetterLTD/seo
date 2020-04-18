@@ -11,8 +11,10 @@ class SEOTextarea extends SEOInput {
             <textarea
               className="text"
               name={this.props.name}
+              value={this.props.value}
               onChange={this.onChange}
-            >{this.props.value}</textarea>
+              onFocus={this.onFocus}
+            />
             <SEOInputProgressbar />
             <SEOInputMessages messages={this.state.Messages} />
           </div>

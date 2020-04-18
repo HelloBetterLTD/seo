@@ -7,6 +7,7 @@ class SEOInput extends React.Component {
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
+        this.onFocus = this.onFocus.bind(this);
         this.validateMessages = [];
         this.duplicateCheckRequest = null;
         this.state = {
@@ -17,9 +18,6 @@ class SEOInput extends React.Component {
     addValidationsMessage(type, message, data) {
         data.singular_name = this.props.parent.getSingularName();
         data.plural_name = this.props.parent.getPluralName();
-
-        console.log(data);
-
         this.validateMessages.push({
             type,
             message: ss.i18n.inject(message, data)
@@ -145,6 +143,12 @@ class SEOInput extends React.Component {
         }
     }
 
+    onFocus(e) {
+        if (this.props.onFocus) {
+            this.props.onFocus(e);
+        }
+    }
+
     render() {
         return (
           <div className="seo-input field">
@@ -155,6 +159,7 @@ class SEOInput extends React.Component {
               name={this.props.name}
               value={this.props.value}
               onChange={this.onChange}
+              onFocus={this.onFocus}
             />
             <SEOInputProgressbar />
             <SEOInputMessages messages={this.state.Messages} />

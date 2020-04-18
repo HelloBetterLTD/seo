@@ -3,13 +3,13 @@ Name: seo
 ---
 SilverStripe\SiteConfig\SiteConfig:
   extensions:
-    - SilverStripers\seo\Extensions\SiteConfigExtension
+    - SilverStripers\SEO\Extension\SiteConfigExtension
 
 SilverStripe\Core\Injector\Injector:
   SilverStripe\Control\Director:
     properties:
       Middlewares:
-        SEORequestProcessor: '%$SilverStripers\seo\Control\SEORequestProcessor'
+        SEORequestProcessor: '%$SilverStripers\SEO\Control\SEORequestProcessor'
 
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
@@ -17,7 +17,7 @@ SilverStripe\Admin\LeftAndMain:
 
 SilverStripe\Control\Director:
   rules:
-    'robots.txt': 'SilverStripers\seo\Control\RobotsTXTController'
+    'robots.txt': 'SilverStripers\SEO\Control\RobotsTXTController'
     
 ---
 Name: seo_page
@@ -26,4 +26,4 @@ Only:
 ---
 SilverStripe\CMS\Model\SiteTree:
   extensions:
-    - SilverStripers\seo\Extensions\SEODataExtension
+    - SilverStripers\SEO\Extension\SEODataExtension

@@ -1,9 +1,11 @@
 import jQuery from 'jquery';
 import React from 'react';
 import SEOInput from '../SEOInputs/SEOInput';
+import SEODropdown from '../SEOInputs/SEODropdown';
 import SEOTextarea from '../SEOInputs/SEOTextarea';
 import SEORobotsFollow from '../SEOInputs/SEORobotsFollow';
 import SEORobotsIndex from '../SEOInputs/SEORobotsIndex';
+import SEOVarNames from '../SEOInputs/SEOVarNames';
 
 const ss = typeof window.ss !== 'undefined' ? window.ss : {};
 
@@ -27,11 +29,16 @@ jQuery.entwine('ss', ($) => {
 class SEOEditorHolder extends React.Component {
     constructor(props) {
         super(props);
+        this.focused = null;
         this.state = {
             Name: props.name,
             Link: props.link,
+            Variables: props.seovariables,
+            MetaTitles: props.metatitles,
             FocusKeyword: props.seodata.FocusKeyword,
+            MetaTitleTemplateID: props.seodata.MetaTitleTemplateID,
             MetaTitle: props.seodata.MetaTitle,
+            MetaKeywords: props.seodata.MetaKeywords,
             MetaDescription: props.seodata.MetaDescription,
             MetaRobotsFollow: props.seodata.MetaRobotsFollow,
             MetaRobotsIndex: props.seodata.MetaRobotsIndex,
@@ -53,6 +60,7 @@ class SEOEditorHolder extends React.Component {
             EditableSEOImages: props.seoimages,
             SEODefaultURL: props.fallbackseoimage
         };
+        this.parseVariables = this.parseVariables.bind(this);
     }
     
     getSingularName() {
@@ -71,6 +79,7 @@ class SEOEditorHolder extends React.Component {
         this.setState({
             CurrentTab: tab
         });
+        this.focused = null;
     }
 
     setImageForType(type, data) {
@@ -85,6 +94,10 @@ class SEOEditorHolder extends React.Component {
                 TwitterImageURL: data.url
             });
         }
+    }
+
+    handleInputFocus(event, fieldName) {
+        this.focused = fieldName;
     }
 
     handleInputChange(event, name) {
@@ -103,6 +116,17 @@ class SEOEditorHolder extends React.Component {
 
     openImageEditor(type) {
         ss.seo.openImageEditor(type, this);
+    }
+
+    handleSEOVariableButtonClick(event, variable) {
+        if (this.focused) {
+            let val = this.state[this.focused];
+            let newState = {};
+            newState[this.focused] = val ? val + ' {' + variable + '}' : '{' + variable + '}';
+            this.setState(newState);
+
+            console.log(this.el);
+        }
     }
 
     removeImage(type) {
@@ -131,6 +155,32 @@ class SEOEditorHolder extends React.Component {
             return this.state.TwitterImageURL;
         }
         return this.state.SEODefaultURL;
+    }
+
+    parseVariables(str, metaTitle) {
+        if (str) {
+            let vars = this.state.Variables;
+            let keys = Object.keys(vars);
+            let templateId = this.state.MetaTitleTemplateID;
+            if (!templateId) {
+                templateId = 0;
+            }
+            let template = this.state.MetaTitles[templateId].value;
+            for (let key of keys) {
+                str = str.split('{' + key + '}').join(vars[key]);
+            }
+            let processed = str;
+            if (metaTitle) {
+                vars['MetaTitle'] = str;
+                keys = Object.keys(vars);
+                processed = template;
+                for (let key of keys) {
+                    processed = processed.split('{' + key + '}').join(vars[key]);
+                }
+            }
+            return processed;
+        }
+        return str;
     }
 
     render() {
@@ -181,6 +231,10 @@ class SEOEditorHolder extends React.Component {
               <h3 className="seo-tab__title">SEO Data</h3>
               <div className="seo-section">
                 <div className="fields">
+                  <SEOVarNames
+                    vars={this.state.Variables}
+                    onButtonClick={(e, varName) => { this.handleSEOVariableButtonClick(e, varName); }}
+                  />
                   <SEOInput
                     label="Focus Keyword"
                     value={this.state.FocusKeyword}
@@ -196,6 +250,7 @@ class SEOEditorHolder extends React.Component {
                         }
                     }}
                     onChange={(e) => { this.handleInputChange(e, 'FocusKeyword'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, 'FocusKeyword'); }}
                   />
                   <SEOInput
                     label="Meta Title"
@@ -229,6 +284,15 @@ class SEOEditorHolder extends React.Component {
                         }
                     }}
                     onChange={(e) => { this.handleInputChange(e, 'MetaTitle'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, 'MetaTitle'); }}
+                  />
+                  <SEODropdown
+                    label="Meta Title Template"
+                    value={this.state.MetaTitleTemplateID}
+                    options={this.state.MetaTitles}
+                    name={this.getFieldName('MetaTitleTemplateID')}
+                    onChange={(e) => { this.handleInputChange(e, 'MetaTitleTemplateID'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, null); }}
                   />
                   <SEOTextarea
                     label="Meta Description"
@@ -262,13 +326,22 @@ class SEOEditorHolder extends React.Component {
                         }
                     }}
                     onChange={(e) => { this.handleInputChange(e, 'MetaDescription'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, 'MetaDescription'); }}
+                  />
+                  <SEOTextarea
+                    label="Meta Keywords"
+                    value={this.state.MetaKeywords}
+                    name={this.getFieldName('MetaKeywords')}
+                    parent={this}
+                    onChange={(e) => { this.handleInputChange(e, 'MetaKeywords'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, 'MetaKeywords'); }}
                   />
                 </div>
                 <div className="preview-holder">
                   <div className="preview-card google">
-                    <h3>{this.state.MetaTitle}</h3>
-                    <p className="preview-link">{this.state.Link}</p>
-                    <p className="preview-description">{this.state.MetaDescription}</p>
+                    <h3>{this.parseVariables(this.state.MetaTitle, true)}</h3>
+                    <p className="preview-link">{this.parseVariables(this.state.Link)}</p>
+                    <p className="preview-description">{this.parseVariables(this.state.MetaDescription)}</p>
                   </div>
                 </div>
               </div>
@@ -279,6 +352,10 @@ class SEOEditorHolder extends React.Component {
               <h3 className="seo-tab__title">Facebook</h3>
               <div className="seo-section">
                 <div className="fields">
+                  <SEOVarNames
+                    vars={this.state.Variables}
+                    onButtonClick={(e, varName) => { this.handleSEOVariableButtonClick(e, varName); }}
+                  />
                   <SEOInput
                     label="Facebook Title"
                     value={this.state.FacebookTitle}
@@ -288,6 +365,7 @@ class SEOEditorHolder extends React.Component {
                         required: ss.i18n._t('SEO.FB_TITLE_EMPTY')
                     }}
                     onChange={(e) => { this.handleInputChange(e, 'FacebookTitle'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, 'FacebookTitle'); }}
                   />
                   <SEOTextarea
                     label="Facebook Description"
@@ -295,6 +373,7 @@ class SEOEditorHolder extends React.Component {
                     name={this.getFieldName('FacebookDescription')}
                     parent={this}
                     onChange={(e) => { this.handleInputChange(e, 'FacebookDescription'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, 'FacebookDescription'); }}
                   />
                   <input type="hidden" value={this.state.FacebookImageID} name={this.getFieldName('FacebookImageID')} />
                 </div>
@@ -318,9 +397,9 @@ class SEOEditorHolder extends React.Component {
                         </div>
                         }
                     </div>
-                    <h3>{this.state.FacebookTitle}</h3>
-                    <p className="preview-description">{this.state.FacebookDescription}</p>
-                    <p className="preview-link">{this.state.HostName}</p>
+                    <h3>{this.parseVariables(this.state.FacebookTitle)}</h3>
+                    <p className="preview-description">{this.parseVariables(this.state.FacebookDescription)}</p>
+                    <p className="preview-link">{this.parseVariables(this.state.HostName)}</p>
                   </div>
                 </div>
               </div>
@@ -330,6 +409,10 @@ class SEOEditorHolder extends React.Component {
               <h3 className="seo-tab__title">Twitter</h3>
               <div className="seo-section">
                 <div className="fields">
+                  <SEOVarNames
+                    vars={this.state.Variables}
+                    onButtonClick={(e, varName) => { this.handleSEOVariableButtonClick(e, varName); }}
+                  />
                   <SEOInput
                     label="Twitter Title"
                     value={this.state.TwitterTitle}
@@ -339,6 +422,7 @@ class SEOEditorHolder extends React.Component {
                         required: ss.i18n._t('SEO.TWITTER_TITLE_EMPTY')
                     }}
                     onChange={(e) => { this.handleInputChange(e, 'TwitterTitle'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, 'TwitterTitle'); }}
                   />
                   <SEOTextarea
                     label="Twitter Description"
@@ -346,6 +430,7 @@ class SEOEditorHolder extends React.Component {
                     name={this.getFieldName('TwitterDescription')}
                     parent={this}
                     onChange={(e) => { this.handleInputChange(e, 'TwitterDescription'); }}
+                    onFocus={(e) => { this.handleInputFocus(e, 'TwitterDescription'); }}
                   />
                   <input type="hidden" value={this.state.TwitterImageID} name={this.getFieldName('TwitterImageID')} />
                 </div>
@@ -372,9 +457,9 @@ class SEOEditorHolder extends React.Component {
                           </div>
                           }
                       </div>
-                      <h3>{this.state.TwitterTitle}</h3>
-                      <p className="preview-description">{this.state.TwitterDescription}</p>
-                      <p className="preview-link">{this.state.HostName}</p>
+                      <h3>{this.parseVariables(this.state.TwitterTitle)}</h3>
+                      <p className="preview-description">{this.parseVariables(this.state.TwitterDescription)}</p>
+                      <p className="preview-link">{this.parseVariables(this.state.HostName)}</p>
                     </div>
                   </div>
                 </div>

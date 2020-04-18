@@ -27,6 +27,10 @@
             "client/lang"
         ],
         "installer-name": "seo"
+    },
+    "autoload": {
+        "psr-4": {
+            "SilverStripers\\SEO\\": "src/"
+        }
     }
-
 }

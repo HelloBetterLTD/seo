@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace SilverStripers\seo\Extensions;
+namespace SilverStripers\SEO\Extension;
 
 
 use SilverStripe\Assets\Image;
@@ -23,18 +23,23 @@ use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDate;
+use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\HTML;
 use SilverStripe\View\Parsers\HTMLValue;
-use SilverStripers\seo\Fields\SEOEditor;
+use SilverStripers\SEO\Fields\SEOEditor;
+use SilverStripers\SEO\Model\MetaTitleTemplate;
+use SilverStripers\SEO\Model\Variable;
 
 /**
  * Class SEODataExtension
- * @package SilverStripers\seo\Extensions
+ * @package SilverStripers\SEO\Extension
  *
  * @property DataObject $owner
+ * @method MetaTitleTemplate MetaTitleTemplate
  */
 class SEODataExtension extends DataExtension
 {
@@ -45,6 +50,7 @@ class SEODataExtension extends DataExtension
 
 	private static $db = [
 		'FocusKeyword'			=> 'Varchar(300)',
+        'MetaKeywords'          => 'Varchar(500)',
 		'MetaTitle'				=> 'Varchar(300)',
 		'MetaDescription'		=> 'Text',
 		'FacebookTitle'			=> 'Varchar(300)',
@@ -53,12 +59,13 @@ class SEODataExtension extends DataExtension
 		'TwitterDescription'	=> 'Text',
 		'MetaRobotsFollow'		=> 'Varchar(100)',
 		'MetaRobotsIndex'		=> 'Text',
-		'CanonicalURL'			=> 'Varchar(200)'
+		'CanonicalURL'			=> 'Varchar(200)',
 	];
 
 	private static $has_one = [
 		'FacebookImage'			=> Image::class,
-		'TwitterImage'			=> Image::class
+		'TwitterImage'			=> Image::class,
+        'MetaTitleTemplate'     => MetaTitleTemplate::class
 	];
 
 	private static $owns = [
@@ -110,6 +117,7 @@ class SEODataExtension extends DataExtension
 			'HostName'				=> Director::host(),
 			'FocusKeyword'			=> $this->owner->FocusKeyword,
 			'MetaTitle'				=> $this->owner->MetaTitle,
+			'MetaKeywords'			=> $this->owner->MetaKeywords,
 			'MetaDescription'		=> $this->owner->MetaDescription,
 			'FacebookTitle'			=> $this->owner->FacebookTitle,
 			'FacebookDescription'	=> $this->owner->FacebookDescription,
@@ -122,6 +130,7 @@ class SEODataExtension extends DataExtension
 			'FacebookImageURL'		=> $this->owner->FacebookImageID ? $this->owner->FacebookImage()->Link() : null,
 			'TwitterImageID'		=> $this->owner->TwitterImageID,
 			'TwitterImageURL'		=> $this->owner->TwitterImageID ? $this->owner->TwitterImage()->Link() : null,
+            'MetaTitleTemplateID'   => $this->owner->MetaTitleTemplateID
 		];
 	}
 
@@ -136,12 +145,20 @@ class SEODataExtension extends DataExtension
         }
         $this->owner->invokeWithExtensions('updateMetaTitle', $metaTitle);
 		if($metaTitle) {
-		    $tags[] = HTML::createTag('title', [], $metaTitle);
-            $tags[] = HTML::createTag('meta', array(
+		    $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
+		    $tags['title'] = HTML::createTag('title', [], $metaTitle);
+            $tags['meta_title'] = HTML::createTag('meta', array(
                 'name' => 'title',
                 'content' => $metaTitle,
             ));
 		}
+
+		if ($record->MetaKeywords) {
+            $tags['keywords'] = HTML::createTag('meta', array(
+                'name' => 'keywords',
+                'content' => $record->MetaKeywords,
+            ));
+        }
 
 		$metaDescription = $record->MetaDescription;
 		if (!$metaDescription && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->getField($fallbackField)) {
@@ -149,7 +166,7 @@ class SEODataExtension extends DataExtension
         }
 
         if ($metaDescription) {
-            $tags[] = HTML::createTag('meta', array(
+            $tags['meta_description'] = HTML::createTag('meta', array(
                 'name' => 'description',
                 'content' => $metaDescription,
             ));
@@ -183,7 +200,7 @@ class SEODataExtension extends DataExtension
 		}
 
 		if(!empty($robots)) {
-			$tags[] = HTML::createTag('meta', [
+			$tags['robots'] = HTML::createTag('meta', [
 				'name' 		=> 'robots',
 				'content' 	=> implode(',', $robots)
 			]);
@@ -204,46 +221,46 @@ class SEODataExtension extends DataExtension
 		}
 
 		if($record->CanonicalURL) {
-			$tags[] = HTML::createTag('link', [
+			$tags['canonical'] = HTML::createTag('link', [
 				'rel' => 'canonical',
 				'content' => $record->CanonicalURL,
 			]);
 		}
 
-		$tags[] = HTML::createTag('meta', [
+		$tags['og:locale'] = HTML::createTag('meta', [
 			'property' => 'og:locale',
 			'content' => i18n::get_locale()
 		]);
 
-		$tags[] = HTML::createTag('meta', [
+		$tags['og:type'] = HTML::createTag('meta', [
 			'property' => 'og:type',
 			'content' => $this->getOGPostType()
 		]);
 
-		$facebookTitle = $record->FacebookTitle ? : $metaTitle;
+		$facebookTitle = $record->FacebookTitle ? MetaTitleTemplate::parse_meta_title($this->owner, $record->FacebookTitle) : $metaTitle;
 		if($facebookTitle) {
-			$tags[] = HTML::createTag('meta', [
+			$tags['og:title'] = HTML::createTag('meta', [
 				'property' => 'og:title',
 				'content' => $facebookTitle
 			]);
 		}
         $fbDescription = $record->FacebookDescription ? : $metaDescription;
 		if($fbDescription) {
-			$tags[] = HTML::createTag('meta', [
+			$tags['og:description'] = HTML::createTag('meta', [
 				'property' => 'og:description',
 				'content' => $fbDescription
 			]);
 		}
 
 		if (method_exists($record, 'AbsoluteLink')) {
-            $tags[] = HTML::createTag('meta', [
+            $tags['og:url'] = HTML::createTag('meta', [
                 'property' => 'og:url',
                 'content' => $record->AbsoluteLink()
             ]);
         }
 
 
-		$tags[] = HTML::createTag('meta', [
+		$tags['og:site_name'] = HTML::createTag('meta', [
 			'property' => 'og:site_name',
 			'content' => SiteConfig::current_site_config()->Title
 		]);
@@ -253,13 +270,13 @@ class SEODataExtension extends DataExtension
 		    $fbImage = $record->getDefaultImage();
         }
 		if($fbImage && $fbImage->exists()) {
-			$tags[] = HTML::createTag('meta', [
+			$tags['og:image'] = HTML::createTag('meta', [
 				'property' => 'og:image',
 				'content' => $fbImage->AbsoluteLink()
 			]);
 		}
 		else if ($siteConfig->GlobalSocialSharingImage()->exists()) {
-            $tags[] = HTML::createTag('meta', [
+            $tags['og:image'] = HTML::createTag('meta', [
                 'property' => 'og:image',
                 'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
             ]);
@@ -272,18 +289,18 @@ class SEODataExtension extends DataExtension
 		]);
 
 
-		$twTitle = $record->TwitterTitle ? : $metaTitle;
-		if($metaTitle) {
-			$tags[] = HTML::createTag('meta', [
+		$twTitle = $record->TwitterTitle ? MetaTitleTemplate::parse_meta_title($this->owner, $record->TwitterTitle) : $metaTitle;
+		if($twTitle) {
+			$tags['twitter:title'] = HTML::createTag('meta', [
 				'name' => 'twitter:title',
-				'content' => $metaTitle
+				'content' => $twTitle
 			]);
 		}
 
 
         $twDescription = $record->TwitterDescription ? : $metaDescription;
 		if($twDescription) {
-			$tags[] = HTML::createTag('meta', [
+			$tags['twitter:description'] = HTML::createTag('meta', [
 				'name' => 'twitter:description',
 				'content' => $twDescription
 			]);
@@ -294,28 +311,28 @@ class SEODataExtension extends DataExtension
             $twImage = $record->getDefaultImage();
         }
         if ($twImage && $twImage->exists()) {
-			$tags[] = HTML::createTag('meta', [
+			$tags['twitter:image'] = HTML::createTag('meta', [
 				'name' => 'twitter:image',
 				'content' => $twImage->AbsoluteLink()
 			]);
 		} elseif ($siteConfig->GlobalSocialSharingImage()->exists()) {
-            $tags[] = HTML::createTag('meta', [
+            $tags['twitter:image'] = HTML::createTag('meta', [
                 'name' => 'twitter:image',
                 'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
             ]);
         }
 
-		$tags = implode("\n", $tags);
-
 		if ($record->ExtraMeta) {
-			$tags .= $record->obj('ExtraMeta')->forTemplate();
+			$tags['extra_meta'] = $record->obj('ExtraMeta')->forTemplate();
 		}
 
         $record->extend('MetaTags', $tags);
         $record->invokeWithExtensions('updateMetaTags', $tags);
-
+        if (is_array($tags)) {
+            $tags = implode("\n", $tags);
+        }
+        $tags = Variable::process_varialbes($tags);
 		return $tags;
-
 	}
 
 	public function getDefaultImage()

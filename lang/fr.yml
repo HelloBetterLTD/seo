@@ -1,5 +1,5 @@
 fr:
-  SilverStripers\seo\Extensions\SEODataExtension:
+  SilverStripers\SEO\Extension\SEODataExtension:
     FocusKeywordEmpty: "Aucun mot-clé focus n'a été défini pour cette page. Sans mot clé focus, le score SEO ne peut être estimé."
     FocusKeywordIsNotUnique: "Ce mot clé n'est pas unique. Il est aussi utilisé par '%s'"
     FocusKeywordPassed: "Ce mot-clé n'est pas utilisé par d'autres pages sur le site"
@@ -16,6 +16,6 @@ fr:
     MetaTitleTooLong: "Le titre SEO fait plus de 70 caractères de long et pourrait être tronqué dans les résultats de recherche"
     MetaTitleTooShort: "Le titre SEO est trop court. Vous pouvez utilisez l'espace restant pour ajouter des variations de mot-clé ou un Call-to-action convaincant."
     MetaTitleUnique: "Ce titre n'est pas utilisé par d'autres pages du site"
-  SilverStripers\seo\Reporting\SEOReport:
+  SilverStripers\SEO\Reporting\SEOReport:
     SEOReport: 'Rapport SEO'
     SEOReportGroup: 'Rapports SEO'

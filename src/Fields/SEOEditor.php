@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace SilverStripers\seo\Fields;
+namespace SilverStripers\SEO\Fields;
 
 
 use SilverStripe\Assets\Image;
@@ -18,11 +18,13 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\View\Requirements;
-use SilverStripers\seo\Extensions\SEODataExtension;
+use SilverStripers\SEO\Extension\SEODataExtension;
+use SilverStripers\SEO\Model\MetaTitleTemplate;
+use SilverStripers\SEO\Model\Variable;
 
 /**
  * Class SEOEditor
- * @package SilverStripers\seo\Fields
+ * @package SilverStripers\SEO\Fields
  *
  * @property DataObject $record
  * @property boolean $enableSettings
@@ -144,6 +146,16 @@ class SEOEditor extends FormField
 	    $data = $this->getSEOJSON();
 	    return Convert::raw2att($data);
 	}
+
+	public function getVariableDefinitionsJSONAttr()
+    {
+        return Convert::raw2att(json_encode(Variable::get_sort_variables()));
+    }
+
+	public function getVariableMetaTitlesJSONAttr()
+    {
+        return Convert::raw2att(json_encode(MetaTitleTemplate::meta_titles()));
+    }
 
 	public function Field($properties = array())
 	{

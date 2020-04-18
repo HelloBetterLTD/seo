@@ -7,7 +7,7 @@
  * Time: 6:59 AM
  * To change this template use File | Settings | File Templates.
  */
-namespace SilverStripers\seo\Control;
+namespace SilverStripers\SEO\Control;
 
 
 use SilverStripe\Control\HTTPRequest;
