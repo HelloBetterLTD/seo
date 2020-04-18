@@ -1,9 +1,15 @@
 # seo
 
-This SEO plugin for SilverStripe 4 provides a complete SEO plugin for SilverStripe. It provides you with a SEO editor with instant
-previews of your page on google, facebook and twitter, and also gives you with a report letting you know which pages needs improvements.
+This module enables advanced SEO functions for Silverstripe. It providers an SEO editor with 
 
-The plugin is still in its early stages of development, and any help / ideas to improve the usability are mostly welcome.
+1. Instant Previews for Google, Facebook, Twitter 
+2. Editor for Open Graph Data 
+3. Editor for Twitter Cards 
+4. Save taxonomies
+5. Various meta title templates for pages 
+6. Robots.txt controller
+7. Canonical URL management
+8. Flexibility on extending 
 
 ## Maintainers
 nivanka@silverstripers.com
@@ -67,3 +73,24 @@ class MyController extension Controller {
 }
 ```
 
+## Variables / Taxonomies
+
+If you login to the CMS and go to Settings -> SEO -> Variables, there is a grid field where you can enter name value pair objects. These can have any names and any values and for any text field within the meta editor you can use these. 
+
+The variables will have respective buttons to click which will add them automatically on to the editors fields. 
+
+You can also type them in like this. `{MyVariableName}` 
+
+## Meta Title Templates 
+
+For various websites there are different types of web pages which needs various types of meta titles. 
+
+eg: A product page will have a meta title like: `ABC Product - Create the best value for money | XYZ Company`
+
+Meta titles templates lets you define these as 
+
+`{MetaTitle} - Create the best value for money | {SiteTitle}`
+
+This then get the meta title from the page's meta title variable, and site title from the Site Config title. You can also use any of the variables you defined in the variables sections. 
+
+Enjoy!!
