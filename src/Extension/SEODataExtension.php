@@ -75,7 +75,7 @@ class SEODataExtension extends DataExtension
 
 	public function updateCMSFields(FieldList $fields)
 	{
-		$fields->removeByName('Metadata');
+		$fields->removeByName(['Metadata', 'MetaTitleTemplateID']);
 
         $scaffoldFields = array_keys(array_merge(
             self::config()->get('db'),
