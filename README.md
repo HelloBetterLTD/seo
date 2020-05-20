@@ -48,7 +48,7 @@ decorate the data object with SEODataExtension
 ```
 MyDataObject:
     extensions:
-        SilverStripers\seo\Extensions\SEODataExtension
+        SilverStripers\SEO\Extension\SEODataExtension
 ```
 
 This will create the db fields and add the seo editor on to the CMS.
@@ -56,7 +56,7 @@ This will create the db fields and add the seo editor on to the CMS.
 Within the controller you need to call `override_seo_from` function, and pass your data record for the module to grab the SEO details
 
 ```
-use SilverStripers\seo\Extensions\SEODataExtension
+use SilverStripers\SEO\Extension\SEODataExtension
 ...
 
 class MyController extension Controller {
