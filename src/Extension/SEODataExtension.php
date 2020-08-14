@@ -30,6 +30,7 @@ use SilverStripe\Security\Permission;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\HTML;
 use SilverStripe\View\Parsers\HTMLValue;
+use SilverStripe\View\ViewableData;
 use SilverStripers\SEO\Fields\SEOEditor;
 use SilverStripers\SEO\Model\MetaTitleTemplate;
 use SilverStripers\SEO\Model\Variable;
@@ -96,7 +97,7 @@ class SEODataExtension extends DataExtension
         }
 	}
 
-	public static function override_seo_from(DataObject $record)
+	public static function override_seo_from(ViewableData $record)
 	{
 		self::$override_seo = $record;
 	}
@@ -134,7 +135,7 @@ class SEODataExtension extends DataExtension
 		];
 	}
 
-	public function GenerateMetaTags()
+	public function MetaTagCollection($raw = false)
 	{
 		$tags = [];
         $siteConfig = SiteConfig::current_site_config();
@@ -146,15 +147,15 @@ class SEODataExtension extends DataExtension
         $this->owner->invokeWithExtensions('updateMetaTitle', $metaTitle);
 		if($metaTitle) {
 		    $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
-		    $tags['title'] = HTML::createTag('title', [], $metaTitle);
-            $tags['meta_title'] = HTML::createTag('meta', array(
+		    $tags['title'] = $raw ? $metaTitle : HTML::createTag('title', [], $metaTitle);
+            $tags['meta_title'] = $raw ? $metaTitle : HTML::createTag('meta', array(
                 'name' => 'title',
                 'content' => $metaTitle,
             ));
 		}
 
 		if ($record->MetaKeywords) {
-            $tags['keywords'] = HTML::createTag('meta', array(
+            $tags['keywords'] = $raw ? $record->Keywords : HTML::createTag('meta', array(
                 'name' => 'keywords',
                 'content' => $record->MetaKeywords,
             ));
@@ -166,7 +167,7 @@ class SEODataExtension extends DataExtension
         }
 
         if ($metaDescription) {
-            $tags['meta_description'] = HTML::createTag('meta', array(
+            $tags['meta_description'] = $raw ? $metaDescription : HTML::createTag('meta', array(
                 'name' => 'description',
                 'content' => $metaDescription,
             ));
@@ -175,7 +176,7 @@ class SEODataExtension extends DataExtension
         if (ClassInfo::exists('SilverStripe\CMS\Model\SiteTree')) {
             $generator = trim(Config::inst()->get(SiteTree::class, 'meta_generator'));
             if (!empty($generator)) {
-                $tags[] = HTML::createTag('meta', [
+                $tags['generator'] = $raw ? $generator : HTML::createTag('meta', [
                     'name' => 'generator',
                     'content' => $generator,
                 ]);
@@ -183,7 +184,7 @@ class SEODataExtension extends DataExtension
         }
 
 		$charset = ContentNegotiator::config()->uninherited('encoding');
-		$tags[] = HTML::createTag('meta', [
+		$tags[] = $raw ? $charset : HTML::createTag('meta', [
 			'http-equiv' => 'Content-Type',
 			'content' => 'text/html; charset=' . $charset,
 		]);
@@ -200,7 +201,7 @@ class SEODataExtension extends DataExtension
 		}
 
 		if(!empty($robots)) {
-			$tags['robots'] = HTML::createTag('meta', [
+			$tags['robots'] = $raw ? implode(',', $robots) : HTML::createTag('meta', [
 				'name' 		=> 'robots',
 				'content' 	=> implode(',', $robots)
 			]);
@@ -210,57 +211,57 @@ class SEODataExtension extends DataExtension
             && is_a($record, 'SilverStripe\CMS\Model\SiteTree')
 			&& $record->ID > 0
 		) {
-			$tags[] = HTML::createTag('meta', [
+			$tags['x-page-id'] = HTML::createTag('meta', [
 				'name' => 'x-page-id',
 				'content' => $record->obj('ID')->forTemplate(),
 			]);
-			$tags[] = HTML::createTag('meta', [
+			$tags['x-cms-edit-link'] = HTML::createTag('meta', [
 				'name' => 'x-cms-edit-link',
 				'content' => $record->obj('CMSEditLink')->forTemplate(),
 			]);
 		}
 
 		if($record->CanonicalURL) {
-			$tags['canonical'] = HTML::createTag('link', [
+			$tags['canonical'] = $raw ? $record->Canonical : HTML::createTag('link', [
 				'rel' => 'canonical',
 				'content' => $record->CanonicalURL,
 			]);
 		}
 
-		$tags['og:locale'] = HTML::createTag('meta', [
+		$tags['og:locale'] = $raw ? i18n::get_locale() : HTML::createTag('meta', [
 			'property' => 'og:locale',
 			'content' => i18n::get_locale()
 		]);
 
-		$tags['og:type'] = HTML::createTag('meta', [
+		$tags['og:type'] = $raw ? $this->getOGPostType() : HTML::createTag('meta', [
 			'property' => 'og:type',
 			'content' => $this->getOGPostType()
 		]);
 
 		$facebookTitle = $record->FacebookTitle ? MetaTitleTemplate::parse_meta_title($this->owner, $record->FacebookTitle) : $metaTitle;
 		if($facebookTitle) {
-			$tags['og:title'] = HTML::createTag('meta', [
+			$tags['og:title'] = $raw ? $facebookTitle : HTML::createTag('meta', [
 				'property' => 'og:title',
 				'content' => $facebookTitle
 			]);
 		}
         $fbDescription = $record->FacebookDescription ? : $metaDescription;
 		if($fbDescription) {
-			$tags['og:description'] = HTML::createTag('meta', [
+			$tags['og:description'] = $raw ? $fbDescription : HTML::createTag('meta', [
 				'property' => 'og:description',
 				'content' => $fbDescription
 			]);
 		}
 
 		if (method_exists($record, 'AbsoluteLink')) {
-            $tags['og:url'] = HTML::createTag('meta', [
+            $tags['og:url'] = $raw ? $record->AbsoluteLink() : HTML::createTag('meta', [
                 'property' => 'og:url',
                 'content' => $record->AbsoluteLink()
             ]);
         }
 
 
-		$tags['og:site_name'] = HTML::createTag('meta', [
+		$tags['og:site_name'] = $raw ? SiteConfig::current_site_config()->Title : HTML::createTag('meta', [
 			'property' => 'og:site_name',
 			'content' => SiteConfig::current_site_config()->Title
 		]);
@@ -270,20 +271,20 @@ class SEODataExtension extends DataExtension
 		    $fbImage = $record->getDefaultImage();
         }
 		if($fbImage && $fbImage->exists()) {
-			$tags['og:image'] = HTML::createTag('meta', [
+			$tags['og:image'] = $raw ? $fbImage->AbsoluteLink() : HTML::createTag('meta', [
 				'property' => 'og:image',
 				'content' => $fbImage->AbsoluteLink()
 			]);
 		}
 		else if ($siteConfig->GlobalSocialSharingImage()->exists()) {
-            $tags['og:image'] = HTML::createTag('meta', [
+            $tags['og:image'] = $raw ? $siteConfig->GlobalSocialSharingImage()->AbsoluteLink() : HTML::createTag('meta', [
                 'property' => 'og:image',
                 'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
             ]);
         }
 
 
-		$tags[] = HTML::createTag('meta', [
+		$tags['twitter:card'] = $raw ? 'summary_large_image' : HTML::createTag('meta', [
 			'name' => 'twitter:card',
 			'content' => 'summary_large_image'
 		]);
@@ -291,7 +292,7 @@ class SEODataExtension extends DataExtension
 
 		$twTitle = $record->TwitterTitle ? MetaTitleTemplate::parse_meta_title($this->owner, $record->TwitterTitle) : $metaTitle;
 		if($twTitle) {
-			$tags['twitter:title'] = HTML::createTag('meta', [
+			$tags['twitter:title'] = $raw ? $twTitle : HTML::createTag('meta', [
 				'name' => 'twitter:title',
 				'content' => $twTitle
 			]);
@@ -300,7 +301,7 @@ class SEODataExtension extends DataExtension
 
         $twDescription = $record->TwitterDescription ? : $metaDescription;
 		if($twDescription) {
-			$tags['twitter:description'] = HTML::createTag('meta', [
+			$tags['twitter:description'] = $raw ? $twDescription : HTML::createTag('meta', [
 				'name' => 'twitter:description',
 				'content' => $twDescription
 			]);
@@ -311,12 +312,12 @@ class SEODataExtension extends DataExtension
             $twImage = $record->getDefaultImage();
         }
         if ($twImage && $twImage->exists()) {
-			$tags['twitter:image'] = HTML::createTag('meta', [
+			$tags['twitter:image'] = $raw ? $twImage->AbsoluteLink() : HTML::createTag('meta', [
 				'name' => 'twitter:image',
 				'content' => $twImage->AbsoluteLink()
 			]);
 		} elseif ($siteConfig->GlobalSocialSharingImage()->exists()) {
-            $tags['twitter:image'] = HTML::createTag('meta', [
+            $tags['twitter:image'] = $raw ? $siteConfig->GlobalSocialSharingImage()->AbsoluteLink() : HTML::createTag('meta', [
                 'name' => 'twitter:image',
                 'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
             ]);
@@ -328,12 +329,18 @@ class SEODataExtension extends DataExtension
 
         $record->extend('MetaTags', $tags);
         $record->invokeWithExtensions('updateMetaTags', $tags);
+        return $tags;
+	}
+
+	public function GenerateMetaTags()
+    {
+        $tags = $this->MetaTagCollection();
         if (is_array($tags)) {
             $tags = implode("\n", $tags);
         }
         $tags = Variable::process_varialbes($tags);
-		return $tags;
-	}
+        return $tags;
+    }
 
 	public function getDefaultImage()
     {

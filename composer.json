@@ -15,12 +15,6 @@
         "silverstripe/assets": "^1.2.0",
         "silverstripe/asset-admin": "^1.2.0"
     },
-    "autoload": {
-        "psr-4": {
-            "SilverStripers\\seo\\Extensions\\": "src/Extensions",
-            "SilverStripers\\seo\\Fields\\": "src/Fields"
-        }
-    },
     "extra": {
         "expose": [
             "client/dist",
