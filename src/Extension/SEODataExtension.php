@@ -146,7 +146,9 @@ class SEODataExtension extends DataExtension
         }
         $this->owner->invokeWithExtensions('updateMetaTitle', $metaTitle);
 		if($metaTitle) {
-		    $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
+		    if (!$raw) {
+                $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
+            }
 		    $tags['title'] = $raw ? $metaTitle : HTML::createTag('title', [], $metaTitle);
             $tags['meta_title'] = $raw ? $metaTitle : HTML::createTag('meta', array(
                 'name' => 'title',
@@ -154,15 +156,15 @@ class SEODataExtension extends DataExtension
             ));
 		}
 
-		if ($record->MetaKeywords) {
-            $tags['keywords'] = $raw ? $record->Keywords : HTML::createTag('meta', array(
+		if ($record->obj('MetaKeywords')) {
+            $tags['keywords'] = $raw ? $record->obj('MetaKeywords') : HTML::createTag('meta', array(
                 'name' => 'keywords',
-                'content' => $record->MetaKeywords,
+                'content' => $record->obj('MetaKeywords'),
             ));
         }
 
-		$metaDescription = $record->MetaDescription;
-		if (!$metaDescription && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->getField($fallbackField)) {
+		$metaDescription = $record->obj('MetaDescription');
+		if (!empty($metaDescription) && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->obj($fallbackField)) {
 		    $metaDescription = $record->dbObject($fallbackField)->forTemplate();
         }
 
@@ -221,8 +223,8 @@ class SEODataExtension extends DataExtension
 			]);
 		}
 
-		if($record->CanonicalURL) {
-			$tags['canonical'] = $raw ? $record->Canonical : HTML::createTag('link', [
+		if($record->obj('CanonicalURL')) {
+			$tags['canonical'] = $raw ? $record->CanonicalURL : HTML::createTag('link', [
 				'rel' => 'canonical',
 				'content' => $record->CanonicalURL,
 			]);
@@ -238,14 +240,14 @@ class SEODataExtension extends DataExtension
 			'content' => $this->getOGPostType()
 		]);
 
-		$facebookTitle = $record->FacebookTitle ? MetaTitleTemplate::parse_meta_title($this->owner, $record->FacebookTitle) : $metaTitle;
+		$facebookTitle = $record->obj('FacebookTitle') ? MetaTitleTemplate::parse_meta_title($this->owner, $record->obj('FacebookTitle')) : $metaTitle;
 		if($facebookTitle) {
 			$tags['og:title'] = $raw ? $facebookTitle : HTML::createTag('meta', [
 				'property' => 'og:title',
 				'content' => $facebookTitle
 			]);
 		}
-        $fbDescription = $record->FacebookDescription ? : $metaDescription;
+        $fbDescription = $record->obj('FacebookDescription') ? : $metaDescription;
 		if($fbDescription) {
 			$tags['og:description'] = $raw ? $fbDescription : HTML::createTag('meta', [
 				'property' => 'og:description',
@@ -290,7 +292,7 @@ class SEODataExtension extends DataExtension
 		]);
 
 
-		$twTitle = $record->TwitterTitle ? MetaTitleTemplate::parse_meta_title($this->owner, $record->TwitterTitle) : $metaTitle;
+		$twTitle = $record->obj('TwitterTitle') ? MetaTitleTemplate::parse_meta_title($this->owner, $record->obj('TwitterTitle')) : $metaTitle;
 		if($twTitle) {
 			$tags['twitter:title'] = $raw ? $twTitle : HTML::createTag('meta', [
 				'name' => 'twitter:title',
@@ -299,7 +301,7 @@ class SEODataExtension extends DataExtension
 		}
 
 
-        $twDescription = $record->TwitterDescription ? : $metaDescription;
+        $twDescription = $record->obj('TwitterDescription') ? : $metaDescription;
 		if($twDescription) {
 			$tags['twitter:description'] = $raw ? $twDescription : HTML::createTag('meta', [
 				'name' => 'twitter:description',
@@ -323,7 +325,7 @@ class SEODataExtension extends DataExtension
             ]);
         }
 
-		if ($record->ExtraMeta) {
+		if ($record->obj('ExtraMeta')) {
 			$tags['extra_meta'] = $record->obj('ExtraMeta')->forTemplate();
 		}
 
