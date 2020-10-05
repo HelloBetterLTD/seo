@@ -363,6 +363,8 @@ class SEODataExtension extends DataExtension
 			$tags['extra_meta'] = $record->obj('ExtraMeta')->forTemplate();
 		}
 
+        $tags = implode("\n", $tags);
+
         $record->extend('MetaTags', $tags);
         $record->invokeWithExtensions('updateMetaTags', $tags);
         return $tags;
@@ -371,10 +373,8 @@ class SEODataExtension extends DataExtension
 	public function GenerateMetaTags()
     {
         $tags = $this->MetaTagCollection();
-        if (is_array($tags)) {
-            $tags = implode("\n", $tags);
-        }
         $tags = Variable::process_varialbes($tags);
+
         if ($structuredData = $this->StructuredData()) {
             $tags .= "\n" . $structuredData . "\n";
         }
