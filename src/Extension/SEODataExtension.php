@@ -10,6 +10,9 @@
 namespace SilverStripers\SEO\Extension;
 
 
+use JsonLd\Context;
+use JsonLd\ContextTypes\AbstractContext;
+use JsonLd\ContextTypes\Product;
 use SilverStripe\Assets\Image;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\ContentNegotiator;
@@ -17,6 +20,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\i18n\i18n;
@@ -48,6 +52,8 @@ class SEODataExtension extends DataExtension
     use Configurable;
 
 	private static $override_seo = null;
+
+	private static $seo_record = null;
 
 	private static $db = [
 		'FocusKeyword'			=> 'Varchar(300)',
@@ -112,6 +118,16 @@ class SEODataExtension extends DataExtension
 		return self::$override_seo;
 	}
 
+	public static function get_seo_record()
+    {
+        return self::$seo_record;
+    }
+
+	public static function set_seo_record($seo_record)
+    {
+        self::$seo_record = $seo_record;
+    }
+
 	public function SEOData()
 	{
 		return [
@@ -140,6 +156,8 @@ class SEODataExtension extends DataExtension
 		$tags = [];
         $siteConfig = SiteConfig::current_site_config();
 		$record = SEODataExtension::get_override() ? : $this->owner;
+        self::set_seo_record($record);
+
         $metaTitle = $record->obj('MetaTitle')->forTemplate();
         if (!$metaTitle) {
             $metaTitle = $record->obj('Title')->forTemplate();
@@ -357,6 +375,9 @@ class SEODataExtension extends DataExtension
             $tags = implode("\n", $tags);
         }
         $tags = Variable::process_varialbes($tags);
+        if ($structuredData = $this->StructuredData()) {
+            $tags .= "\n" . $structuredData . "\n";
+        }
         return $tags;
     }
 
@@ -473,11 +494,11 @@ class SEODataExtension extends DataExtension
 			if (strlen($metaTitle) < 45) {
 				$result->addFieldError('MetaTitle',
 					_t(__CLASS__.'.MetaTitleTooShort',
-						'The SEO title is too short. Use the space to add keyword variations or create 
+						'The SEO title is too short. Use the space to add keyword variations or create
 							compelling call-to-action copy.'), ValidationResult::TYPE_WARNING);
 			} else if (strlen($metaTitle) > 70) {
 				$result->addFieldError('MetaTitle',
-					_t(__CLASS__.'.MetaTitleTooLong', 'The SEO title is over 70 characters and may be truncated on search 
+					_t(__CLASS__.'.MetaTitleTooLong', 'The SEO title is over 70 characters and may be truncated on search
 							results pages'), ValidationResult::TYPE_WARNING);
 			} else {
 				$result->addFieldMessage('MetaTitle',
@@ -585,4 +606,96 @@ class SEODataExtension extends DataExtension
 		return $this->getSEOComments('error');
 	}
 
+	// Structured Data
+    public function StructuredData()
+    {
+        if ($context = $this->getStructuredDataContext()) {
+            return $context->generate();
+        }
+    }
+
+    public function getStructuredDataTypeObject()
+    {
+        $owner = $this->owner;
+        if ($shemaType = $owner->config()->get('schema_type')) {
+            $className = 'JsonLd\\ContextTypes\\' . $shemaType;
+            return new $className([]);
+        }
+    }
+
+    private function getStructuredDataProperties()
+    {
+        return ($type = $this->getStructuredDataTypeObject()) ? $type->getProperties() : null;
+    }
+
+    private function mergeStructuredDataPropertyValues()
+    {
+        /* @var $owner ViewableData */
+        $owner = $this->owner;
+        $map = $owner->config()->get('schema');
+        if (!$map) {
+            $map = [];
+        }
+        $keys = array_keys($map);
+        $properties = $this->getStructuredDataProperties();
+        $values = [];
+        foreach (array_keys($properties) as $property) {
+            if ($property == 'url' && method_exists($owner, 'AbsoluteLink')) {
+                $values[$property] = $owner->AbsoluteLink();
+            } elseif (in_array($property, $keys)) {
+                $val = $owner->getField($map[$property]);
+                if (is_a($val, Image::class)) {
+                    $val = $val->AbsoluteLink();
+                }
+                $values[$property] = $val;
+            }
+        }
+        return $values;
+    }
+
+    /**
+     * @return Context
+     */
+    private function getStructuredDataContext()
+    {
+        $owner = $this->owner;
+        if ($shemaType = $owner->config()->get('schema_type')) {
+            $fields = $this->mergeStructuredDataPropertyValues();
+            return Context::create($shemaType, $fields);
+        }
+        return null;
+    }
+
+    public function getStructuredDataHelpTips()
+    {
+        if ($types = $this->getStructuredDataProperties()) {
+            unset($types['url']);
+            unset($types['@context']);
+            unset($types['@type']);
+
+            $owner = $this->owner;
+            $map = $owner->config()->get('schema');
+            $schemaType = $owner->config()->get('schema_type');
+
+            $class = get_class($owner);
+            $settings = '';
+            foreach ($types as $type => $val) {
+                $val = !empty($map[$type]) ? $map[$type] : '';
+                $settings .= "        {$type}: " . $val . "\n";
+            }
+
+            $html = <<<HTML
+<div style="position: fixed; background: black; padding: 20px; bottom: 0; right: 0; z-index: 999; color: white; font-family: courier; font-size: 14px; line-height: 1;">
+<pre>
+$owner:
+    schema_type: '$schemaType'
+    schema:
+{$settings}
+</pre>
+</div>
+HTML;
+
+            return $html;
+        }
+    }
 }

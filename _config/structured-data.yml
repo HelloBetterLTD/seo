@@ -1,0 +1,35 @@
+---
+Name: seo-structured
+---
+SilverStripe\ORM\DataObject:
+  schema_type: 'Thing'
+  schema:
+    'name': 'MetaTitle'
+    'description': 'MetaDescription'
+    'Image': 'FacebookImage'
+Page:
+  schema_type: 'Thing'
+  schema:
+    'name': 'MetaTitle'
+    'description': 'MetaDescription'
+    'Image': 'FacebookImage'
+SilverStripe\Blog\Model\Blog:
+  schema_type: 'BlogPosting'
+  schema:
+    name: MetaTitle
+    description: MetaDescription
+    image: 'FeaturedImage'
+    dateCreated: Created
+    dateModified: LastEdited
+    datePublished: LastEdited
+    author: AuthorNames
+SilverStripe\Blog\Model\BlogPost:
+  schema_type: 'BlogPosting'
+  schema:
+    name: MetaTitle
+    description: MetaDescription
+    image: 'FeaturedImage'
+    dateCreated: Created
+    dateModified: LastEdited
+    datePublished: LastEdited
+    author: AuthorNames
