@@ -18,6 +18,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataExtension;
@@ -25,6 +26,7 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -61,6 +63,8 @@ class SEODataExtension extends DataExtension
 		'MetaRobotsFollow'		=> 'Varchar(100)',
 		'MetaRobotsIndex'		=> 'Text',
 		'CanonicalURL'			=> 'Varchar(200)',
+
+        'TrackingCodes'         => 'Text',
 	];
 
 	private static $has_one = [
@@ -96,6 +100,13 @@ class SEODataExtension extends DataExtension
             );
         }
 	}
+
+	public function updateSettingsFields(FieldList $fields)
+    {
+        $fields->addFieldToTab('Root.Settings',
+            TextareaField::create('TrackingCodes')
+        );
+    }
 
 	public static function override_seo_from(ViewableData $record)
 	{
@@ -473,11 +484,11 @@ class SEODataExtension extends DataExtension
 			if (strlen($metaTitle) < 45) {
 				$result->addFieldError('MetaTitle',
 					_t(__CLASS__.'.MetaTitleTooShort',
-						'The SEO title is too short. Use the space to add keyword variations or create 
+						'The SEO title is too short. Use the space to add keyword variations or create
 							compelling call-to-action copy.'), ValidationResult::TYPE_WARNING);
 			} else if (strlen($metaTitle) > 70) {
 				$result->addFieldError('MetaTitle',
-					_t(__CLASS__.'.MetaTitleTooLong', 'The SEO title is over 70 characters and may be truncated on search 
+					_t(__CLASS__.'.MetaTitleTooLong', 'The SEO title is over 70 characters and may be truncated on search
 							results pages'), ValidationResult::TYPE_WARNING);
 			} else {
 				$result->addFieldMessage('MetaTitle',
@@ -585,4 +596,8 @@ class SEODataExtension extends DataExtension
 		return $this->getSEOComments('error');
 	}
 
+	public function TrackingCodesHTML()
+    {
+        return DBField::create_field('HTMLText', $this->owner->TrackingCodes);
+    }
 }
