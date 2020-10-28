@@ -15,6 +15,7 @@ use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Control\Middleware\HTTPMiddleware;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripers\SEO\Extension\SEODataExtension;
 
 class SEORequestProcessor implements HTTPMiddleware {
 
@@ -26,7 +27,7 @@ class SEORequestProcessor implements HTTPMiddleware {
         'dev/*'
     ];
 
-	public function processInputs($body)
+	public function processInputs($body, HTTPRequest $request)
 	{
 		$config = SiteConfig::current_site_config();
 
@@ -54,12 +55,20 @@ class SEORequestProcessor implements HTTPMiddleware {
 		}
 
 		// end of body
-		if($config->BodyEndScripts && strpos($body, '</body>') !== false) {
-			$bodyEnd = strpos($body, '</body>');
-			$before = substr($body, 0, $bodyEnd);
-			$after = substr($body, $bodyEnd + strlen('</body>'));
-			$body = $before . "\n" . $config->BodyEndScripts . "\n" . '</body>' . "\n" . $after;
-		}
+        if (strpos($body, '</body>') !== false) {
+            /* @var $record SEODataExtension */
+            $help = false;
+            if (($request->requestVar('structureddata_help') == 1) && ($record = SEODataExtension::get_seo_record())) {
+                $help = $record->getStructuredDataHelpTips();
+            }
+            if ($config->BodyEndScripts || $help) {
+                $bodyEnd = strpos($body, '</body>');
+                $before = substr($body, 0, $bodyEnd);
+                $after = substr($body, $bodyEnd + strlen('</body>'));
+                $content = $help . "\n" . $config->BodyEndScripts;
+                $body = $before . "\n" . $content . "\n" . '</body>' . "\n" . $after;
+            }
+        }
 		return $body;
 	}
 
@@ -74,7 +83,7 @@ class SEORequestProcessor implements HTTPMiddleware {
 		if($response
             && ($body = $response->getbody())
             && $this->canAddSEOScripts($request, $response)) {
-			$body = $this->processInputs($body);
+			$body = $this->processInputs($body, $request);
 			$response->setBody($body);
 		}
 		return $response;
