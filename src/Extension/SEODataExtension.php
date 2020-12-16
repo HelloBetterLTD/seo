@@ -254,7 +254,7 @@ class SEODataExtension extends DataExtension
 		if($canonical = $record->obj('CanonicalURL')->getValue()) {
 			$tags['canonical'] = $raw ? $canonical : HTML::createTag('link', [
 				'rel' => 'canonical',
-				'content' => $canonical,
+				'href' => $canonical,
 			]);
 		}
 
