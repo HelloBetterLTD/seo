@@ -374,7 +374,6 @@ class SEODataExtension extends DataExtension
 			$tags['extra_meta'] = $record->obj('ExtraMeta')->forTemplate();
 		}
 
-        $record->extend('MetaTags', $tags);
         $record->invokeWithExtensions('updateMetaTags', $tags);
         return $tags;
 	}
@@ -389,6 +388,7 @@ class SEODataExtension extends DataExtension
         if ($structuredData = $this->StructuredData()) {
             $tags .= "\n" . $structuredData . "\n";
         }
+        $this->owner->extend('MetaTags', $tags);
         return $tags;
     }
 
@@ -621,7 +621,7 @@ class SEODataExtension extends DataExtension
     {
         return DBField::create_field('HTMLText', $this->owner->TrackingCodes);
     }
-        
+
     public function StructuredData()
     {
         if ($context = $this->getStructuredDataContext()) {

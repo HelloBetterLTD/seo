@@ -194,7 +194,7 @@ class SEOEditor extends FormField
         if($this->isSavable()) {
             foreach($this->getFields() as $fieldName) {
                 if (isset($this->value[$fieldName])) {
-                    $this->record->setCastedField($fieldName, !empty($this->value[$fieldName]) ? $this->value[$fieldName] : null);
+                    $record->setCastedField($fieldName, !empty($this->value[$fieldName]) ? $this->value[$fieldName] : null);
                 }
             }
         }
