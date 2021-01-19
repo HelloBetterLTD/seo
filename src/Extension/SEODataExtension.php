@@ -57,6 +57,8 @@ class SEODataExtension extends DataExtension
 
 	private static $seo_record = null;
 
+	private static $add_self_canoniacal = true;
+
 	private static $db = [
 		'FocusKeyword'			=> 'Varchar(300)',
         'MetaKeywords'          => 'Varchar(500)',
@@ -251,7 +253,12 @@ class SEODataExtension extends DataExtension
 			]);
 		}
 
-		if($canonical = $record->obj('CanonicalURL')->getValue()) {
+		$canonical = $record->obj('CanonicalURL')->getValue();
+		if (empty($canonical) && self::config()->get('add_self_canoniacal') && method_exists($record, 'AbsoluteLink')) {
+            $canonical = $record->AbsoluteLink();
+        }
+
+		if($canonical) {
 			$tags['canonical'] = $raw ? $canonical : HTML::createTag('link', [
 				'rel' => 'canonical',
 				'href' => $canonical,
