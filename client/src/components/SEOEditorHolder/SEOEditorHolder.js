@@ -62,11 +62,11 @@ class SEOEditorHolder extends React.Component {
         };
         this.parseVariables = this.parseVariables.bind(this);
     }
-    
+
     getSingularName() {
         return this.state.SingiluarName;
     }
-    
+
     getPluralName() {
         return this.state.PluralName;
     }
@@ -241,7 +241,7 @@ class SEOEditorHolder extends React.Component {
                     name={this.getFieldName('FocusKeyword')}
                     parent={this}
                     validations={{
-                        required_warning: ss.i18n._t('SEO.EMPTY_KEYWORD'),
+                        required: ss.i18n._t('SEO.EMPTY_KEYWORD'),
                         duplicate_check: {
                             field: 'FocusKeyword',
                             link: this.props.duplicatelink,
