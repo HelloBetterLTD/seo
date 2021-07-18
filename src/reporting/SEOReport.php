@@ -11,9 +11,11 @@
 namespace SilverStripers\SEO\Reporting;
 
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\Reports\Report;
 use SilverStripe\Versioned\Versioned;
 
@@ -63,21 +65,22 @@ class SEOReport extends Report
 				'title'			=> 'Comments',
 				'link'			=> true
 			]
-			
+
 		];
 	}
 
 	public function sourceRecords($params = null)
 	{
-		$stage = isset($params['OnLive']) ? Versioned::LIVE : Versioned::DRAFT;
-		$list = Versioned::get_by_stage(SiteTree::class, $stage);
+	    if (ClassInfo::exists('SilverStripe\\CMS\\Model\\SiteTree')) {
+            $stage = isset($params['OnLive']) ? Versioned::LIVE : Versioned::DRAFT;
+            $list = Versioned::get_by_stage(SiteTree::class, $stage);
 
-		// check for meta title
-		// check for meta description
-		// duplicate title check
-		$list = $list->where('("SiteTree"."MetaTitle" IS NULL OR CHAR_LENGTH("SiteTree"."MetaTitle") < 10)
+            // check for meta title
+            // check for meta description
+            // duplicate title check
+            $list = $list->where('("SiteTree"."MetaTitle" IS NULL OR CHAR_LENGTH("SiteTree"."MetaTitle") < 10)
 			OR (
-				"SiteTree"."MetaDescription" IS NULL 
+				"SiteTree"."MetaDescription" IS NULL
 				OR CHAR_LENGTH("SiteTree"."MetaDescription") < 20
 				OR CHAR_LENGTH("SiteTree"."MetaDescription") > 160
 			)
@@ -88,7 +91,9 @@ class SEOReport extends Report
 			)');
 
 
-		return $list;
+            return $list;
+        }
+	    return ArrayList::create();
 	}
 
 }
