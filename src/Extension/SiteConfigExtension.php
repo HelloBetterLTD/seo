@@ -7,21 +7,18 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace SilverStripers\SEO\Extension;
+namespace SilverStripers\seo\Extensions;
+
 
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
-use SilverStripers\SEO\Model\MetaTitleTemplate;
-use SilverStripers\SEO\Model\Variable;
 
 class SiteConfigExtension extends DataExtension
 {
@@ -37,7 +34,7 @@ class SiteConfigExtension extends DataExtension
 		'BodyEndScripts' => 'Text',
 
         'RobotsTXT' => 'Text',
-        'DefaultMetaTitle' => 'Varchar(255)'
+        'RobotsPublishedPagesOnly' => 'Boolean'
 	];
 
 	private static $has_one = [
@@ -50,27 +47,22 @@ class SiteConfigExtension extends DataExtension
 
 	public function updateCMSFields(FieldList $fields)
 	{
-		$fields->addFieldsToTab('Root.SEO.Main', [
+		$fields->addFieldsToTab('Root.SEO', [
+			HeaderField::create('SEAccess', 'Search engine access')->setHeadingLevel(4),
 			CheckboxField::create('DisableSearchEngineVisibility', 'Disable search engine visibility'),
-			LiteralField::create('SearchNote', '<p>Note that it is up to the search engines not to index this site</p>')
-        ]);
-
-
-		$fields->addFieldsToTab('Root.SEO.Social', [
+			LiteralField::create('SearchNote', '<p>Note that it is up to the search engines not to index this site</p>'),
 			TextField::create('TwitterUsername', 'Twitter Username'),
 			TextField::create('FacebookAdmin', 'Facebook Admin Meta'),
 			TextField::create('FacebookAppID', 'Facebook App ID'),
-			UploadField::create('GlobalSocialSharingImage', 'Global Social Sharing Image')
-        ]);
+			UploadField::create('GlobalSocialSharingImage', 'Global Social Sharing Image'),
 
-
-		$fields->addFieldsToTab('Root.SEO.Embeds', [
+			HeaderField::create('Embeds', 'Embed scripts for analytics etc')->setHeadingLevel(4),
 			TextareaField::create('HeadScripts', 'Scripts within <head> block'),
 			TextareaField::create('BodyStartScripts', 'Scripts just after opening <body>'),
-			TextareaField::create('BodyEndScripts', 'Scripts just before opening <body>')
-        ]);
+			TextareaField::create('BodyEndScripts', 'Scripts just before opening <body>'),
 
-		$fields->addFieldsToTab('Root.SEO.Robots', [
+            HeaderField::create('RobotsTXTHeading', 'Robots TXT')->setHeadingLevel(4),
+            CheckboxField::create('RobotsPublishedPagesOnly', 'Include published pages only in Robots TXT'),
             TextareaField::create('RobotsTXT', 'Robots TXT')
                 ->setDescription('<p>An example robots.txt<br>
 <pre>
@@ -79,21 +71,9 @@ Allow: /
 </pre></p>')
         ]);
 
-		$fields->addFieldsToTab('Root.SEO.Variables', [
-            GridField::create('SEOVariables', 'Variables')
-                ->setList(Variable::get())
-                ->setConfig(GridFieldConfig_RecordEditor::create())
-        ]);
-
-		$fields->addFieldsToTab('Root.SEO.MetaTitles', [
-		    TextField::create('DefaultMetaTitle', 'Default Meta Title Template')
-                ->setValue(MetaTitleTemplate::get_default_title())
-                ->setDescription('Default value: ' . MetaTitleTemplate::get_default_title()),
-            GridField::create('MetaTitles', 'Templates')
-                ->setList(MetaTitleTemplate::get())
-                ->setConfig(GridFieldConfig_RecordEditor::create())
-        ]);
-
         $this->owner->invokeWithExtensions('updateSEOFields', $fields);
+
 	}
+
+
 }
