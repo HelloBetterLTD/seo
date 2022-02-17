@@ -191,11 +191,17 @@ class SEOEditor extends FormField
 
 	public function saveInto(DataObjectInterface $record)
 	{
-        if($this->isSavable()) {
+        if ($this->isSavable()) {
+            $dbObj = null;
             foreach($this->getFields() as $fieldName) {
                 if (isset($this->value[$fieldName])) {
-                    $record->setCastedField($fieldName, !empty($this->value[$fieldName]) ? $this->value[$fieldName] : null);
+                    $dbObj = $this->record->setCastedField($fieldName, !empty($this->value[$fieldName]) ? $this->value[$fieldName] : null);
                 }
+            }
+
+            // If Fluent is present, trigger a save to enable it to save to localised tables
+            if (class_exists('TractorCow\Fluent\Extension\FluentExtension') && $dbObj) {
+                $dbObj->write();
             }
         }
 	}
