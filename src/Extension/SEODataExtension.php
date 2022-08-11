@@ -494,7 +494,7 @@ class SEODataExtension extends DataExtension
 	public function validateMetaTitle(ValidationResult $result)
 	{
 		$record = $this->owner;
-		$metaTitle = trim($record->MetaTitle);
+		$metaTitle = $record->MetaTitle ? trim($record->MetaTitle) : '';
 
 		if(empty($metaTitle)) {
 			$result->addFieldError('MetaTitle',
