@@ -164,7 +164,7 @@ class SEODataExtension extends DataExtension
 		];
 	}
 
-	public function MetaTagCollection($raw = false)
+	public function MetaTagCollection($raw = false, $includeMetaTitle)
 	{
 		$tags = [];
         $siteConfig = SiteConfig::current_site_config();
@@ -180,11 +180,14 @@ class SEODataExtension extends DataExtension
 		    if (!$raw) {
                 $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
             }
-		    $tags['title'] = $raw ? $metaTitle : HTML::createTag('title', [], $metaTitle);
-            $tags['meta_title'] = $raw ? $metaTitle : HTML::createTag('meta', array(
-                'name' => 'title',
-                'content' => $metaTitle,
-            ));
+            $tags['title'] = $raw ? $metaTitle : HTML::createTag('title', [], $metaTitle);
+
+            if ($includeMetaTitle && strtolower($includeMetaTitle) != 'false') {
+                $tags['meta_title'] = $raw ? $metaTitle : HTML::createTag('meta', array(
+                    'name' => 'title',
+                    'content' => $metaTitle,
+                ));
+            }
 		}
 
 		if ($record->obj('MetaKeywords')->getValue()) {
@@ -385,9 +388,9 @@ class SEODataExtension extends DataExtension
         return $tags;
 	}
 
-	public function GenerateMetaTags()
+	public function GenerateMetaTags($includeMetaTitle = false)
     {
-        $tags = $this->MetaTagCollection();
+        $tags = $this->MetaTagCollection($raw = false, $includeMetaTitle);
         if (is_array($tags)) {
             $tags = implode("\n", $tags);
         }
