@@ -388,7 +388,7 @@ class SEODataExtension extends DataExtension
         return $tags;
 	}
 
-	public function GenerateMetaTags($includeMetaTitle = true)
+	public function GenerateMetaTags($includeMetaTitle = false)
     {
         $tags = $this->MetaTagCollection($raw = false, $includeMetaTitle);
         if (is_array($tags)) {
