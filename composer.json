@@ -14,7 +14,7 @@
         "silverstripe/reports": "^4.2.0",
         "silverstripe/assets": "^1.2.0",
         "silverstripe/asset-admin": "^1.2.0",
-        "torann/json-ld": "0.0.9"
+        "spatie/schema-org": "3.13.0"
     },
     "extra": {
         "expose": [

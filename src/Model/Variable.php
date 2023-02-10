@@ -48,6 +48,9 @@ class Variable extends DataObject
 
     public static function process_varialbes($text, $options = [])
     {
+        if (is_null($text)) {
+            $text = '';
+        }
         $vars = array_merge($options, self::get_sort_variables());
         foreach ($vars as $name => $val) {
             $text = str_replace('{' . $name . '}', $val, $text);

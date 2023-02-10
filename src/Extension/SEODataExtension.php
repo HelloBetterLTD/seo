@@ -13,6 +13,7 @@ namespace SilverStripers\SEO\Extension;
 use JsonLd\Context;
 use JsonLd\ContextTypes\AbstractContext;
 use JsonLd\ContextTypes\Product;
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\ContentNegotiator;
@@ -40,6 +41,7 @@ use SilverStripe\View\ViewableData;
 use SilverStripers\SEO\Fields\SEOEditor;
 use SilverStripers\SEO\Model\MetaTitleTemplate;
 use SilverStripers\SEO\Model\Variable;
+use Spatie\SchemaOrg\BaseType;
 
 /**
  * Class SEODataExtension
@@ -58,6 +60,8 @@ class SEODataExtension extends DataExtension
 	private static $seo_record = null;
 
 	private static $add_self_canoniacal = true;
+
+    private static $display_color_badges = true;
 
 	private static $db = [
 		'FocusKeyword'			=> 'Varchar(300)',
@@ -171,15 +175,7 @@ class SEODataExtension extends DataExtension
 		$record = SEODataExtension::get_override() ? : $this->owner;
         self::set_seo_record($record);
 
-        $metaTitle = $record->obj('MetaTitle')->forTemplate();
-        if (!$metaTitle) {
-            $metaTitle = $record->obj('Title')->forTemplate();
-        }
-        $record->invokeWithExtensions('updateMetaTitle', $metaTitle);
-		if($metaTitle) {
-		    if (!$raw) {
-                $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
-            }
+		if($metaTitle = $this->ComputeMetaTitle($raw)) {
 		    $tags['title'] = $raw ? $metaTitle : HTML::createTag('title', [], $metaTitle);
             $tags['meta_title'] = $raw ? $metaTitle : HTML::createTag('meta', array(
                 'name' => 'title',
@@ -194,11 +190,7 @@ class SEODataExtension extends DataExtension
             ));
         }
 
-		$metaDescription = $record->obj('MetaDescription')->getValue();
-		if (!$metaDescription && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->obj($fallbackField)) {
-		    $metaDescription = $record->dbObject($fallbackField)->forTemplate();
-        }
-        if ($metaDescription) {
+        if ($metaDescription = $this->ComputeMetaDescription()) {
             $tags['meta_description'] = $raw ? $metaDescription : HTML::createTag('meta', array(
                 'name' => 'description',
                 'content' => $metaDescription,
@@ -413,26 +405,28 @@ class SEODataExtension extends DataExtension
 
 	public function updateStatusFlags(&$flags)
 	{
-		$result = $this->validateSEO();
-		$scores = [
-			'good'		=> 0,
-			'warning'	=> 0,
-			'error'		=> 0,
-		];
-		foreach ($result->getMessages() as $message) {
-			if(isset($scores[$message['messageType']])) {
-				$scores[$message['messageType']] += 1;
-			}
-		}
+        if (SEODataExtension::config()->get('display_color_badges')) {
+            $result = $this->validateSEO();
+            $scores = [
+                'good' => 0,
+                'warning' => 0,
+                'error' => 0,
+            ];
+            foreach ($result->getMessages() as $message) {
+                if (isset($scores[$message['messageType']])) {
+                    $scores[$message['messageType']] += 1;
+                }
+            }
 
-		foreach ($scores as $type => $score) {
-			if($score) {
-				$flags['seo' . $type] = [
-					'text'		=> $score > 9 ? '9+' : $score,
-					'title'		=> $score . ' ' . $type . 's'
-				];
-			}
-		}
+            foreach ($scores as $type => $score) {
+                if ($score) {
+                    $flags['seo' . $type] = [
+                        'text' => $score > 9 ? '9+' : $score,
+                        'title' => $score . ' ' . $type . 's'
+                    ];
+                }
+            }
+        }
 
 	}
 
@@ -494,15 +488,15 @@ class SEODataExtension extends DataExtension
 	public function validateMetaTitle(ValidationResult $result)
 	{
 		$record = $this->owner;
-		$metaTitle = $record->MetaTitle ? trim($record->MetaTitle) : '';
 
-		if(empty($metaTitle)) {
+		if(empty($record->MetaTitle)) {
 			$result->addFieldError('MetaTitle',
 				sprintf(_t(__CLASS__.'.MetaTitleEmpty',
 					'You have not set a meta title. The title will default to "%s"'), $record->getTitle()),
 				ValidationResult::TYPE_WARNING);
 		}
 		else {
+            $metaTitle = $this->ComputeMetaTitle();
 			if ($record->FocusKeyword && strpos($metaTitle, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaTitle',
 					sprintf(_t(__CLASS__.'.MetaTitleNoKeyword',
@@ -552,7 +546,8 @@ class SEODataExtension extends DataExtension
 				ValidationResult::TYPE_ERROR);
 		}
 		else {
-			if ($record->FocusKeyword && strpos($desc, $record->FocusKeyword) === false) {
+            $desc = $this->ComputeMetaDescription();
+            if ($record->FocusKeyword && strpos($desc, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaDescription',
 					_t(__CLASS__.'.MetaDescriptionNoKeyword','The meta description does not contain the focus keyword.'),
 					ValidationResult::TYPE_ERROR);
@@ -562,7 +557,7 @@ class SEODataExtension extends DataExtension
 					_t(__CLASS__.'.MetaDescriptionTooShort',
 						'The meta description is under 120 characters long. However, up to 156 characters are available.'),
 					ValidationResult::TYPE_WARNING);
-			} else if (strlen($desc) < 156) {
+			} else if (strlen($desc) > 156) {
 				$result->addFieldError('MetaDescription',
 					_t(__CLASS__.'.MetaDescriptionTooLong',
 						'The meta description is over 156 characters. Reducing the length will ensure the entire description will be visible.'),
@@ -632,92 +627,155 @@ class SEODataExtension extends DataExtension
     public function StructuredData()
     {
         if ($context = $this->getStructuredDataContext()) {
-            return $context->generate();
+            return $context->toScript();
         }
     }
 
-    public function getStructuredDataTypeObject()
+    public function getStructuredDataTypeObject($shemaType) : ?BaseType
     {
-        $owner = $this->owner;
-        if ($shemaType = $owner->config()->get('schema_type')) {
-            $className = 'JsonLd\\ContextTypes\\' . $shemaType;
-            return new $className([]);
+        $className = 'Spatie\\SchemaOrg\\' . $shemaType;
+        if (class_exists($className)) {
+            return new $className();
+        } else {
+            throw new \Exception(
+                sprintf('Type %s is not found within the Schema.org types', $shemaType)
+            );
         }
     }
 
     private function getStructuredDataProperties()
     {
+        $type = $this->getStructuredDataTypeObject();
         return ($type = $this->getStructuredDataTypeObject()) ? $type->getProperties() : null;
     }
 
-    private function mergeStructuredDataPropertyValues()
+    private function parseSchemaDataField($mapping, $record = null)
     {
-        /* @var $owner ViewableData */
-        $owner = $this->owner;
-        $map = $owner->config()->get('schema');
-        if (!$map) {
-            $map = [];
+        if (!$record) {
+            $record = $this->owner;
         }
-        $keys = array_keys($map);
-        $properties = $this->getStructuredDataProperties();
-        $values = [];
-        foreach (array_keys($properties) as $property) {
-            if ($property == 'url' && method_exists($owner, 'AbsoluteLink')) {
-                $values[$property] = $owner->AbsoluteLink();
-            } elseif (in_array($property, $keys)) {
-                $val = $owner->getField($map[$property]);
-                if (is_a($val, Image::class)) {
-                    $val = $val->AbsoluteLink();
+        if (substr($mapping, 0, 1) == '`' && substr($mapping, -1) == '`') { // is a value
+            $val = trim($mapping, '`');
+        } elseif (strpos($mapping, '.')) { // dot functions
+            $partials = explode('.', $mapping);
+            $currentRecord = $record;
+            foreach ($partials as $partialMapping) {
+                if (is_object($currentRecord)) {
+                    $currentRecord = $this->parseSchemaDataField($partialMapping, $currentRecord);
                 }
-                $values[$property] = $val;
             }
+            $val = $currentRecord;
+        } elseif (method_exists($record, $mapping)) {
+            $val = call_user_func_array([
+                $record,
+                $mapping
+            ], []);
+        } else {
+            $val = $record->getField($mapping);
         }
-        return $values;
+
+        if ($val && is_a($val, File::class)) {
+            $val = $val->AbsoluteLink();
+        }
+        return $val;
     }
 
+    private function processSchemaFields(BaseType $schema, $data)
+    {
+        foreach ($data as $property => $value) {
+            if (is_string($value)) {
+                if (method_exists($schema, $property)) {
+                    call_user_func_array(
+                        [$schema, $property],
+                        [
+                            $this->parseSchemaDataField($value)
+                        ]
+                    );
+                } else {
+                    call_user_func_array(
+                        [$schema, 'setProperty'],
+                        [
+                            $this->parseSchemaDataField($value)
+                        ]
+                    );
+                }
+            } else if (is_array($value)) { // this is a reference type
+                if (empty($value['@type'])) {
+                    throw new \Exception(
+                        sprintf('No type provided for the reference values use @type for "%s"', $property)
+                    );
+                }
+                $referenceSchema = $this->getStructuredDataTypeObject($value['@type']);
+                $this->processSchemaFields($referenceSchema, $value['schema']);
+
+                if (method_exists($schema, $property)) {
+                    call_user_func_array(
+                        [$schema, $property],
+                        [
+                            $referenceSchema
+                        ]
+                    );
+                } else {
+                    call_user_func_array(
+                        [$schema, 'setProperty'],
+                        [
+                            $referenceSchema
+                        ]
+                    );
+                }
+
+            }
+        }
+    }
+
+
     /**
-     * @return Context
+     * @return BaseType
      */
-    private function getStructuredDataContext()
+    private function getStructuredDataContext() : ?BaseType
     {
         $owner = $this->owner;
         if ($shemaType = $owner->config()->get('schema_type')) {
-            $fields = $this->mergeStructuredDataPropertyValues();
-            return Context::create($shemaType, $fields);
+            /* @var $owner ViewableData */
+            $owner = $this->owner;
+            if ($shemaType = $owner->config()->get('schema_type')) {
+                $map = $owner->config()->get('schema', Config::UNINHERITED);
+                if (!$map) {
+                    $map = $owner->config()->get('schema');
+                }
+                if (!$map) {
+                    $map = [];
+                }
+                $schema = $this->getStructuredDataTypeObject($shemaType);
+                $this->processSchemaFields($schema, $map);
+                return $schema;
+            }
         }
         return null;
     }
 
-    public function getStructuredDataHelpTips()
+    public function ComputeMetaTitle($raw = false)
     {
-        if ($types = $this->getStructuredDataProperties()) {
-            unset($types['url']);
-            unset($types['@context']);
-            unset($types['@type']);
-
-            $owner = $this->owner;
-            $map = $owner->config()->get('schema');
-            $schemaType = $owner->config()->get('schema_type');
-
-            $class = get_class($owner);
-            $settings = '';
-            foreach ($types as $type => $val) {
-                $val = !empty($map[$type]) ? $map[$type] : '';
-                $settings .= "        {$type}: " . $val . "\n";
-            }
-
-            $html = <<<HTML
-<div style="position: fixed; background: black; padding: 20px; bottom: 0; right: 0; z-index: 999; color: white; font-family: courier; font-size: 14px; line-height: 1;">
-<pre>
-$owner:
-    schema_type: '$schemaType'
-    schema:
-{$settings}
-</pre>
-</div>
-HTML;
-
-            return $html;
+        $record = $this->owner;
+        $metaTitle = $record->obj('MetaTitle')->forTemplate();
+        if (!$metaTitle) {
+            $metaTitle = $record->obj('Title')->forTemplate();
         }
+        $record->invokeWithExtensions('updateMetaTitle', $metaTitle);
+        if($metaTitle && !$raw) {
+            $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
+        }
+        return $metaTitle;
+    }
+
+    public function ComputeMetaDescription($raw = true)
+    {
+        $record = $this->owner;
+        $metaDescription = $record->obj('MetaDescription')->getValue();
+        if (!$metaDescription && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->obj($fallbackField)) {
+            $metaDescription = $record->dbObject($fallbackField)->forTemplate();
+        }
+        $record->invokeWithExtensions('updateMetaDescription', $metaDescription);
+        return Variable::process_varialbes($metaDescription);
     }
 }
