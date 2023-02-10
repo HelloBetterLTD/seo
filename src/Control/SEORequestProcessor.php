@@ -58,9 +58,6 @@ class SEORequestProcessor implements HTTPMiddleware {
         if (strpos($body, '</body>') !== false) {
             /* @var $record SEODataExtension */
             $help = false;
-            if (($request->requestVar('structureddata_help') == 1) && ($record = SEODataExtension::get_seo_record())) {
-                $help = $record->getStructuredDataHelpTips();
-            }
             if ($config->BodyEndScripts || $help) {
                 $bodyEnd = strpos($body, '</body>');
                 $before = substr($body, 0, $bodyEnd);

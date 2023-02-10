@@ -13,6 +13,7 @@ namespace SilverStripers\SEO\Extension;
 use JsonLd\Context;
 use JsonLd\ContextTypes\AbstractContext;
 use JsonLd\ContextTypes\Product;
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\ContentNegotiator;
@@ -40,6 +41,7 @@ use SilverStripe\View\ViewableData;
 use SilverStripers\SEO\Fields\SEOEditor;
 use SilverStripers\SEO\Model\MetaTitleTemplate;
 use SilverStripers\SEO\Model\Variable;
+use Spatie\SchemaOrg\BaseType;
 
 /**
  * Class SEODataExtension
@@ -632,92 +634,130 @@ class SEODataExtension extends DataExtension
     public function StructuredData()
     {
         if ($context = $this->getStructuredDataContext()) {
-            return $context->generate();
+            return $context->toScript();
         }
     }
 
-    public function getStructuredDataTypeObject()
+    public function getStructuredDataTypeObject($shemaType) : ?BaseType
     {
-        $owner = $this->owner;
-        if ($shemaType = $owner->config()->get('schema_type')) {
-            $className = 'JsonLd\\ContextTypes\\' . $shemaType;
-            return new $className([]);
+        $className = 'Spatie\\SchemaOrg\\' . $shemaType;
+        if (class_exists($className)) {
+            return new $className();
+        } else {
+            throw new \Exception(
+                sprintf('Type %s is not found within the Schema.org types', $shemaType)
+            );
         }
     }
 
     private function getStructuredDataProperties()
     {
+        $type = $this->getStructuredDataTypeObject();
         return ($type = $this->getStructuredDataTypeObject()) ? $type->getProperties() : null;
     }
 
-    private function mergeStructuredDataPropertyValues()
+    private function parseSchemaDataField($mapping, $record = null)
     {
-        /* @var $owner ViewableData */
-        $owner = $this->owner;
-        $map = $owner->config()->get('schema');
-        if (!$map) {
-            $map = [];
+        if (!$record) {
+            $record = $this->owner;
         }
-        $keys = array_keys($map);
-        $properties = $this->getStructuredDataProperties();
-        $values = [];
-        foreach (array_keys($properties) as $property) {
-            if ($property == 'url' && method_exists($owner, 'AbsoluteLink')) {
-                $values[$property] = $owner->AbsoluteLink();
-            } elseif (in_array($property, $keys)) {
-                $val = $owner->getField($map[$property]);
-                if (is_a($val, Image::class)) {
-                    $val = $val->AbsoluteLink();
+        if (substr($mapping, 0, 1) == '`' && substr($mapping, -1) == '`') { // is a value
+            $val = trim($mapping, '`');
+        } elseif (strpos($mapping, '.')) { // dot functions
+            $partials = explode('.', $mapping);
+            $currentRecord = $record;
+            foreach ($partials as $partialMapping) {
+                if (is_object($currentRecord)) {
+                    $currentRecord = $this->parseSchemaDataField($partialMapping, $currentRecord);
                 }
-                $values[$property] = $val;
             }
+            $val = $currentRecord;
+        } elseif (method_exists($record, $mapping)) {
+            $val = call_user_func_array([
+                $record,
+                $mapping
+            ], []);
+        } else {
+            $val = $record->getField($mapping);
         }
-        return $values;
+
+        if ($val && is_a($val, File::class)) {
+            $val = $val->AbsoluteLink();
+        }
+        return $val;
     }
 
+    private function processSchemaFields(BaseType $schema, $data)
+    {
+        foreach ($data as $property => $value) {
+            if (is_string($value)) {
+                if (method_exists($schema, $property)) {
+                    call_user_func_array(
+                        [$schema, $property],
+                        [
+                            $this->parseSchemaDataField($value)
+                        ]
+                    );
+                } else {
+                    call_user_func_array(
+                        [$schema, 'setProperty'],
+                        [
+                            $this->parseSchemaDataField($value)
+                        ]
+                    );
+                }
+            } else if (is_array($value)) { // this is a reference type
+                if (empty($value['@type'])) {
+                    throw new \Exception(
+                        sprintf('No type provided for the reference values use @type for "%s"', $property)
+                    );
+                }
+                $referenceSchema = $this->getStructuredDataTypeObject($value['@type']);
+                $this->processSchemaFields($referenceSchema, $value['schema']);
+
+                if (method_exists($schema, $property)) {
+                    call_user_func_array(
+                        [$schema, $property],
+                        [
+                            $referenceSchema
+                        ]
+                    );
+                } else {
+                    call_user_func_array(
+                        [$schema, 'setProperty'],
+                        [
+                            $referenceSchema
+                        ]
+                    );
+                }
+
+            }
+        }
+    }
+
+
     /**
-     * @return Context
+     * @return BaseType
      */
-    private function getStructuredDataContext()
+    private function getStructuredDataContext() : ?BaseType
     {
         $owner = $this->owner;
         if ($shemaType = $owner->config()->get('schema_type')) {
-            $fields = $this->mergeStructuredDataPropertyValues();
-            return Context::create($shemaType, $fields);
+            /* @var $owner ViewableData */
+            $owner = $this->owner;
+            if ($shemaType = $owner->config()->get('schema_type')) {
+                $map = $owner->config()->get('schema', Config::UNINHERITED);
+                if (!$map) {
+                    $map = $owner->config()->get('schema');
+                }
+                if (!$map) {
+                    $map = [];
+                }
+                $schema = $this->getStructuredDataTypeObject($shemaType);
+                $this->processSchemaFields($schema, $map);
+                return $schema;
+            }
         }
         return null;
-    }
-
-    public function getStructuredDataHelpTips()
-    {
-        if ($types = $this->getStructuredDataProperties()) {
-            unset($types['url']);
-            unset($types['@context']);
-            unset($types['@type']);
-
-            $owner = $this->owner;
-            $map = $owner->config()->get('schema');
-            $schemaType = $owner->config()->get('schema_type');
-
-            $class = get_class($owner);
-            $settings = '';
-            foreach ($types as $type => $val) {
-                $val = !empty($map[$type]) ? $map[$type] : '';
-                $settings .= "        {$type}: " . $val . "\n";
-            }
-
-            $html = <<<HTML
-<div style="position: fixed; background: black; padding: 20px; bottom: 0; right: 0; z-index: 999; color: white; font-family: courier; font-size: 14px; line-height: 1;">
-<pre>
-$owner:
-    schema_type: '$schemaType'
-    schema:
-{$settings}
-</pre>
-</div>
-HTML;
-
-            return $html;
-        }
     }
 }

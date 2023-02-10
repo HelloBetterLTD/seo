@@ -4,25 +4,32 @@ Name: seo-structured
 SilverStripe\ORM\DataObject:
   schema_type: 'Thing'
   schema:
-    'name': 'MetaTitle'
-    'description': 'MetaDescription'
-    'Image': 'FacebookImage'
+    name: 'Title'
+    description: 'MetaDescription'
+    image: 'FacebookImage'
 Page:
-  schema_type: 'Thing'
+  schema_type: 'Article'
   schema:
-    'name': 'MetaTitle'
-    'description': 'MetaDescription'
-    'Image': 'FacebookImage'
+    name: 'Title'
+    keywords: 'MetaKeywords'
+    description: 'MetaDescription'
+    image: 'FacebookImage'
+    thumbnailUrl: 'FacebookImage'
+    url: 'AbsoluteLink'
+    sameAs: 'ComputeCanonicalURL'
 SilverStripe\Blog\Model\Blog:
-  schema_type: 'BlogPosting'
+  schema_type: 'Blog'
   schema:
-    name: MetaTitle
+    name: Title
     description: MetaDescription
+    about: MetaDescription
     image: 'FeaturedImage'
     dateCreated: Created
     dateModified: LastEdited
     datePublished: LastEdited
     author: AuthorNames
+    url: 'AbsoluteLink'
+    sameAs: 'ComputeCanonicalURL'
 SilverStripe\Blog\Model\BlogPost:
   schema_type: 'BlogPosting'
   schema:
@@ -33,3 +40,5 @@ SilverStripe\Blog\Model\BlogPost:
     dateModified: LastEdited
     datePublished: LastEdited
     author: AuthorNames
+    url: 'AbsoluteLink'
+    sameAs: 'ComputeCanonicalURL'
