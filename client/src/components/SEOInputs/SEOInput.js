@@ -96,26 +96,27 @@ class SEOInput extends React.Component {
     }
 
     processValidateItem(type, value, params) {
+        const val = this.props.parseVariables(value, this.props.name.indexOf('MetaTitle') >= 0);
         if (type == 'required') {
-            return this.validateRequired(value, params, 'error');
+            return this.validateRequired(val, params, 'error');
         }
         if (type == 'required_warning') {
-            return this.validateRequired(value, params, 'warning');
+            return this.validateRequired(val, params, 'warning');
         }
         if (type == 'shorter_than') {
-            return this.validateShorterThan(value, params);
+            return this.validateShorterThan(val, params);
         }
         if (type == 'longer_than') {
-            return this.validateLongerThan(value, params);
+            return this.validateLongerThan(val, params);
         }
         if (type == 'within_range') {
-            return this.validateLengthWithin(value, params);
+            return this.validateLengthWithin(val, params);
         }
         if (type == 'not_found') {
-            return this.validateFieldValueNotFound(value, params);
+            return this.validateFieldValueNotFound(val, params);
         }
         if (type == 'duplicate_check') {
-            return this.validateDuplicates(value, params);
+            return this.validateDuplicates(val, params);
         }
     }
 

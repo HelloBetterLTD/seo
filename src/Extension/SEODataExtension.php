@@ -61,6 +61,8 @@ class SEODataExtension extends DataExtension
 
 	private static $add_self_canoniacal = true;
 
+    private static $display_color_badges = true;
+
 	private static $db = [
 		'FocusKeyword'			=> 'Varchar(300)',
         'MetaKeywords'          => 'Varchar(500)',
@@ -173,15 +175,7 @@ class SEODataExtension extends DataExtension
 		$record = SEODataExtension::get_override() ? : $this->owner;
         self::set_seo_record($record);
 
-        $metaTitle = $record->obj('MetaTitle')->forTemplate();
-        if (!$metaTitle) {
-            $metaTitle = $record->obj('Title')->forTemplate();
-        }
-        $record->invokeWithExtensions('updateMetaTitle', $metaTitle);
-		if($metaTitle) {
-		    if (!$raw) {
-                $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
-            }
+		if($metaTitle = $this->ComputeMetaTitle($raw)) {
 		    $tags['title'] = $raw ? $metaTitle : HTML::createTag('title', [], $metaTitle);
             $tags['meta_title'] = $raw ? $metaTitle : HTML::createTag('meta', array(
                 'name' => 'title',
@@ -196,11 +190,7 @@ class SEODataExtension extends DataExtension
             ));
         }
 
-		$metaDescription = $record->obj('MetaDescription')->getValue();
-		if (!$metaDescription && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->obj($fallbackField)) {
-		    $metaDescription = $record->dbObject($fallbackField)->forTemplate();
-        }
-        if ($metaDescription) {
+        if ($metaDescription = $this->ComputeMetaDescription()) {
             $tags['meta_description'] = $raw ? $metaDescription : HTML::createTag('meta', array(
                 'name' => 'description',
                 'content' => $metaDescription,
@@ -415,26 +405,28 @@ class SEODataExtension extends DataExtension
 
 	public function updateStatusFlags(&$flags)
 	{
-		$result = $this->validateSEO();
-		$scores = [
-			'good'		=> 0,
-			'warning'	=> 0,
-			'error'		=> 0,
-		];
-		foreach ($result->getMessages() as $message) {
-			if(isset($scores[$message['messageType']])) {
-				$scores[$message['messageType']] += 1;
-			}
-		}
+        if (SEODataExtension::config()->get('display_color_badges')) {
+            $result = $this->validateSEO();
+            $scores = [
+                'good' => 0,
+                'warning' => 0,
+                'error' => 0,
+            ];
+            foreach ($result->getMessages() as $message) {
+                if (isset($scores[$message['messageType']])) {
+                    $scores[$message['messageType']] += 1;
+                }
+            }
 
-		foreach ($scores as $type => $score) {
-			if($score) {
-				$flags['seo' . $type] = [
-					'text'		=> $score > 9 ? '9+' : $score,
-					'title'		=> $score . ' ' . $type . 's'
-				];
-			}
-		}
+            foreach ($scores as $type => $score) {
+                if ($score) {
+                    $flags['seo' . $type] = [
+                        'text' => $score > 9 ? '9+' : $score,
+                        'title' => $score . ' ' . $type . 's'
+                    ];
+                }
+            }
+        }
 
 	}
 
@@ -496,15 +488,15 @@ class SEODataExtension extends DataExtension
 	public function validateMetaTitle(ValidationResult $result)
 	{
 		$record = $this->owner;
-		$metaTitle = $record->MetaTitle ? trim($record->MetaTitle) : '';
 
-		if(empty($metaTitle)) {
+		if(empty($record->MetaTitle)) {
 			$result->addFieldError('MetaTitle',
 				sprintf(_t(__CLASS__.'.MetaTitleEmpty',
 					'You have not set a meta title. The title will default to "%s"'), $record->getTitle()),
 				ValidationResult::TYPE_WARNING);
 		}
 		else {
+            $metaTitle = $this->ComputeMetaTitle();
 			if ($record->FocusKeyword && strpos($metaTitle, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaTitle',
 					sprintf(_t(__CLASS__.'.MetaTitleNoKeyword',
@@ -554,7 +546,8 @@ class SEODataExtension extends DataExtension
 				ValidationResult::TYPE_ERROR);
 		}
 		else {
-			if ($record->FocusKeyword && strpos($desc, $record->FocusKeyword) === false) {
+            $desc = $this->ComputeMetaDescription();
+            if ($record->FocusKeyword && strpos($desc, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaDescription',
 					_t(__CLASS__.'.MetaDescriptionNoKeyword','The meta description does not contain the focus keyword.'),
 					ValidationResult::TYPE_ERROR);
@@ -564,7 +557,7 @@ class SEODataExtension extends DataExtension
 					_t(__CLASS__.'.MetaDescriptionTooShort',
 						'The meta description is under 120 characters long. However, up to 156 characters are available.'),
 					ValidationResult::TYPE_WARNING);
-			} else if (strlen($desc) < 156) {
+			} else if (strlen($desc) > 156) {
 				$result->addFieldError('MetaDescription',
 					_t(__CLASS__.'.MetaDescriptionTooLong',
 						'The meta description is over 156 characters. Reducing the length will ensure the entire description will be visible.'),
@@ -759,5 +752,30 @@ class SEODataExtension extends DataExtension
             }
         }
         return null;
+    }
+
+    public function ComputeMetaTitle($raw = false)
+    {
+        $record = $this->owner;
+        $metaTitle = $record->obj('MetaTitle')->forTemplate();
+        if (!$metaTitle) {
+            $metaTitle = $record->obj('Title')->forTemplate();
+        }
+        $record->invokeWithExtensions('updateMetaTitle', $metaTitle);
+        if($metaTitle && !$raw) {
+            $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
+        }
+        return $metaTitle;
+    }
+
+    public function ComputeMetaDescription($raw = true)
+    {
+        $record = $this->owner;
+        $metaDescription = $record->obj('MetaDescription')->getValue();
+        if (!$metaDescription && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->obj($fallbackField)) {
+            $metaDescription = $record->dbObject($fallbackField)->forTemplate();
+        }
+        $record->invokeWithExtensions('updateMetaDescription', $metaDescription);
+        return Variable::process_varialbes($metaDescription);
     }
 }

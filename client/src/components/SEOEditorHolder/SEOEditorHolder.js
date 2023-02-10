@@ -239,6 +239,7 @@ class SEOEditorHolder extends React.Component {
                     label="Focus Keyword"
                     value={this.state.FocusKeyword}
                     name={this.getFieldName('FocusKeyword')}
+                    parseVariables={this.parseVariables.bind(this)}
                     parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.EMPTY_KEYWORD'),
@@ -256,6 +257,7 @@ class SEOEditorHolder extends React.Component {
                     label="Meta Title"
                     value={this.state.MetaTitle}
                     name={this.getFieldName('MetaTitle')}
+                    parseVariables={this.parseVariables.bind(this)}
                     parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.EMPTY_META_TITLE'),
@@ -290,6 +292,7 @@ class SEOEditorHolder extends React.Component {
                     label="Meta Title Template"
                     value={this.state.MetaTitleTemplateID}
                     options={this.state.MetaTitles}
+                    parseVariables={this.parseVariables.bind(this)}
                     name={this.getFieldName('MetaTitleTemplateID')}
                     onChange={(e) => { this.handleInputChange(e, 'MetaTitleTemplateID'); }}
                     onFocus={(e) => { this.handleInputFocus(e, null); }}
@@ -298,6 +301,7 @@ class SEOEditorHolder extends React.Component {
                     label="Meta Description"
                     value={this.state.MetaDescription}
                     name={this.getFieldName('MetaDescription')}
+                    parseVariables={this.parseVariables.bind(this)}
                     parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.EMPTY_META_DESC'),
@@ -332,6 +336,7 @@ class SEOEditorHolder extends React.Component {
                     label="Meta Keywords"
                     value={this.state.MetaKeywords}
                     name={this.getFieldName('MetaKeywords')}
+                    parseVariables={this.parseVariables.bind(this)}
                     parent={this}
                     onChange={(e) => { this.handleInputChange(e, 'MetaKeywords'); }}
                     onFocus={(e) => { this.handleInputFocus(e, 'MetaKeywords'); }}
@@ -360,6 +365,7 @@ class SEOEditorHolder extends React.Component {
                     label="Facebook Title"
                     value={this.state.FacebookTitle}
                     name={this.getFieldName('FacebookTitle')}
+                    parseVariables={this.parseVariables.bind(this)}
                     parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.FB_TITLE_EMPTY')
@@ -370,6 +376,7 @@ class SEOEditorHolder extends React.Component {
                   <SEOTextarea
                     label="Facebook Description"
                     value={this.state.FacebookDescription}
+                    parseVariables={this.parseVariables.bind(this)}
                     name={this.getFieldName('FacebookDescription')}
                     parent={this}
                     onChange={(e) => { this.handleInputChange(e, 'FacebookDescription'); }}
@@ -385,20 +392,20 @@ class SEOEditorHolder extends React.Component {
                             <a className="js-og-image-selector" onClick={() => {
                                 this.openImageEditor('FacebookImage');
                             }}>
-                                <i className="seo-pencil-square-o"/>
+                                <i className="seo-pencil-square-o"/> Change image
                             </a>
                             {this.state.FacebookImageURL &&
                             <a className="js-og-image-selector" onClick={() => {
                                 this.removeImage('FacebookImage');
                             }}>
-                                <i className="seo-trash"/>
+                                <i className="seo-trash"/> Remove image
                             </a>
                             }
                         </div>
                         }
                     </div>
-                    <h3>{this.parseVariables(this.state.FacebookTitle)}</h3>
-                    <p className="preview-description">{this.parseVariables(this.state.FacebookDescription)}</p>
+                    <h3>{this.parseVariables(this.state.FacebookTitle ? this.state.FacebookTitle : this.state.MetaTitle)}</h3>
+                    <p className="preview-description">{this.parseVariables(this.state.FacebookDescription ? this.state.FacebookDescription : this.state.MetaDescription)}</p>
                     <p className="preview-link">{this.parseVariables(this.state.HostName)}</p>
                   </div>
                 </div>
@@ -417,6 +424,7 @@ class SEOEditorHolder extends React.Component {
                     label="Twitter Title"
                     value={this.state.TwitterTitle}
                     name={this.getFieldName('TwitterTitle')}
+                    parseVariables={this.parseVariables.bind(this)}
                     parent={this}
                     validations={{
                         required: ss.i18n._t('SEO.TWITTER_TITLE_EMPTY')
@@ -428,6 +436,7 @@ class SEOEditorHolder extends React.Component {
                     label="Twitter Description"
                     value={this.state.TwitterDescription}
                     name={this.getFieldName('TwitterDescription')}
+                    parseVariables={this.parseVariables.bind(this)}
                     parent={this}
                     onChange={(e) => { this.handleInputChange(e, 'TwitterDescription'); }}
                     onFocus={(e) => { this.handleInputFocus(e, 'TwitterDescription'); }}
@@ -445,20 +454,20 @@ class SEOEditorHolder extends React.Component {
                               <a className="js-og-image-selector" onClick={() => {
                                   this.openImageEditor('TwitterImage');
                               }}>
-                                  <i className="seo-pencil-square-o"/>
+                                  <i className="seo-pencil-square-o"/> Change image
                               </a>
                               {this.state.TwitterImageURL &&
                               <a className="js-og-image-selector" onClick={() => {
                                   this.removeImage('TwitterImage');
                               }}>
-                                  <i className="seo-trash"/>
+                                  <i className="seo-trash"/> Remove image
                               </a>
                               }
                           </div>
                           }
                       </div>
-                      <h3>{this.parseVariables(this.state.TwitterTitle)}</h3>
-                      <p className="preview-description">{this.parseVariables(this.state.TwitterDescription)}</p>
+                      <h3>{this.parseVariables(this.state.TwitterTitle ? this.state.TwitterTitle : this.state.MetaTitle)}</h3>
+                      <p className="preview-description">{this.parseVariables(this.state.TwitterDescription ? this.state.TwitterDescription : this.state.MetaDescription)}</p>
                       <p className="preview-link">{this.parseVariables(this.state.HostName)}</p>
                     </div>
                   </div>
@@ -473,6 +482,7 @@ class SEOEditorHolder extends React.Component {
                       label="Meta robots index"
                       value={this.state.MetaRobotsIndex}
                       name={this.getFieldName('MetaRobotsIndex')}
+                      parseVariables={this.parseVariables.bind(this)}
                       parent={this}
                       onChange={(e) => {
                           this.handleInputChange(e, 'MetaRobotsIndex');
@@ -483,6 +493,7 @@ class SEOEditorHolder extends React.Component {
                       label="Meta robots follow"
                       value={this.state.MetaRobotsFollow}
                       name={this.getFieldName('MetaRobotsFollow')}
+                      parseVariables={this.parseVariables.bind(this)}
                       parent={this}
                       onChange={(e) => {
                           this.handleRadioChange(e, 'MetaRobotsFollow');
@@ -492,6 +503,7 @@ class SEOEditorHolder extends React.Component {
                       label="Canonical URL"
                       value={this.state.CanonicalURL}
                       name={this.getFieldName('CanonicalURL')}
+                      parseVariables={this.parseVariables.bind(this)}
                       parent={this}
                       onChange={(e) => {
                           this.handleInputChange(e, 'CanonicalURL');

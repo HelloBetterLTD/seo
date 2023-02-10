@@ -21,9 +21,11 @@ jQuery.entwine('ss', ($) => {
         _clearModal() {
             ReactDOM.unmountComponentAtNode(this[0]);
         },
+
         open() {
             this._renderModal(true);
         },
+
         close() {
             this._renderModal(false);
         },
@@ -43,26 +45,26 @@ jQuery.entwine('ss', ($) => {
             const store = window.ss.store;
             const client = window.ss.apolloClient;
             const attrs = {};
-            
+
             // create/update the react component
             ReactDOM.render(
-              <ApolloProvider client={client}>
-                <Provider store={store}>
-                    <InjectableInsertMediaModal
-                      title={false}
-                      type="insert-media"
-                      isOpen={show}
-                      onInsert={handleInsert}
-                      onHide={handleHide}
-                      bodyClassName="modal__dialog"
-                      className="insert-media-react__dialog-wrapper"
-                      equireLinkText={false}
-                      fileAttributes={attrs}
-                    />
+                <ApolloProvider client={client}>
+                    <Provider store={store}>
+                        <InjectableInsertMediaModal
+                          title={false}
+                          type="insert-media"
+                          isOpen={show}
+                          onInsert={handleInsert}
+                          onClosed={handleHide}
+                          bodyClassName="modal__dialog"
+                          className="insert-media-react__dialog-wrapper"
+                          equireLinkText={false}
+                          fileAttributes={attrs}
+                        />
                   </Provider>
-              </ApolloProvider>,
+                </ApolloProvider>,
                 this[0]
-        );
+            );
         },
 
         /**

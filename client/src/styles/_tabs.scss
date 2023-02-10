@@ -33,6 +33,10 @@
 			font-size: 16px;
 			cursor: pointer;
 
+            &:hover {
+                text-decoration: none;
+            }
+
 			&.active {
 				background: white;
 				border-right: 1px solid transparent;
