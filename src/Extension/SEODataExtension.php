@@ -665,7 +665,7 @@ class SEODataExtension extends DataExtension
                 }
             }
             $val = $currentRecord;
-        } elseif (method_exists($record, $mapping)) {
+        } elseif (ClassInfo::hasMethod($record, $mapping)) {
             $val = call_user_func_array([
                 $record,
                 $mapping
