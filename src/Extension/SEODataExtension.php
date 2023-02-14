@@ -175,7 +175,7 @@ class SEODataExtension extends DataExtension
 		$record = SEODataExtension::get_override() ? : $this->owner;
         self::set_seo_record($record);
 
-		if($metaTitle = $this->ComputeMetaTitle($raw)) {
+		if($metaTitle = $this->ComputeMetaTitle()) {
 		    $tags['title'] = $raw ? $metaTitle : HTML::createTag('title', [], $metaTitle);
             $tags['meta_title'] = $raw ? $metaTitle : HTML::createTag('meta', array(
                 'name' => 'title',
@@ -754,7 +754,7 @@ class SEODataExtension extends DataExtension
         return null;
     }
 
-    public function ComputeMetaTitle($raw = false)
+    public function ComputeMetaTitle()
     {
         $record = $this->owner;
         $metaTitle = $record->obj('MetaTitle')->forTemplate();
@@ -762,13 +762,13 @@ class SEODataExtension extends DataExtension
             $metaTitle = $record->obj('Title')->forTemplate();
         }
         $record->invokeWithExtensions('updateMetaTitle', $metaTitle);
-        if($metaTitle && !$raw) {
+        if($metaTitle) {
             $metaTitle = MetaTitleTemplate::parse_meta_title($this->owner, $metaTitle);
         }
         return $metaTitle;
     }
 
-    public function ComputeMetaDescription($raw = true)
+    public function ComputeMetaDescription()
     {
         $record = $this->owner;
         $metaDescription = $record->obj('MetaDescription')->getValue();
