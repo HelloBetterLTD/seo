@@ -497,7 +497,7 @@ class SEODataExtension extends DataExtension
 		}
 		else {
             $metaTitle = $this->ComputeMetaTitle();
-			if ($record->FocusKeyword && strpos($metaTitle, $record->FocusKeyword) === false) {
+			if ($record->FocusKeyword && stripos($metaTitle, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaTitle',
 					sprintf(_t(__CLASS__.'.MetaTitleNoKeyword',
 						'The focus keyword "%s" does not appear in the SEO title.'), $record->FocusKeyword),
@@ -547,7 +547,7 @@ class SEODataExtension extends DataExtension
 		}
 		else {
             $desc = $this->ComputeMetaDescription();
-            if ($record->FocusKeyword && strpos($desc, $record->FocusKeyword) === false) {
+            if ($record->FocusKeyword && stripos($desc, $record->FocusKeyword) === false) {
 				$result->addFieldError('MetaDescription',
 					_t(__CLASS__.'.MetaDescriptionNoKeyword','The meta description does not contain the focus keyword.'),
 					ValidationResult::TYPE_ERROR);
