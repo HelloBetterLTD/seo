@@ -10,10 +10,10 @@
         "email": "nivanka@silverstripers.com"
     }],
     "require": {
-        "silverstripe/framework": "^4.2.0",
-        "silverstripe/reports": "^4.2.0",
-        "silverstripe/assets": "^1.2.0",
-        "silverstripe/asset-admin": "^1.2.0",
+        "silverstripe/framework": "4.* | 5.*",
+        "silverstripe/reports": "4.* | 5.*",
+        "silverstripe/assets": "1.* | 2.*",
+        "silverstripe/asset-admin": "1.* | 2.*",
         "spatie/schema-org": "3.13.0"
     },
     "extra": {
