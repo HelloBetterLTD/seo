@@ -69,7 +69,7 @@ class SiteConfigExtension extends DataExtension
         $fields->addFieldsToTab('Root.SEO.Embeds', [
             TextareaField::create('HeadScripts', 'Scripts within <head> block'),
             TextareaField::create('BodyStartScripts', 'Scripts just after opening <body>'),
-            TextareaField::create('BodyEndScripts', 'Scripts just before opening <body>')
+            TextareaField::create('BodyEndScripts', 'Scripts just before closing <body>')
         ]);
 
         $fields->addFieldsToTab('Root.SEO.Robots', [
