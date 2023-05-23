@@ -175,7 +175,7 @@ class SEODataExtension extends DataExtension
 		$record = SEODataExtension::get_override() ? : $this->owner;
         self::set_seo_record($record);
 
-		if($metaTitle = $this->ComputeMetaTitle()) {
+		if($metaTitle = $record->ComputeMetaTitle()) {
 		    $tags['title'] = $raw ? $metaTitle : HTML::createTag('title', [], $metaTitle);
             $tags['meta_title'] = $raw ? $metaTitle : HTML::createTag('meta', array(
                 'name' => 'title',
@@ -190,7 +190,7 @@ class SEODataExtension extends DataExtension
             ));
         }
 
-        if ($metaDescription = $this->ComputeMetaDescription()) {
+        if ($metaDescription = $record->ComputeMetaDescription()) {
             $tags['meta_description'] = $raw ? $metaDescription : HTML::createTag('meta', array(
                 'name' => 'description',
                 'content' => $metaDescription,
@@ -262,16 +262,16 @@ class SEODataExtension extends DataExtension
 			'content' => i18n::get_locale()
 		]);
 
-		$tags['og:type'] = $raw ? $this->getOGPostType() : HTML::createTag('meta', [
+		$tags['og:type'] = $raw ? $record->getOGPostType() : HTML::createTag('meta', [
 			'property' => 'og:type',
-			'content' => $this->getOGPostType()
+			'content' => $record->getOGPostType()
 		]);
 
         $facebookTitle = $record->obj('FacebookTitle')->getValue();
         if (!$facebookTitle) {
             $facebookTitle = $metaTitle;
         } elseif (!$raw) {
-            $facebookTitle = MetaTitleTemplate::parse_meta_title($this->owner, $facebookTitle);
+            $facebookTitle = MetaTitleTemplate::parse_meta_title($record, $facebookTitle);
         }
 		if ($facebookTitle) {
 			$tags['og:title'] = $raw ? $facebookTitle : HTML::createTag('meta', [
@@ -332,7 +332,7 @@ class SEODataExtension extends DataExtension
         if (!$twTitle) {
             $twTitle = $metaTitle;
         } elseif (!$raw) {
-            $twTitle = MetaTitleTemplate::parse_meta_title($this->owner, $twTitle);
+            $twTitle = MetaTitleTemplate::parse_meta_title($record, $twTitle);
         }
 		if ($twTitle) {
 			$tags['twitter:title'] = $raw ? $twTitle : HTML::createTag('meta', [
