@@ -697,6 +697,7 @@ class SEODataExtension extends DataExtension
                     call_user_func_array(
                         [$schema, 'setProperty'],
                         [
+                            $property,
                             $this->parseSchemaDataField($value)
                         ]
                     );
