@@ -656,6 +656,8 @@ class SEODataExtension extends DataExtension
         }
         if (substr($mapping, 0, 1) == '`' && substr($mapping, -1) == '`') { // is a value
             $val = trim($mapping, '`');
+        } elseif ($mapping == 'NULL') { // use NULL as a keyword
+            $val = null;
         } elseif (strpos($mapping, '.')) { // dot functions
             $partials = explode('.', $mapping);
             $currentRecord = $record;
