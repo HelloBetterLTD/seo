@@ -1,15 +1,16 @@
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { createRoot } from 'react-dom/client';
+import Injector, { loadComponent } from 'lib/Injector';
+import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 
-import { ApolloProvider } from 'react-apollo';
-import { provideInjector } from 'lib/Injector';
+const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
-const InjectableInsertMediaModal = provideInjector(window.InsertMediaModal.default);
 
 jQuery.entwine('ss', ($) => {
     $('#insert-seo-media-react__dialog-wrapper').entwine({
+        ReactRoot: null,
 
         Element: null,
         ImageType: null,
@@ -40,29 +41,29 @@ jQuery.entwine('ss', ($) => {
          * @private
          */
         _renderModal(show) {
+            let root = this.getReactRoot();
+            if (!root) {
+                root = createRoot(this[0]);
+                this.setReactRoot(root);
+            }
+
+
             const handleHide = () => this.close();
             const handleInsert = (...args) => this._handleInsert(...args);
-            const store = window.ss.store;
-            const client = window.ss.apolloClient;
             const attrs = {};
 
             // create/update the react component
-            ReactDOM.render(
-                <ApolloProvider client={client}>
-                    <Provider store={store}>
-                        <InjectableInsertMediaModal
-                          title={false}
-                          type="insert-media"
-                          isOpen={show}
-                          onInsert={handleInsert}
-                          onClosed={handleHide}
-                          bodyClassName="modal__dialog"
-                          className="insert-media-react__dialog-wrapper"
-                          equireLinkText={false}
-                          fileAttributes={attrs}
-                        />
-                  </Provider>
-                </ApolloProvider>,
+            ReactDOM.render(<InjectableInsertMediaModal
+                  title={false}
+                  type="insert-media"
+                  isOpen={show}
+                  onInsert={handleInsert}
+                  onClosed={handleHide}
+                  bodyClassName="modal__dialog"
+                  className="insert-link__dialog-wrapper--internal"
+                  equireLinkText={false}
+                  fileAttributes={attrs}
+                />,
                 this[0]
             );
         },

@@ -228,7 +228,7 @@ class SEOEditor extends FormField
 				$result['duplicates'] = SEODataExtension::get_duplicates_list($list);
 			}
 		}
-		return Convert::array2json($result);
+		return json_encode($result);
 	}
 
 
