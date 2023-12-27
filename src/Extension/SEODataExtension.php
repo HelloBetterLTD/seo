@@ -184,7 +184,7 @@ class SEODataExtension extends DataExtension
 		}
 
 		if ($record->obj('MetaKeywords')->getValue()) {
-            $tags['keywords'] = $raw ? $record->obj('MetaKeywords') : HTML::createTag('meta', array(
+            $tags['keywords'] = $raw ? $record->obj('MetaKeywords')->getValue() : HTML::createTag('meta', array(
                 'name' => 'keywords',
                 'content' => $record->obj('MetaKeywords'),
             ));
@@ -208,7 +208,7 @@ class SEODataExtension extends DataExtension
         }
 
 		$charset = ContentNegotiator::config()->uninherited('encoding');
-		$tags[] = $raw ? $charset : HTML::createTag('meta', [
+		$tags['charset'] = $raw ? $charset : HTML::createTag('meta', [
 			'http-equiv' => 'Content-Type',
 			'content' => 'text/html; charset=' . $charset,
 		]);
@@ -235,11 +235,11 @@ class SEODataExtension extends DataExtension
             && is_a($record, 'SilverStripe\CMS\Model\SiteTree')
 			&& $record->ID > 0
 		) {
-			$tags['x-page-id'] = HTML::createTag('meta', [
+			$tags['x-page-id'] = $raw ? $record->obj('ID')->forTemplate() : HTML::createTag('meta', [
 				'name' => 'x-page-id',
 				'content' => $record->obj('ID')->forTemplate(),
 			]);
-			$tags['x-cms-edit-link'] = HTML::createTag('meta', [
+			$tags['x-cms-edit-link'] = $raw ? $record->obj('CMSEditLink')->forTemplate() : HTML::createTag('meta', [
 				'name' => 'x-cms-edit-link',
 				'content' => $record->obj('CMSEditLink')->forTemplate(),
 			]);
