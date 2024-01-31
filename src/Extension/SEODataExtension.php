@@ -759,7 +759,7 @@ class SEODataExtension extends DataExtension
 
     public function ComputeMetaTitle()
     {
-        $record = $this->owner;
+        $record = SEODataExtension::get_override() ? : $this->owner;
         $metaTitle = $record->obj('MetaTitle')->forTemplate();
         if (!$metaTitle) {
             $metaTitle = $record->obj('Title')->forTemplate();
@@ -773,7 +773,7 @@ class SEODataExtension extends DataExtension
 
     public function ComputeMetaDescription()
     {
-        $record = $this->owner;
+        $record = SEODataExtension::get_override() ? : $this->owner;
         $metaDescription = $record->obj('MetaDescription')->getValue();
         if (!$metaDescription && ($fallbackField = $record->config()->get('fallback_meta_description')) && $record->obj($fallbackField)) {
             $metaDescription = $record->dbObject($fallbackField)->forTemplate();
