@@ -309,15 +309,15 @@ class SEODataExtension extends DataExtension
 		    $fbImage = $record->getDefaultImage();
         }
 		if($fbImage && $fbImage->exists()) {
-			$tags['og:image'] = $raw ? $fbImage->AbsoluteLink() : HTML::createTag('meta', [
+			$tags['og:image'] = $raw ? $this->resampleOGImage($fbImage) : HTML::createTag('meta', [
 				'property' => 'og:image',
-				'content' => $fbImage->AbsoluteLink()
+				'content' => $this->resampleOGImage($fbImage)
 			]);
 		}
 		else if ($siteConfig->GlobalSocialSharingImage()->exists()) {
-            $tags['og:image'] = $raw ? $siteConfig->GlobalSocialSharingImage()->AbsoluteLink() : HTML::createTag('meta', [
+            $tags['og:image'] = $raw ? $this->resampleOGImage($siteConfig->GlobalSocialSharingImage()) : HTML::createTag('meta', [
                 'property' => 'og:image',
-                'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
+                'content' => $this->resampleOGImage($siteConfig->GlobalSocialSharingImage())
             ]);
         }
 
@@ -780,5 +780,20 @@ class SEODataExtension extends DataExtension
         }
         $record->invokeWithExtensions('updateMetaDescription', $metaDescription);
         return Variable::process_varialbes($metaDescription);
+    }
+
+    /**
+     * @param Image $image
+     * @return void
+     */
+    private function resampleOGImage($image)
+    {
+        $maxSize = 5 * 1024 * 1024;
+        if ($image->getWidth() > 1200
+            || $image->getHeight() > 627
+            || $image->getAbsoluteSize() > $maxSize) {
+            return $image->Fill(1200, 627)->AbsoluteLink();
+        }
+        return $image->AbsoluteLink();
     }
 }
