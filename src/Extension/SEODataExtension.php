@@ -184,7 +184,7 @@ class SEODataExtension extends DataExtension
 		}
 
 		if ($record->obj('MetaKeywords')->getValue()) {
-            $tags['keywords'] = $raw ? $record->obj('MetaKeywords')->getValue() : HTML::createTag('meta', array(
+            $tags['keywords'] = $raw ? $record->obj('MetaKeywords') : HTML::createTag('meta', array(
                 'name' => 'keywords',
                 'content' => $record->obj('MetaKeywords'),
             ));
@@ -208,7 +208,7 @@ class SEODataExtension extends DataExtension
         }
 
 		$charset = ContentNegotiator::config()->uninherited('encoding');
-		$tags['charset'] = $raw ? $charset : HTML::createTag('meta', [
+		$tags[] = $raw ? $charset : HTML::createTag('meta', [
 			'http-equiv' => 'Content-Type',
 			'content' => 'text/html; charset=' . $charset,
 		]);
@@ -235,11 +235,11 @@ class SEODataExtension extends DataExtension
             && is_a($record, 'SilverStripe\CMS\Model\SiteTree')
 			&& $record->ID > 0
 		) {
-			$tags['x-page-id'] = $raw ? $record->obj('ID')->forTemplate() : HTML::createTag('meta', [
+			$tags['x-page-id'] = HTML::createTag('meta', [
 				'name' => 'x-page-id',
 				'content' => $record->obj('ID')->forTemplate(),
 			]);
-			$tags['x-cms-edit-link'] = $raw ? $record->obj('CMSEditLink')->forTemplate() : HTML::createTag('meta', [
+			$tags['x-cms-edit-link'] = HTML::createTag('meta', [
 				'name' => 'x-cms-edit-link',
 				'content' => $record->obj('CMSEditLink')->forTemplate(),
 			]);
@@ -309,15 +309,15 @@ class SEODataExtension extends DataExtension
 		    $fbImage = $record->getDefaultImage();
         }
 		if($fbImage && $fbImage->exists()) {
-			$tags['og:image'] = $raw ? $fbImage->AbsoluteLink() : HTML::createTag('meta', [
+			$tags['og:image'] = $raw ? $this->resampleOGImage($fbImage) : HTML::createTag('meta', [
 				'property' => 'og:image',
-				'content' => $fbImage->AbsoluteLink()
+				'content' => $this->resampleOGImage($fbImage)
 			]);
 		}
 		else if ($siteConfig->GlobalSocialSharingImage()->exists()) {
-            $tags['og:image'] = $raw ? $siteConfig->GlobalSocialSharingImage()->AbsoluteLink() : HTML::createTag('meta', [
+            $tags['og:image'] = $raw ? $this->resampleOGImage($siteConfig->GlobalSocialSharingImage()) : HTML::createTag('meta', [
                 'property' => 'og:image',
-                'content' => $siteConfig->GlobalSocialSharingImage()->AbsoluteLink()
+                'content' => $this->resampleOGImage($siteConfig->GlobalSocialSharingImage())
             ]);
         }
 
@@ -583,6 +583,21 @@ class SEODataExtension extends DataExtension
 		}
 		return $result;
 	}
+
+    /**
+     * @param Image $image
+     * @return void
+     */
+    private function resampleOGImage($image)
+    {
+        $maxSize = 5 * 1024 * 1024;
+        if ($image->getWidth() > 1200
+            || $image->getHeight() > 627
+            || $image->getAbsoluteSize() > $maxSize) {
+            return $image->Fill(1200, 627)->AbsoluteLink();
+        }
+        return $image->AbsoluteLink();
+    }
 
 
 	/**
