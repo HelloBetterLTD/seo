@@ -58,8 +58,9 @@ class MetaTitleTemplate extends DataObject
     public static function parse_meta_title($record, $title)
     {
         $titleTemplate = null;
-        $template = $record->MetaTitleTemplate();
-        if ($template && $template->exists()) {
+        if (method_exists($record, 'MetaTitleTemplate') && ($template = $record->MetaTitleTemplate()) && $template->exists()) {
+            $titleTemplate = $template->Value;
+        }
             $titleTemplate = $template->Value;
         }
         if (!$titleTemplate) {
