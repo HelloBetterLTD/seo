@@ -61,8 +61,6 @@ class MetaTitleTemplate extends DataObject
         if (method_exists($record, 'MetaTitleTemplate') && ($template = $record->MetaTitleTemplate()) && $template->exists()) {
             $titleTemplate = $template->Value;
         }
-            $titleTemplate = $template->Value;
-        }
         if (!$titleTemplate) {
             $titleTemplate = self::get_default_title();
         }
