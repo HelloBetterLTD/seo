@@ -631,8 +631,18 @@ class SEODataExtension extends DataExtension
         }
     }
 
-    public function getStructuredDataTypeObject($shemaType) : ?BaseType
+    public function getSchemeType()
     {
+        $owner = $this->owner;
+        $shemaType = $owner->config()->get('schema_type');
+        return $shemaType ?? 'Article';
+    }
+
+    public function getStructuredDataTypeObject($shemaType = null) : ?BaseType
+    {
+        if (!$shemaType) {
+            $shemaType = 'Thing';
+        }
         $className = 'Spatie\\SchemaOrg\\' . $shemaType;
         if (class_exists($className)) {
             return new $className();
@@ -645,8 +655,9 @@ class SEODataExtension extends DataExtension
 
     private function getStructuredDataProperties()
     {
-        $type = $this->getStructuredDataTypeObject();
-        return ($type = $this->getStructuredDataTypeObject()) ? $type->getProperties() : null;
+        return ($type = $this->getStructuredDataContext())
+            ? $type->getProperties()
+            : null;
     }
 
     private function parseSchemaDataField($mapping, $record = null)
@@ -737,22 +748,19 @@ class SEODataExtension extends DataExtension
      */
     private function getStructuredDataContext() : ?BaseType
     {
+        /* @var $owner ViewableData */
         $owner = $this->owner;
-        if ($shemaType = $owner->config()->get('schema_type')) {
-            /* @var $owner ViewableData */
-            $owner = $this->owner;
-            if ($shemaType = $owner->config()->get('schema_type')) {
-                $map = $owner->config()->get('schema', Config::UNINHERITED);
-                if (!$map) {
-                    $map = $owner->config()->get('schema');
-                }
-                if (!$map) {
-                    $map = [];
-                }
-                $schema = $this->getStructuredDataTypeObject($shemaType);
-                $this->processSchemaFields($schema, $map);
-                return $schema;
+        if ($shemaType = $this->getSchemeType()) {
+            $map = $owner->config()->get('schema', Config::UNINHERITED);
+            if (!$map) {
+                $map = $owner->config()->get('schema');
             }
+            if (!$map) {
+                $map = [];
+            }
+            $schema = $this->getStructuredDataTypeObject($shemaType);
+            $this->processSchemaFields($schema, $map);
+            return $schema;
         }
         return null;
     }
@@ -780,5 +788,38 @@ class SEODataExtension extends DataExtension
         }
         $record->invokeWithExtensions('updateMetaDescription', $metaDescription);
         return Variable::process_varialbes($metaDescription);
+    }
+
+    public function getStructuredDataHelpTips()
+    {
+        if ($types = $this->getStructuredDataProperties()) {
+            unset($types['url']);
+            unset($types['@context']);
+            unset($types['@type']);
+
+            $owner = $this->owner;
+            $map = $owner->config()->get('schema');
+            $schemaType = $owner->config()->get('schema_type');
+
+            $class = get_class($owner);
+            $settings = '';
+            foreach ($types as $type => $val) {
+                $val = !empty($map[$type]) ? $map[$type] : '';
+                $settings .= "        {$type}: " . $val . "\n";
+            }
+
+            $html = <<<HTML
+<div style="position: fixed; background: black; padding: 20px; bottom: 0; right: 0; z-index: 999; color: white; font-family: courier; font-size: 14px; line-height: 1;">
+<pre>
+$owner:
+    schema_type: '$schemaType'
+    schema:
+{$settings}
+</pre>
+</div>
+HTML;
+
+            return $html;
+        }
     }
 }
