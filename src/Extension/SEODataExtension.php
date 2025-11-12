@@ -9,10 +9,6 @@
 
 namespace SilverStripers\SEO\Extension;
 
-
-use JsonLd\Context;
-use JsonLd\ContextTypes\AbstractContext;
-use JsonLd\ContextTypes\Product;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image;
 use SilverStripe\CMS\Model\SiteTree;
@@ -21,23 +17,20 @@ use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
-use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Extension;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\i18n\i18n;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Model\ModelData;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBDate;
-use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\FieldType\DBField;
-use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\HTML;
 use SilverStripe\View\Parsers\HTMLValue;
-use SilverStripe\View\ViewableData;
 use SilverStripers\SEO\Fields\SEOEditor;
 use SilverStripers\SEO\Model\MetaTitleTemplate;
 use SilverStripers\SEO\Model\Variable;
@@ -50,7 +43,7 @@ use Spatie\SchemaOrg\BaseType;
  * @property DataObject $owner
  * @method MetaTitleTemplate MetaTitleTemplate
  */
-class SEODataExtension extends DataExtension
+class SEODataExtension extends Extension
 {
 
     use Configurable;
@@ -120,7 +113,7 @@ class SEODataExtension extends DataExtension
         );
     }
 
-	public static function override_seo_from(ViewableData $record)
+	public static function override_seo_from(ModelData $record)
 	{
 		self::$override_seo = $record;
 	}
@@ -748,7 +741,7 @@ class SEODataExtension extends DataExtension
      */
     private function getStructuredDataContext() : ?BaseType
     {
-        /* @var $owner ViewableData */
+        /* @var $owner ModelData */
         $owner = $this->owner;
         if ($shemaType = $this->getSchemeType()) {
             $map = $owner->config()->get('schema', Config::UNINHERITED);

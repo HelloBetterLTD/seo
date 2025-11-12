@@ -11,19 +11,18 @@ namespace SilverStripers\SEO\Extension;
 
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
-use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
-use SilverStripe\ORM\DataExtension;
 use SilverStripers\SEO\Model\MetaTitleTemplate;
 use SilverStripers\SEO\Model\Variable;
 
-class SiteConfigExtension extends DataExtension
+class SiteConfigExtension extends Extension
 {
 
     private static $db = [

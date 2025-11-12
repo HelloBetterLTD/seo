@@ -15,7 +15,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\Reports\Report;
 use SilverStripe\Versioned\Versioned;
 
