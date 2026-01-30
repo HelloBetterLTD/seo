@@ -43,6 +43,7 @@ class MetaTitleTemplate extends DataObject
             ], array_keys(Variable::get_sort_variables()));
             $valueField->setDescription('<p>Options to choose from:<br> {' . implode('}<br>{', $vars) . '}</p>');
         }
+
         return $fields;
     }
 
@@ -62,9 +63,11 @@ class MetaTitleTemplate extends DataObject
         if ($template && $template->exists()) {
             $titleTemplate = $template->Value;
         }
+
         if (!$titleTemplate) {
             $titleTemplate = self::get_default_title();
         }
+
         return Variable::process_varialbes($titleTemplate, [
             'MetaTitle' => $title
         ]);
@@ -84,6 +87,7 @@ class MetaTitleTemplate extends DataObject
                 'value' => $var->Value
             ];
         }
+
         return $ret;
     }
 }

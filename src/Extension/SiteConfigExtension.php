@@ -9,21 +9,35 @@
 
 namespace SilverStripers\SEO\Extension;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
-use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripers\SEO\Model\MetaTitleTemplate;
 use SilverStripers\SEO\Model\Variable;
 
-class SiteConfigExtension extends DataExtension
+/**
+ * @property SiteConfig $owner
+ * @property bool $DisableSearchEngineVisibility
+ * @property string $TwitterUsername
+ * @property string $FacebookAdmin
+ * @property string $FacebookAppID
+ * @property string $HeadScripts
+ * @property string $BodyStartScripts
+ * @property string $BodyEndScripts
+ * @property string $RobotsTXT
+ * @property bool $RobotsPublishedPagesOnly
+ * @property string $DefaultMetaTitle
+ * @method Image GlobalSocialSharingImage
+ */
+class SiteConfigExtension extends Extension
 {
 
     private static $db = [
@@ -97,6 +111,6 @@ Allow: /
                 ->setConfig(GridFieldConfig_RecordEditor::create())
         ]);
 
-        $this->owner->invokeWithExtensions('updateSEOFields', $fields);
+        $this->getOwner()->invokeWithExtensions('updateSEOFields', $fields);
     }
 }

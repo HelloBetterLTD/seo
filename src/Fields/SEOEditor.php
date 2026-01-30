@@ -40,12 +40,17 @@ class SEOEditor extends FormField
 		'duplicatecheck'
 	];
 
-	private $record = null;
+	private $record;
+
 	private $enableSettings = true;
+
 	private $enableSEOImages = true;
-	private $fallBackImage = null;
-	private $singular_name = null;
-	private $plural_name = null;
+
+	private $fallBackImage;
+
+	private $singular_name;
+
+	private $plural_name;
 
 	public function __construct($name, $title = null, $value = null, $record = null)
 	{
@@ -117,6 +122,7 @@ class SEOEditor extends FormField
         if ($this->singular_name) {
             return $this->singular_name;
         }
+
         return $this->record->i18n_singular_name();
     }
 
@@ -125,6 +131,7 @@ class SEOEditor extends FormField
         if ($this->plural_name) {
             return $this->plural_name;
         }
+
         return $this->record->i18n_plural_name();
     }
 
@@ -138,6 +145,7 @@ class SEOEditor extends FormField
                 }
             }
         }
+
 		return json_encode($data);
 	}
 
@@ -157,10 +165,10 @@ class SEOEditor extends FormField
         return Convert::raw2att(json_encode(MetaTitleTemplate::meta_titles()));
     }
 
-	public function Field($properties = array())
+    public function Field($properties = [])
 	{
 		Requirements::javascript('silverstripers/seo:client/dist/js/bundle.js');
-		Requirements::add_i18n_javascript('silverstripers/seo:client/lang', false, true);
+		Requirements::add_i18n_javascript('silverstripers/seo:client/lang', false);
 		return parent::Field($properties);
 	}
 
@@ -169,14 +177,14 @@ class SEOEditor extends FormField
 		if($this->record && method_exists($this->record, 'AbsoluteLink')) {
 			return $this->record->AbsoluteLink();
 		}
+
 		return Director::absoluteBaseURL();
 	}
 
     public function getFields()
     {
         $seoData = $this->record->SEOData();
-        $fields = array_keys($seoData);
-        return $fields;
+        return array_keys($seoData);
     }
 
     public function isSavable()
@@ -186,15 +194,16 @@ class SEOEditor extends FormField
                 return true;
             }
         }
+
         return false;
     }
 
-	public function saveInto(DataObjectInterface $record)
+    public function saveInto(DataObjectInterface $record)
 	{
         if($this->isSavable()) {
             foreach($this->getFields() as $fieldName) {
                 if (isset($this->value[$fieldName])) {
-                    $record->setCastedField($fieldName, !empty($this->value[$fieldName]) ? $this->value[$fieldName] : null);
+                    $record->setCastedField($fieldName, empty($this->value[$fieldName]) ? null : $this->value[$fieldName]);
                 }
             }
         }
@@ -220,7 +229,7 @@ class SEOEditor extends FormField
 		];
 		if($this->record && $this->request->requestVar('Field') && $this->request->requestVar('Needle')) {
 			$result['checked'] = 1;
-			$list = DataList::create(get_class($this->record))
+			$list = DataList::create($this->record::class)
 				->filter($this->request->requestVar('Field') . ':PartialMatch', $this->request->requestVar('Needle'))
 				->exclude('ID', $this->record->ID);
 			if($list->count()) {
@@ -228,6 +237,7 @@ class SEOEditor extends FormField
 				$result['duplicates'] = SEODataExtension::get_duplicates_list($list);
 			}
 		}
+
 		return json_encode($result);
 	}
 

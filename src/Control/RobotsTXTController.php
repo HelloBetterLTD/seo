@@ -24,6 +24,7 @@ class RobotsTXTController extends Controller
         if($siteConfig->RobotsTXT) {
             return $siteConfig->RobotsTXT;
         }
+
         if ($siteConfig->RobotsPublishedPagesOnly) {
             $links = [];
             $excludeClasses = [
@@ -32,12 +33,14 @@ class RobotsTXTController extends Controller
             foreach (SiteTree::get()->exclude('ClassName', $excludeClasses) as $page) {
                 $links[] = 'Allow: ' . $page->Link();
             }
+
             $links = implode("\n", $links);
             return <<<ROBOTS
 User-agent: *
-$links
+{$links}
 ROBOTS;
         }
+
         return <<<ROBOTS
 User-agent: *
 Allow: /

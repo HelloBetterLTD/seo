@@ -10,12 +10,12 @@
 
 namespace SilverStripers\SEO\Reporting;
 
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
-use SilverStripe\ORM\ArrayList;
 use SilverStripe\Reports\Report;
 use SilverStripe\Versioned\Versioned;
 
@@ -23,30 +23,22 @@ use SilverStripe\Versioned\Versioned;
 class SEOReport extends Report
 {
 
-	public function title()
+    public function title()
 	{
-		return _t(__CLASS__.'.SEOReport', 'SEO report');
+		return _t(self::class.'.SEOReport', 'SEO report');
 	}
 
 	public function group()
 	{
-		return _t(__CLASS__.'.SEOReportGroup', 'SEO reports');
+		return _t(self::class.'.SEOReportGroup', 'SEO reports');
 	}
 
 	public function getParameterFields()
 	{
-		return new FieldList(
-			TextField::create('Title'),
-			TextField::create('MetaTitle'),
-			TextField::create('MetaDescription'),
-			CheckboxField::create('DuplicatedOnes', 'Show only duplicate titles'),
-			CheckboxField::create('EmptyMetaTitles', 'Show only empty meta titles'),
-			CheckboxField::create('EmptyMetaDescriptions', 'Show only empty meta descriptions'),
-			CheckboxField::create('OnLive', 'Check live site')
-		);
+		return FieldList::create(TextField::create('Title'), TextField::create('MetaTitle'), TextField::create('MetaDescription'), CheckboxField::create('DuplicatedOnes', 'Show only duplicate titles'), CheckboxField::create('EmptyMetaTitles', 'Show only empty meta titles'), CheckboxField::create('EmptyMetaDescriptions', 'Show only empty meta descriptions'), CheckboxField::create('OnLive', 'Check live site'));
 	}
 
-	public function columns()
+    public function columns()
 	{
 		return [
 			'Title' 			=> [
@@ -71,7 +63,7 @@ class SEOReport extends Report
 
 	public function sourceRecords($params = null)
 	{
-	    if (ClassInfo::exists('SilverStripe\\CMS\\Model\\SiteTree')) {
+	    if (ClassInfo::exists(SiteTree::class)) {
             $stage = isset($params['OnLive']) ? Versioned::LIVE : Versioned::DRAFT;
             $list = Versioned::get_by_stage(SiteTree::class, $stage);
 
@@ -93,6 +85,7 @@ class SEOReport extends Report
 
             return $list;
         }
+
 	    return ArrayList::create();
 	}
 

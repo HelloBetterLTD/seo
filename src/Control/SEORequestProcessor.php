@@ -32,43 +32,46 @@ class SEORequestProcessor implements HTTPMiddleware {
 		$config = SiteConfig::current_site_config();
 
 		// head scripts
-		if($config->HeadScripts && strpos($body, '</head>') !== false) {
-			$head = strpos($body, '</head>');
-			$before = substr($body, 0, $head);
-			$after = substr($body, $head + strlen('</head>'));
+		if($config->HeadScripts && str_contains((string) $body, '</head>')) {
+			$head = strpos((string) $body, '</head>');
+			$before = substr((string) $body, 0, $head);
+			$after = substr((string) $body, $head + strlen('</head>'));
 			$body = $before . "\n" . $config->HeadScripts . "\n" . '</head>' . "\n" . $after;
 		}
 
 		// end of body
-		if($config->BodyStartScripts && strpos($body, '<body') !== false) {
-		    preg_match("/<body(.)*>/", $body, $matches);
-		    if (!$matches) {
-                preg_match("/<body[\s\S]+?>/", $body, $matches);
+		if($config->BodyStartScripts && str_contains((string) $body, '<body')) {
+		    preg_match("/<body(.)*>/", (string) $body, $matches);
+		    if ($matches === []) {
+                preg_match("/<body[\s\S]+?>/", (string) $body, $matches);
             }
-			if($matches) {
+
+			if($matches !== []) {
 				$bodyTag = $matches[0];
-				$start = strpos($body, $bodyTag);
-				$before = substr($body, 0, $start);
-				$after = substr($body, $start + strlen($bodyTag));
+				$start = strpos((string) $body, $bodyTag);
+				$before = substr((string) $body, 0, $start);
+				$after = substr((string) $body, $start + strlen($bodyTag));
 				$body = $before . "\n" . $bodyTag . "\n" . $config->BodyStartScripts . "\n" . $after;
 			}
 		}
 
 		// end of body
-        if (strpos($body, '</body>') !== false) {
+        if (str_contains((string) $body, '</body>')) {
             /* @var $record SEODataExtension */
             $help = false;
             if (($request->requestVar('structureddata_help') == 1) && ($record = SEODataExtension::get_seo_record())) {
                 $help = $record->getStructuredDataHelpTips();
             }
+
             if ($config->BodyEndScripts || $help) {
-                $bodyEnd = strpos($body, '</body>');
-                $before = substr($body, 0, $bodyEnd);
-                $after = substr($body, $bodyEnd + strlen('</body>'));
+                $bodyEnd = strpos((string) $body, '</body>');
+                $before = substr((string) $body, 0, $bodyEnd);
+                $after = substr((string) $body, $bodyEnd + strlen('</body>'));
                 $content = $help . "\n" . $config->BodyEndScripts;
                 $body = $before . "\n" . $content . "\n" . '</body>' . "\n" . $after;
             }
         }
+
 		return $body;
 	}
 
@@ -79,13 +82,13 @@ class SEORequestProcessor implements HTTPMiddleware {
          * @var $response HTTPResponse
          */
 		$response = $delegate($request);
-		$headers = $response->getHeaders();
 		if($response
             && ($body = $response->getbody())
             && $this->canAddSEOScripts($request, $response)) {
 			$body = $this->processInputs($body, $request);
 			$response->setBody($body);
 		}
+
 		return $response;
 	}
 
@@ -95,23 +98,23 @@ class SEORequestProcessor implements HTTPMiddleware {
         $headers = $response->getHeaders();
 
         $rules = self::config()->get('exclude_rules');
-        if (count($rules)) {
+        if (count($rules) > 0) {
             foreach ($rules as $rule) {
-                if (substr($rule, -1) == '*') {
-                    if (strpos($url, substr($rule, 0, -1)) === 0) {
+                if (str_ends_with((string) $rule, '*')) {
+                    if (str_starts_with($url, substr((string) $rule, 0, -1))) {
                         return false;
                     }
-                } elseif (substr($rule, 0, 1) == '*') {
-                    if (substr($url, -1 * strlen(substr($rule, 0, 1))) == substr($rule, 0, 1)) {
+                } elseif (str_starts_with((string) $rule, '*')) {
+                    if (substr($url, -1) === substr((string) $rule, 0, 1)) {
                         return false;
                     }
-                } elseif (ltrim($url) == ltrim($rule)) {
+                } elseif (ltrim($url) === ltrim((string) $rule)) {
                     return false;
                 }
             }
         }
 
         return isset($headers['content-type'])
-            && strpos($headers['content-type'], 'text/html;') !== false;
+            && str_contains($headers['content-type'], 'text/html;');
     }
 }

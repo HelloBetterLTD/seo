@@ -29,7 +29,7 @@ class Variable extends DataObject
         'Value'
     ];
 
-    private static $vars = null;
+    private static $vars;
 
     public static function get_sort_variables()
     {
@@ -41,8 +41,10 @@ class Variable extends DataObject
             foreach (self::get() as $var) {
                 $ret[$var->Name] = $var->Value;
             }
+
             self::$vars = $ret;
         }
+
         return self::$vars;
     }
 
@@ -51,10 +53,12 @@ class Variable extends DataObject
         if (is_null($text)) {
             $text = '';
         }
+
         $vars = array_merge($options, self::get_sort_variables());
         foreach ($vars as $name => $val) {
             $text = str_replace('{' . $name . '}', $val, $text);
         }
+
         return $text;
     }
 }
