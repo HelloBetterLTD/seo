@@ -39,7 +39,9 @@ class SiteConfigExtension extends DataExtension
         'RobotsTXT' => 'Text',
         'RobotsPublishedPagesOnly' => 'Boolean',
 
-        'DefaultMetaTitle' => 'Varchar(255)'
+        'DefaultMetaTitle' => 'Varchar(255)',
+
+        'LLMsDescription' => 'Text',
     ];
 
     private static $has_one = [
@@ -95,6 +97,10 @@ Allow: /
             GridField::create('MetaTitles', 'Templates')
                 ->setList(MetaTitleTemplate::get())
                 ->setConfig(GridFieldConfig_RecordEditor::create())
+        ]);
+
+        $fields->addFieldsToTab('Root.SEO.LLMS', [
+            TextareaField::create('LLMsDescription', 'LLMs Description')
         ]);
 
         $this->owner->invokeWithExtensions('updateSEOFields', $fields);
