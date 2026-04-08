@@ -13,6 +13,8 @@ use SilverStripe\SiteConfig\SiteConfig;
 class GenerateLLMsTxtTask extends BuildTask
 {
     private const MAX_SITEMAP_DEPTH = 5;
+
+    private static string $segment = 'generate-llms';
     protected $title = 'Generate llms.txt';
     protected $description = 'Generates /public/llms.txt from /sitemap.xml with page titles and meta descriptions.';
 
